@@ -5,17 +5,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
 
 :root {
-  --azul:        #04091A;
-  --azul-med:    #0A1A35;
-  --azul-card:   #0D2444;
-  --azul-light:  #1A5096;
-  --verde:       #00D4A1;
-  --verde-claro: #00FFD0;
-  --verde-dark:  #009B76;
-  --gris:        #F0F5FB;
-  --gris-2:      #DDE6F0;
-  --texto:       #141E2E;
-  --muted:       #5A6E85;
+  --azul:        #0F172A;
+  --azul-med:    #1E293B;
+  --azul-card:   #1E293B;
+  --azul-light:  #3B82F6;
+  --verde:       #10B981;
+  --verde-claro: #34D399;
+  --verde-dark:  #059669;
+  --gris:        #F1F5F9;
+  --gris-2:      #E2E8F0;
+  --texto:       #0F172A;
+  --muted:       #64748B;
   --white:       #ffffff;
   --radius:    14px;
   --radius-lg: 24px;
