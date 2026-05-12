@@ -372,10 +372,10 @@
 <script src="../js/main.js"></script>
 <script>
 // ── SUPABASE CONFIG ──────────────────────────
-// IMPORTANTE: Reemplaza estos valores con los tuyos de supabase.com
-const SUPABASE_URL = 'https://rzhlomkxsrsjpgsgpewk.supabase.co';
+// IMPORTANTE: Reemplaza estos valores con los tuyos de _supabase.com
+const SUPABASE_URL = 'https://rzhlomkxsrsjpgsgpewk._supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6aGxvbWt4c3JzanBnc2dwZXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyOTQzMTQsImV4cCI6MjA5Mjg3MDMxNH0.aPoWs8fU_6ZPB2c0n4uaCQgaxiGR_8kWTNfWNJKWpJc';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── RENDER NAV/FOOTER ────────────────────────
 document.getElementById('cursor-root').innerHTML = renderCursor();
@@ -425,13 +425,13 @@ function updateProgress(){
 
 // ── AUTH ─────────────────────────────────────
 async function loginGoogle(){
-  await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+  await _supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
 }
 async function loginEmail_submit(){
   const email=document.getElementById('loginEmail').value.trim();
   const pass=document.getElementById('loginPass').value;
   if(!email||!pass){setError('loginError','Completa todos los campos.');return;}
-  const{error}=await supabase.auth.signInWithPassword({email,password:pass});
+  const{error}=await _supabase.auth.signInWithPassword({email,password:pass});
   if(error)setError('loginError',error.message==='Invalid login credentials'?'Correo o contraseña incorrectos.':error.message);
 }
 async function register_submit(){
@@ -441,12 +441,12 @@ async function register_submit(){
   const pass=document.getElementById('regPass').value;
   if(!nombre||!apellido||!email||!pass){setError('registerError','Completa todos los campos.');return;}
   if(pass.length<6){setError('registerError','La contraseña debe tener al menos 6 caracteres.');return;}
-  const{error}=await supabase.auth.signUp({email,password:pass,options:{data:{nombre,apellido}}});
+  const{error}=await _supabase.auth.signUp({email,password:pass,options:{data:{nombre,apellido}}});
   if(error)setError('registerError',error.message);
   else showScreen('screenVerify');
 }
 async function logout(){
-  await supabase.auth.signOut();
+  await _supabase.auth.signOut();
   currentUser=null;userProfile={};appliedVacantes.clear();
   showScreen('screenLogin');
 }
@@ -488,7 +488,7 @@ async function saveProfile(){
   };
   userProfile={...userProfile,...data};
   if(currentUser){
-    await supabase.from('candidatos').upsert({user_id:currentUser.id,...data});
+    await _supabase.from('candidatos').upsert({user_id:currentUser.id,...data});
   }
   document.getElementById('sidebarName').textContent=(data.nombre+' '+data.apellido).trim();
   document.getElementById('avatarInitials').textContent=(data.nombre[0]||'?').toUpperCase();
@@ -601,7 +601,7 @@ function aplicar(id){
   renderAplicaciones();
   showToast('¡Aplicación enviada! Te contactaremos pronto 🎉');
   if(currentUser){
-    supabase.from('aplicaciones').insert({user_id:currentUser.id,vacante_id:id,estado:'En revisión'}).then(()=>{});
+    _supabase.from('aplicaciones').insert({user_id:currentUser.id,vacante_id:id,estado:'En revisión'}).then(()=>{});
   }
 }
 function renderAplicaciones(){
@@ -623,7 +623,7 @@ function renderAplicaciones(){
 // ── INIT ─────────────────────────────────────
 (async function init(){
   // Cargar vacantes desde Supabase
-  const {data:vacs} = await supabase.from('vacantes').select('*').eq('activa',true).order('id');
+  const {data:vacs} = await _supabase.from('vacantes').select('*').eq('activa',true).order('id');
   if(vacs) VACANTES = vacs.map(v=>({
     id: v.id,
     titulo: v.titulo,
@@ -637,22 +637,22 @@ function renderAplicaciones(){
   }));
 
   // Verificar sesión activa
-  const{data:{session}}=await supabase.auth.getSession();
+  const{data:{session}}=await _supabase.auth.getSession();
   if(session){
     currentUser=session.user;
-    const{data}=await supabase.from('candidatos').select('*').eq('user_id',currentUser.id).single();
+    const{data}=await _supabase.from('candidatos').select('*').eq('user_id',currentUser.id).single();
     if(data)userProfile=data;
     // Cargar aplicaciones previas
-    const{data:apps}=await supabase.from('aplicaciones').select('vacante_id').eq('user_id',currentUser.id);
+    const{data:apps}=await _supabase.from('aplicaciones').select('vacante_id').eq('user_id',currentUser.id);
     if(apps)apps.forEach(a=>appliedVacantes.add(a.vacante_id));
     showDashboard();
   }
-  supabase.auth.onAuthStateChange(async(_,session)=>{
+  _supabase.auth.onAuthStateChange(async(_,session)=>{
     if(session){
       currentUser=session.user;
-      const{data}=await supabase.from('candidatos').select('*').eq('user_id',currentUser.id).single();
+      const{data}=await _supabase.from('candidatos').select('*').eq('user_id',currentUser.id).single();
       if(data)userProfile=data;
-      const{data:apps}=await supabase.from('aplicaciones').select('vacante_id').eq('user_id',currentUser.id);
+      const{data:apps}=await _supabase.from('aplicaciones').select('vacante_id').eq('user_id',currentUser.id);
       if(apps)apps.forEach(a=>appliedVacantes.add(a.vacante_id));
       showDashboard();
     }
