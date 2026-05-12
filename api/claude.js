@@ -14,22 +14,37 @@ module.exports = async function handler(req, res) {
   if (system) openaiMessages.push({ role: 'system', content: system });
   openaiMessages.push(...messages);
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://factor-loboral.vercel.app',
-      'X-Title': 'Factor Laboral Humano',
-    },
-    body: JSON.stringify({
-      model: 'meta-llama/llama-3.3-70b-instruct:free',
-      max_tokens,
-      messages: openaiMessages,
-    }),
-  });
+  // Modelos free en orden de preferencia
+  const models = [
+    'google/gemma-3-27b-it:free',
+    'meta-llama/llama-3.3-70b-instruct:free',
+    'mistralai/mistral-7b-instruct:free',
+    'qwen/qwen-2.5-72b-instruct:free',
+  ];
 
-  const data = await response.json();
-  // Devolver respuesta completa de OpenRouter para debug
-  return res.status(200).json(data);
+  for (const model of models) {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://factor-loboral.vercel.app',
+        'X-Title': 'Factor Laboral Humano',
+      },
+      body: JSON.stringify({ model, max_tokens, messages: openaiMessages }),
+    });
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content || '';
+
+    if (text) {
+      return res.status(200).json({ content: [{ type: 'text', text }] });
+    }
+    // Si falla (rate limit u otro error), intenta el siguiente modelo
+  }
+
+  // Todos fallaron
+  return res.status(200).json({
+    content: [{ type: 'text', text: 'En este momento hay mucha demanda. Por favor escríbenos directamente al WhatsApp 3719-0890 y te atendemos de inmediato. 😊' }]
+  });
 };
