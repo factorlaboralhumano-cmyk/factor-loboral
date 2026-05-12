@@ -1,11 +1,6 @@
-// api/claude.js — Vercel Serverless Function
-// Proxy seguro para OpenRouter. La API key nunca llega al frontend.
-// Variables de entorno requeridas en Vercel:
-//   OPENROUTER_API_KEY = sk-or-...
-
-export default async function handler(req, res) {
-  const origin = req.headers.origin || '';
-  res.setHeader('Access-Control-Allow-Origin', origin);
+// api/claude.js — Vercel Serverless Function (CommonJS)
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -13,12 +8,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido' });
 
   const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'API key no configurada en el servidor.' });
+  if (!apiKey) return res.status(500).json({ error: 'API key no configurada.' });
 
   try {
     const { system, messages, max_tokens = 1000 } = req.body;
 
-    // Convertir formato Anthropic → OpenAI (que usa OpenRouter)
     const openaiMessages = [];
     if (system) openaiMessages.push({ role: 'system', content: system });
     openaiMessages.push(...messages);
@@ -39,15 +33,11 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-
-    // Convertir respuesta OpenAI → formato Anthropic que espera el frontend
     const text = data.choices?.[0]?.message?.content || '';
-    return res.status(200).json({
-      content: [{ type: 'text', text }],
-    });
+    return res.status(200).json({ content: [{ type: 'text', text }] });
 
   } catch (err) {
-    console.error('OpenRouter proxy error:', err);
-    return res.status(500).json({ error: 'Error interno del servidor.' });
+    console.error('Error:', err);
+    return res.status(500).json({ error: 'Error interno.' });
   }
-}
+};
