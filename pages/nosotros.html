@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosotros — Factor Laboral Humano</title>
+  <meta name="description" content="Conoce Factor Laboral Humano: nuestra misión, visión y los valores que guían cada proceso de reclutamiento en Guatemala.">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .mvv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:52px}
+    .mvv-card{background:#fff;border-radius:22px;padding:36px;border:1.5px solid var(--gris-2);position:relative;overflow:hidden;transition:all .3s}
+    .mvv-card:hover{border-color:var(--verde);transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,200,151,.1)}
+    .mvv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--verde),var(--verde-claro));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+    .mvv-card:hover::before{transform:scaleX(1)}
+    .mvv-num{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:rgba(0,200,151,.06);position:absolute;top:12px;right:18px;line-height:1}
+    .mvv-icon{font-size:2.2rem;margin-bottom:18px}
+    .mvv-card h3{font-size:1.15rem;font-weight:800;color:var(--azul);margin-bottom:14px}
+    .mvv-card p{color:var(--muted);font-size:.9rem;line-height:1.7}
+    .valor-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(0,200,151,.08);border:1px solid rgba(0,200,151,.2);border-radius:100px;padding:6px 14px;font-size:.8rem;font-weight:600;color:var(--azul);margin:4px}
+    .dif-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:52px}
+    .dif-card{background:linear-gradient(135deg,var(--azul) 0%,#0D2137 100%);border-radius:20px;padding:32px;border:1px solid rgba(0,200,151,.15);position:relative;overflow:hidden;transition:all .3s}
+    .dif-card::after{content:'';position:absolute;bottom:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(0,200,151,.12) 0%,transparent 70%);border-radius:50%}
+    .dif-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.3),0 0 30px rgba(0,200,151,.1)}
+    .dif-icon{width:54px;height:54px;border-radius:16px;background:rgba(0,200,151,.12);border:1px solid rgba(0,200,151,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+    .dif-card h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px}
+    .dif-card p{color:rgba(255,255,255,.45);font-size:.86rem;line-height:1.6}
+  </style>
+</head>
+<body>
+<div id="cursor-root"></div>
+<div id="nav-root"></div>
+
+<section class="page-hero">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a><span>/</span><span>Nosotros</span></div>
+  <div class="section-label">Quiénes somos</div>
+  <h1>Factor Laboral<br><span style="color:var(--verde)">Humano</span></h1>
+  <p>Una empresa guatemalteca especializada en conectar organizaciones con el talento que necesitan para crecer.</p>
+</section>
+
+<!-- HISTORIA -->
+<section class="about-section">
+  <div class="about-img-wrap">
+    <img class="about-img" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80" alt="Equipo Factor Laboral Humano">
+    <div class="about-badge">Guatemala<small>Presencia nacional</small></div>
+  </div>
+  <div class="about-content">
+    <div class="section-label reveal">Nuestra historia</div>
+    <h2 class="section-title reveal">Nacimos para transformar el reclutamiento en Guatemala</h2>
+    <p class="reveal">Factor Laboral Humano nació con una convicción simple pero poderosa: el reclutamiento en Guatemala merecía hacerse mejor. Más humano, más preciso, más transparente.</p>
+    <p class="reveal">Lo que comenzó como una pequeña consultoría, hoy es una empresa de recursos humanos con presencia en toda la república, atendiendo a empresas de todos los sectores — desde pequeñas y medianas hasta grandes corporaciones.</p>
+    <p class="reveal">Combinamos la calidez del trato humano con metodología estructurada y tecnología para ofrecer resultados que hablan por sí solos.</p>
+    <ul class="check-list reveal" style="margin-top:20px;">
+      <li>Proceso de selección riguroso y transparente</li>
+      <li>Amplia red de candidatos calificados en todos los sectores</li>
+      <li>Especialistas por industria y tipo de puesto</li>
+      <li>Garantía de reposición sin costo adicional</li>
+      <li>Acompañamiento durante todo el proceso de integración</li>
+    </ul>
+  </div>
+</section>
+
+<!-- MISIÓN VISIÓN VALORES -->
+<section class="section" style="background:var(--gris);">
+  <div class="container">
+    <div class="section-label reveal">Nuestro propósito</div>
+    <h2 class="section-title reveal">Misión, Visión y Valores</h2>
+    <div class="mvv-grid">
+      <div class="mvv-card reveal">
+        <span class="mvv-num">01</span>
+        <div class="mvv-icon">🎯</div>
+        <h3>Misión</h3>
+        <p>Conectar empresas guatemaltecas con el talento humano correcto, a través de procesos de reclutamiento rigurosos, transparentes y centrados en las personas — impulsando el desarrollo económico del país.</p>
+      </div>
+      <div class="mvv-card reveal">
+        <span class="mvv-num">02</span>
+        <div class="mvv-icon">🔭</div>
+        <h3>Visión</h3>
+        <p>Ser la empresa de reclutamiento de referencia en Guatemala, reconocida por la calidad de sus procesos, la satisfacción de sus clientes y el impacto positivo en la vida de los candidatos que acompañamos.</p>
+      </div>
+      <div class="mvv-card reveal">
+        <span class="mvv-num">03</span>
+        <div class="mvv-icon">💎</div>
+        <h3>Nuestros Valores</h3>
+        <p style="margin-bottom:16px;">Los principios que guían cada proceso, cada entrevista y cada colocación que realizamos.</p>
+        <div>
+          <span class="valor-chip">❤️ Humanismo</span>
+          <span class="valor-chip">🎯 Precisión</span>
+          <span class="valor-chip">🤝 Compromiso</span>
+          <span class="valor-chip">⚡ Agilidad</span>
+          <span class="valor-chip">🛡️ Integridad</span>
+          <span class="valor-chip">🌟 Excelencia</span>
+          <span class="valor-chip">🔒 Confidencialidad</span>
+          <span class="valor-chip">🌱 Innovación</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="ia-section" style="padding:clamp(70px,9vw,110px) clamp(20px,5%,80px);">
+  <div style="position:relative;z-index:1;">
+    <div class="section-label" style="color:var(--verde)" class="reveal">¿Por qué elegirnos?</div>
+    <h2 class="section-title" style="color:#fff;margin-bottom:48px;" class="reveal">Lo que nos diferencia</h2>
+    <div class="dif-grid">
+      <div class="dif-card reveal">
+        <div class="dif-icon">🇬🇹</div>
+        <h3>Somos 100% guatemaltecos</h3>
+        <p>Conocemos el mercado laboral local, los códigos culturales, los salarios reales y las particularidades de cada región del país.</p>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">🧪</div>
+        <h3>Metodología estructurada</h3>
+        <p>No improvisamos. Cada candidato pasa por un proceso definido: análisis de perfil, evaluaciones, entrevista y verificación de referencias.</p>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">⏱️</div>
+        <h3>Rapidez sin sacrificar calidad</h3>
+        <p>Nuestro proceso optimizado nos permite presentar candidatos calificados en plazos mucho menores que el promedio del mercado.</p>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">🎯</div>
+        <h3>Especialistas por sector</h3>
+        <p>Nuestro equipo tiene conocimiento real de cada industria — tecnología, manufactura, agroindustria, finanzas y más.</p>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">🤝</div>
+        <h3>Garantía de reposición</h3>
+        <p>Si el candidato no funciona en el período de prueba, lo buscamos de nuevo sin costo adicional para tu empresa.</p>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">🔒</div>
+        <h3>Confidencialidad total</h3>
+        <p>Manejamos cada proceso — especialmente los ejecutivos — con absoluta discreción y respeto por la privacidad de todas las partes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-img-wrap">
+    <img class="cta-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" alt="Equipo colaborando">
+    <div class="cta-img-overlay"></div>
+  </div>
+  <div class="cta-content">
+    <div class="section-label" style="color:var(--verde)">¿Trabajamos juntos?</div>
+    <h2>Cuéntanos qué necesitas</h2>
+    <p>Un especialista te contactará en menos de 24 horas para hablar sobre tu necesidad de talento.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn btn-primary btn-lg" onclick="openModal('empresa');return false;">Publicar vacante →</a>
+      <a href="contacto.html" class="btn btn-outline btn-lg">Contactar</a>
+    </div>
+  </div>
+</section>
+
+<div id="chat-root"></div>
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+<script src="../js/components.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  document.getElementById('cursor-root').innerHTML = renderCursor();
+  document.getElementById('nav-root').innerHTML = renderNav('nosotros');
+  document.getElementById('footer-root').innerHTML = renderFooter(false);
+  document.getElementById('chat-root').innerHTML = renderChatWidget();
+  document.getElementById('modal-root').innerHTML = renderModal();
+</script>
+</body>
+</html>

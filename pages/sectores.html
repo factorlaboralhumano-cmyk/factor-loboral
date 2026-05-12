@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sectores — Factor Laboral Humano</title>
+  <meta name="description" content="Factor Laboral Humano atiende más de 12 sectores económicos en Guatemala: tecnología, manufactura, banca, agroindustria, logística y más.">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .sector-detail {
+      display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;
+      padding:80px 6%; border-bottom:1px solid var(--gris-2);
+    }
+    .sector-detail:nth-child(even) .sector-img-col { order:-1; }
+    .sector-detail img { width:100%; height:320px; object-fit:cover; border-radius:20px; }
+    .sector-detail h2 { font-size:clamp(1.6rem,2.5vw,2.2rem); font-weight:800; color:var(--azul); margin-bottom:14px; }
+    .sector-detail p { color:var(--muted); line-height:1.7; margin-bottom:16px; }
+    .sector-puestos { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; }
+    .puesto-tag { font-size:0.78rem; font-weight:600; padding:5px 13px; border-radius:100px; background:var(--gris); color:var(--texto); border:1px solid var(--gris-2); }
+    @media(max-width:768px) {
+      .sector-detail { grid-template-columns:1fr; gap:28px; padding:60px 6%; }
+      .sector-detail:nth-child(even) .sector-img-col { order:0; }
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-root"></div>
+<div id="nav-root"></div>
+
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Inicio</a><span>/</span><span>Sectores</span>
+  </div>
+  <div class="section-label">Cobertura sectorial</div>
+  <h1>Sectores que<br><span style="color:var(--verde)">Atendemos</span></h1>
+  <p>Más de 10 años de experiencia en los principales sectores de la economía guatemalteca. Conocemos las particularidades de cada industria.</p>
+</section>
+
+<!-- GRID RÁPIDO DE SECTORES -->
+<section class="section" style="background:var(--gris);">
+  <div class="container">
+    <div class="sectors-grid reveal">
+      <div class="sector-card"><div class="sector-icon">💻</div><div class="sector-name">Tecnología</div></div>
+      <div class="sector-card"><div class="sector-icon">🏥</div><div class="sector-name">Salud</div></div>
+      <div class="sector-card"><div class="sector-icon">🏭</div><div class="sector-name">Manufactura</div></div>
+      <div class="sector-card"><div class="sector-icon">🛒</div><div class="sector-name">Retail</div></div>
+      <div class="sector-card"><div class="sector-icon">🏦</div><div class="sector-name">Banca y Finanzas</div></div>
+      <div class="sector-card"><div class="sector-icon">🌾</div><div class="sector-name">Agroindustria</div></div>
+      <div class="sector-card"><div class="sector-icon">🚢</div><div class="sector-name">Logística</div></div>
+      <div class="sector-card"><div class="sector-icon">🏗️</div><div class="sector-name">Construcción</div></div>
+      <div class="sector-card"><div class="sector-icon">🍽️</div><div class="sector-name">Alimentos</div></div>
+      <div class="sector-card"><div class="sector-icon">📚</div><div class="sector-name">Educación</div></div>
+      <div class="sector-card"><div class="sector-icon">🏨</div><div class="sector-name">Hotelería</div></div>
+      <div class="sector-card"><div class="sector-icon">⚖️</div><div class="sector-name">Legal</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DETALLE POR SECTOR -->
+<div>
+
+  <div class="sector-detail reveal" id="tecnologia">
+    <div>
+      <div class="section-label">Sector TI</div>
+      <h2>💻 Tecnología & Software</h2>
+      <p>Guatemala es uno de los mercados de tecnología de mayor crecimiento en Centroamérica. Nuestro equipo especializado conoce el ecosistema local e internacional para conectar empresas con desarrolladores, diseñadores y líderes técnicos.</p>
+      <p>Trabajamos con startups, nearshoring, empresas de telecomunicaciones y áreas de TI en corporaciones de todos los sectores.</p>
+      <div class="sector-puestos">
+        <span class="puesto-tag">Desarrolladores Full Stack</span>
+        <span class="puesto-tag">Data Engineers</span>
+        <span class="puesto-tag">QA Analysts</span>
+        <span class="puesto-tag">Product Managers</span>
+        <span class="puesto-tag">CTO / Tech Leads</span>
+        <span class="puesto-tag">DevOps / Cloud</span>
+      </div>
+    </div>
+    <div class="sector-img-col">
+      <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=700&q=80" alt="Tecnología">
+    </div>
+  </div>
+
+  <div class="sector-detail reveal" id="manufactura">
+    <div class="sector-img-col">
+      <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=700&q=80" alt="Manufactura">
+    </div>
+    <div>
+      <div class="section-label">Industria</div>
+      <h2>🏭 Manufactura & Producción</h2>
+      <p>Desde operarios de línea hasta gerentes de planta, tenemos la experiencia para cubrir posiciones en industrias de confección, alimentos, farmacéutica, química y metalmecánica en todo el país.</p>
+      <p>Reclutamiento masivo en tiempo récord para apertura de plantas, temporadas altas y proyectos de expansión.</p>
+      <div class="sector-puestos">
+        <span class="puesto-tag">Gerentes de Planta</span>
+        <span class="puesto-tag">Supervisores de Producción</span>
+        <span class="puesto-tag">Operarios de Línea</span>
+        <span class="puesto-tag">Mecánicos Industriales</span>
+        <span class="puesto-tag">Ingenieros de Calidad</span>
+        <span class="puesto-tag">Planeadores</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sector-detail reveal" id="agroindustria">
+    <div>
+      <div class="section-label">Campo y exportación</div>
+      <h2>🌾 Agroindustria</h2>
+      <p>Guatemala es una potencia agroindustrial. Apoyamos a empresas productoras y exportadoras de café, azúcar, banano, palma, cardamomo y hortalizas con personal técnico y gerencial especializado.</p>
+      <div class="sector-puestos">
+        <span class="puesto-tag">Agrónomos</span>
+        <span class="puesto-tag">Supervisores de Campo</span>
+        <span class="puesto-tag">Gerentes de Finca</span>
+        <span class="puesto-tag">Técnicos Agrícolas</span>
+        <span class="puesto-tag">Especialistas en Exportación</span>
+      </div>
+    </div>
+    <div class="sector-img-col">
+      <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=700&q=80" alt="Agroindustria">
+    </div>
+  </div>
+
+  <div class="sector-detail reveal" id="logistica">
+    <div class="sector-img-col">
+      <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&q=80" alt="Logística">
+    </div>
+    <div>
+      <div class="section-label">Cadena de suministro</div>
+      <h2>🚢 Logística & Distribución</h2>
+      <p>Cubrimos posiciones en cadena de suministro, aduanas, almacenamiento y distribución. Presencia especial en la zona portuaria de Puerto Quetzal, Puerto Barrios y rutas de distribución nacionales.</p>
+      <div class="sector-puestos">
+        <span class="puesto-tag">Coordinadores de Logística</span>
+        <span class="puesto-tag">Agentes Aduanales</span>
+        <span class="puesto-tag">Jefes de Bodega</span>
+        <span class="puesto-tag">Supply Chain Managers</span>
+        <span class="puesto-tag">Choferes Clase A</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<section style="background:var(--azul);padding:80px 6%;text-align:center;">
+  <div class="reveal">
+    <h2 style="color:#fff;font-size:clamp(1.6rem,2.5vw,2.4rem);margin-bottom:14px;">¿Tu sector no aparece aquí?</h2>
+    <p style="color:rgba(255,255,255,0.55);max-width:480px;margin:0 auto 32px;">Igual podemos ayudarte. Cuéntanos qué necesitas y nuestro equipo encontrará la solución correcta.</p>
+    <a href="#" class="btn btn-primary btn-lg" onclick="openModal('empresa'); return false;">Consultar ahora →</a>
+  </div>
+</section>
+
+<div id="chat-root"></div>
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+<script src="../js/components.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  document.getElementById('cursor-root').innerHTML = renderCursor();
+  document.getElementById('nav-root').innerHTML = renderNav('sectores');
+  document.getElementById('footer-root').innerHTML = renderFooter(false);
+  document.getElementById('chat-root').innerHTML = renderChatWidget();
+  document.getElementById('modal-root').innerHTML = renderModal();
+</script>
+</body>
+</html>

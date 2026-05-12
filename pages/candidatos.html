@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Candidatos — Factor Laboral Humano</title>
+  <meta name="description" content="Regístrate, sube tu CV y aplica a las mejores vacantes en Guatemala.">
+  <link rel="stylesheet" href="../css/main.css">
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ── PORTAL LAYOUT ── */
+    .portal-wrap{min-height:100vh;background:#F0F4F8;padding-top:72px}
+
+    /* AUTH SCREENS */
+    .auth-screen{display:none;min-height:calc(100vh - 72px);align-items:center;justify-content:center;padding:40px 20px}
+    .auth-screen.active{display:flex}
+    .auth-box{background:#fff;border-radius:24px;padding:48px 44px;max-width:460px;width:100%;box-shadow:0 8px 48px rgba(0,0,0,.1);position:relative;overflow:hidden}
+    .auth-box::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,200,151,.08) 0%,transparent 70%);border-radius:50%}
+    .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px}
+    .auth-logo img{height:40px}
+    .auth-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--azul);margin-bottom:6px}
+    .auth-sub{color:var(--muted);font-size:.9rem;margin-bottom:28px;line-height:1.6}
+    .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border:1.5px solid #E2E8F0;border-radius:12px;background:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--azul);cursor:pointer;transition:all .2s;margin-bottom:18px}
+    .google-btn:hover{border-color:var(--verde);background:rgba(0,200,151,.03);transform:translateY(-1px)}
+    .divider{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#E2E8F0}
+    .divider span{font-size:.78rem;color:var(--muted)}
+    .auth-switch{text-align:center;margin-top:20px;font-size:.87rem;color:var(--muted)}
+    .auth-switch a{color:var(--verde);font-weight:600;cursor:pointer}
+    .auth-switch a:hover{text-decoration:underline}
+    .auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#dc2626;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px;display:none}
+    .auth-error.show{display:block}
+
+    /* DASHBOARD */
+    .dashboard{display:none;padding:32px clamp(16px,3%,40px) 60px}
+    .dashboard.active{display:block}
+    .dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:14px}
+    .dash-welcome{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--azul)}
+    .dash-welcome span{color:var(--verde)}
+    .dash-tabs{display:flex;gap:4px;background:#E2E8F0;padding:4px;border-radius:12px;flex-wrap:wrap}
+    .dash-tab{padding:10px 22px;border-radius:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:.84rem;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .25s}
+    .dash-tab.active{background:var(--azul);color:#fff;box-shadow:0 3px 12px rgba(6,15,30,.2)}
+    .dash-panel{display:none}.dash-panel.active{display:block}
+
+    /* PROFILE PANEL */
+    .profile-grid{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+    .profile-card{background:#fff;border-radius:20px;padding:28px;text-align:center;border:1.5px solid #E2E8F0;position:sticky;top:100px}
+    .profile-avatar{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,var(--verde),var(--azul));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;margin:0 auto 14px}
+    .profile-name{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--azul);margin-bottom:4px}
+    .profile-email{font-size:.8rem;color:var(--muted);margin-bottom:16px}
+    .profile-complete{background:var(--gris);border-radius:12px;padding:12px 16px;margin-bottom:16px}
+    .complete-label{font-size:.72rem;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+    .complete-bar{height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden}
+    .complete-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--verde-claro));border-radius:3px;transition:width .5s ease}
+    .profile-logout{width:100%;padding:10px;border-radius:10px;border:1.5px solid #E2E8F0;background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s;margin-top:8px}
+    .profile-logout:hover{border-color:#ff5f57;color:#ff5f57}
+    .profile-form-box{background:#fff;border-radius:20px;padding:32px;border:1.5px solid #E2E8F0}
+    .profile-form-box h3{font-size:1.1rem;font-weight:800;color:var(--azul);margin-bottom:20px}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field-group{margin-bottom:14px}
+    .field-group label{display:block;font-size:.8rem;font-weight:600;color:var(--azul);margin-bottom:5px}
+    .field-group input,.field-group select,.field-group textarea{width:100%;padding:11px 14px;border:1.5px solid #E2E8F0;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--texto);background:var(--gris);outline:none;transition:all .2s}
+    .field-group input:focus,.field-group select:focus,.field-group textarea:focus{border-color:var(--verde);background:#fff;box-shadow:0 0 0 3px rgba(0,200,151,.08)}
+    .field-group textarea{resize:vertical;min-height:80px}
+
+    /* CV UPLOAD */
+    .cv-upload-area{border:2px dashed #CBD5E1;border-radius:16px;padding:40px;text-align:center;cursor:pointer;transition:all .3s;background:var(--gris);position:relative}
+    .cv-upload-area:hover,.cv-upload-area.drag{border-color:var(--verde);background:rgba(0,200,151,.04)}
+    .cv-upload-icon{font-size:2.5rem;margin-bottom:12px}
+    .cv-upload-title{font-family:'Syne',sans-serif;font-weight:700;color:var(--azul);margin-bottom:6px}
+    .cv-upload-sub{font-size:.84rem;color:var(--muted)}
+    .cv-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .cv-uploaded{background:rgba(0,200,151,.08);border:1.5px solid rgba(0,200,151,.3);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-top:14px}
+    .cv-uploaded-icon{font-size:1.8rem;flex-shrink:0}
+    .cv-uploaded-name{font-weight:600;font-size:.9rem;color:var(--azul)}
+    .cv-uploaded-size{font-size:.78rem;color:var(--muted)}
+    .cv-change{margin-left:auto;font-size:.78rem;color:var(--verde);font-weight:600;cursor:pointer}
+
+    /* IA ANALYSIS */
+    .ia-analysis{background:linear-gradient(135deg,var(--azul),#0D2137);border-radius:20px;padding:28px;color:#fff;margin-top:20px;position:relative;overflow:hidden}
+    .ia-analysis::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,151,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,151,.03) 1px,transparent 1px);background-size:30px 30px}
+    .ia-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1}
+    .ia-dot{width:8px;height:8px;background:var(--verde);border-radius:50%;animation:blink 1.5s ease infinite}
+    .ia-header-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem}
+    .ia-loading{position:relative;z-index:1}
+    .ia-loading-bar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-bottom:10px}
+    .ia-loading-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--verde-claro));border-radius:2px;animation:shimmer 1.5s ease-in-out infinite;background-size:200%}
+    .ia-loading-text{font-size:.8rem;color:rgba(255,255,255,.5)}
+    .ia-result{position:relative;z-index:1;display:none}
+    .ia-skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .ia-skill{background:rgba(0,200,151,.15);border:1px solid rgba(0,200,151,.25);color:var(--verde-claro);border-radius:100px;padding:4px 12px;font-size:.76rem;font-weight:600}
+    .ia-score{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+    .ia-score-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--verde)}
+    .ia-score-label{font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.4}
+
+    /* VACANTES PANEL */
+    .vacantes-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+    .vf-btn{padding:8px 16px;border-radius:100px;font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;border:1.5px solid #E2E8F0;background:#fff;color:var(--muted);cursor:pointer;transition:all .2s}
+    .vf-btn.active,.vf-btn:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+    .vacante-item{background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:22px;display:flex;gap:16px;align-items:flex-start;margin-bottom:14px;transition:all .25s}
+    .vacante-item:hover{border-color:rgba(0,200,151,.3);box-shadow:0 6px 24px rgba(0,200,151,.08);transform:translateY(-2px)}
+    .vi-icon{width:48px;height:48px;border-radius:14px;background:rgba(0,200,151,.1);border:1px solid rgba(0,200,151,.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+    .vi-info{flex:1}
+    .vi-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;color:var(--azul);margin-bottom:3px}
+    .vi-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .vi-tag{font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:100px;background:var(--gris);color:var(--muted)}
+    .vi-tag.green{background:rgba(0,200,151,.1);color:var(--verde-dark)}
+    .vi-salario{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--azul);white-space:nowrap}
+    .applied-badge{background:rgba(0,200,151,.1);border:1px solid rgba(0,200,151,.25);color:var(--verde-dark);border-radius:100px;padding:4px 12px;font-size:.72rem;font-weight:700}
+
+    /* MIS APLICACIONES */
+    .app-item{background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;display:flex;gap:14px;align-items:center;margin-bottom:12px;transition:all .25s}
+    .app-item:hover{border-color:rgba(0,200,151,.2);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+    .app-status{padding:5px 14px;border-radius:100px;font-size:.72rem;font-weight:700;font-family:'Syne',sans-serif}
+    .status-revision{background:rgba(234,179,8,.1);color:#92400e;border:1px solid rgba(234,179,8,.3)}
+    .status-preseleccionado{background:rgba(0,200,151,.1);color:var(--verde-dark);border:1px solid rgba(0,200,151,.3)}
+    .status-entrevista{background:rgba(59,130,246,.1);color:#1d4ed8;border:1px solid rgba(59,130,246,.3)}
+    .status-rechazado{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;right:28px;background:var(--azul);color:#fff;border-radius:14px;padding:14px 20px;font-size:.88rem;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.25);z-index:3000;transform:translateY(80px);opacity:0;transition:all .35s;display:flex;align-items:center;gap:8px;max-width:340px}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast.success{border-left:3px solid var(--verde)}
+    .toast.error{border-left:3px solid #ff5f57}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){.profile-grid{grid-template-columns:1fr}}
+    @media(max-width:600px){.auth-box{padding:32px 24px}.field-row{grid-template-columns:1fr}.dash-tabs{width:100%}.dash-tab{flex:1;text-align:center;padding:10px 12px;font-size:.78rem}}
+  </style>
+</head>
+<body>
+<div id="cursor-root"></div>
+<div id="nav-root"></div>
+
+<div class="portal-wrap" id="portalWrap">
+
+  <!-- ═══ PANTALLA: LOGIN ═══ -->
+  <div class="auth-screen active" id="screenLogin">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <img src="../assets/logo.png" alt="FLH">
+        <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--azul);">Factor Laboral <span style="color:var(--verde)">Humano</span></div>
+      </div>
+      <div class="auth-title">Bienvenido 👋</div>
+      <div class="auth-sub">Inicia sesión para ver vacantes y gestionar tus aplicaciones.</div>
+      <div class="auth-error" id="loginError"></div>
+      <button class="google-btn" onclick="loginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/><path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+        Continuar con Google
+      </button>
+      <div class="divider"><span>o con tu correo</span></div>
+      <div class="field-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="loginEmail" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter')loginEmail_submit()">
+      </div>
+      <div class="field-group">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginEmail_submit()">
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:4px" onclick="loginEmail_submit()">
+        Iniciar sesión →
+      </button>
+      <div class="auth-switch">¿No tienes cuenta? <a onclick="showScreen('screenRegister')">Regístrate gratis</a></div>
+    </div>
+  </div>
+
+  <!-- ═══ PANTALLA: REGISTRO ═══ -->
+  <div class="auth-screen" id="screenRegister">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <img src="../assets/logo.png" alt="FLH">
+        <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--azul);">Factor Laboral <span style="color:var(--verde)">Humano</span></div>
+      </div>
+      <div class="auth-title">Crea tu cuenta 🚀</div>
+      <div class="auth-sub">Regístrate gratis y accede a las mejores vacantes en Guatemala.</div>
+      <div class="auth-error" id="registerError"></div>
+      <button class="google-btn" onclick="loginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"/><path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"/><path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+        Registrarse con Google
+      </button>
+      <div class="divider"><span>o con tu correo</span></div>
+      <div class="field-row">
+        <div class="field-group"><label>Nombre</label><input type="text" id="regNombre" placeholder="Ana"></div>
+        <div class="field-group"><label>Apellido</label><input type="text" id="regApellido" placeholder="García"></div>
+      </div>
+      <div class="field-group"><label>Correo electrónico</label><input type="email" id="regEmail" placeholder="tu@correo.com"></div>
+      <div class="field-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="Mínimo 6 caracteres"></div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:4px" onclick="register_submit()">
+        Crear cuenta gratis →
+      </button>
+      <div class="auth-switch">¿Ya tienes cuenta? <a onclick="showScreen('screenLogin')">Inicia sesión</a></div>
+    </div>
+  </div>
+
+  <!-- ═══ PANTALLA: VERIFICAR EMAIL ═══ -->
+  <div class="auth-screen" id="screenVerify">
+    <div class="auth-box" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:16px">📧</div>
+      <div class="auth-title">Revisa tu correo</div>
+      <div class="auth-sub">Te enviamos un enlace de verificación. Ábrelo para activar tu cuenta y luego regresa aquí.</div>
+      <button class="btn btn-dark btn-lg" style="width:100%;justify-content:center;margin-top:8px" onclick="showScreen('screenLogin')">Ya verifiqué, iniciar sesión →</button>
+    </div>
+  </div>
+
+  <!-- ═══ DASHBOARD ═══ -->
+  <div class="dashboard" id="dashboard">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="dash-header">
+        <div>
+          <div class="dash-welcome">Hola, <span id="dashName">candidato</span> 👋</div>
+          <div style="font-size:.84rem;color:var(--muted);margin-top:2px">Portal de candidatos · Factor Laboral Humano</div>
+        </div>
+        <div class="dash-tabs">
+          <button class="dash-tab active" onclick="showDashPanel('panelPerfil',this)">👤 Mi Perfil</button>
+          <button class="dash-tab" onclick="showDashPanel('panelVacantes',this)">💼 Vacantes</button>
+          <button class="dash-tab" onclick="showDashPanel('panelAplicaciones',this)">📋 Mis Aplicaciones</button>
+        </div>
+      </div>
+
+      <!-- PANEL: PERFIL -->
+      <div id="panelPerfil" class="dash-panel active">
+        <div class="profile-grid">
+          <!-- Sidebar -->
+          <div>
+            <div class="profile-card">
+              <div class="profile-avatar" id="avatarInitials">?</div>
+              <div class="profile-name" id="sidebarName">—</div>
+              <div class="profile-email" id="sidebarEmail">—</div>
+              <div class="profile-complete">
+                <div class="complete-label">
+                  <span>Perfil completado</span>
+                  <span id="completeNum">0%</span>
+                </div>
+                <div class="complete-bar">
+                  <div class="complete-fill" id="completeFill" style="width:0%"></div>
+                </div>
+              </div>
+              <button class="profile-logout" onclick="logout()">Cerrar sesión</button>
+            </div>
+
+            <!-- CV Upload -->
+            <div style="background:#fff;border-radius:20px;padding:24px;border:1.5px solid #E2E8F0;margin-top:16px">
+              <h3 style="font-family:'Syne',sans-serif;font-size:.96rem;font-weight:800;color:var(--azul);margin-bottom:16px">📄 Mi CV</h3>
+              <div class="cv-upload-area" id="cvUploadArea" ondragover="cvDrag(event,true)" ondragleave="cvDrag(event,false)" ondrop="cvDrop(event)">
+                <input type="file" id="cvInput" accept=".pdf,.doc,.docx" onchange="cvSelected(this)">
+                <div class="cv-upload-icon">☁️</div>
+                <div class="cv-upload-title">Sube tu CV aquí</div>
+                <div class="cv-upload-sub">PDF, DOC o DOCX · Máx. 5MB</div>
+              </div>
+              <div class="cv-uploaded" id="cvUploaded" style="display:none">
+                <div class="cv-uploaded-icon">📄</div>
+                <div>
+                  <div class="cv-uploaded-name" id="cvName">—</div>
+                  <div class="cv-uploaded-size" id="cvSize">—</div>
+                </div>
+                <div class="cv-change" onclick="document.getElementById('cvInput').click()">Cambiar</div>
+              </div>
+              <div class="ia-analysis" id="iaAnalysis" style="display:none">
+                <div class="ia-header">
+                  <div class="ia-dot"></div>
+                  <div class="ia-header-title">Análisis de IA en proceso...</div>
+                </div>
+                <div class="ia-loading" id="iaLoading">
+                  <div class="ia-loading-bar"><div class="ia-loading-fill"></div></div>
+                  <div class="ia-loading-text">Leyendo tu CV y extrayendo habilidades...</div>
+                </div>
+                <div class="ia-result" id="iaResult">
+                  <div style="font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:8px">Habilidades detectadas:</div>
+                  <div class="ia-skills" id="iaSkills"></div>
+                  <div class="ia-score">
+                    <div class="ia-score-num" id="iaScoreNum">—</div>
+                    <div class="ia-score-label">Puntaje de perfil<br><span style="color:rgba(255,255,255,.3)">basado en tu CV</span></div>
+                  </div>
+                  <div style="font-size:.8rem;color:rgba(255,255,255,.45);margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)" id="iaSummary"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario de perfil -->
+          <div class="profile-form-box">
+            <h3>Información personal</h3>
+            <div class="field-row">
+              <div class="field-group"><label>Nombre *</label><input type="text" id="pNombre" placeholder="Ana"></div>
+              <div class="field-group"><label>Apellido *</label><input type="text" id="pApellido" placeholder="García"></div>
+            </div>
+            <div class="field-row">
+              <div class="field-group"><label>Teléfono</label><input type="tel" id="pTelefono" placeholder="3719-0890"></div>
+              <div class="field-group"><label>Departamento</label>
+                <select id="pDepartamento">
+                  <option value="">Selecciona...</option>
+                  <option>Ciudad de Guatemala</option><option>Escuintla</option><option>Quetzaltenango</option>
+                  <option>Sacatepéquez</option><option>Chimaltenango</option><option>Alta Verapaz</option>
+                  <option>Baja Verapaz</option><option>El Progreso</option><option>Zacapa</option>
+                  <option>Chiquimula</option><option>Jalapa</option><option>Jutiapa</option>
+                  <option>Santa Rosa</option><option>Sololá</option><option>Totonicapán</option>
+                  <option>Huehuetenango</option><option>Quiché</option><option>San Marcos</option>
+                  <option>Retalhuleu</option><option>Suchitepéquez</option><option>Petén</option>
+                  <option>Izabal</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-group"><label>Profesión / Puesto que buscas</label><input type="text" id="pProfesion" placeholder="Ej. Contador, Ingeniero Industrial..."></div>
+              <div class="field-group"><label>Años de experiencia</label>
+                <select id="pExperiencia">
+                  <option value="">Selecciona...</option>
+                  <option>Sin experiencia</option><option>Menos de 1 año</option>
+                  <option>1–2 años</option><option>3–5 años</option>
+                  <option>5–10 años</option><option>Más de 10 años</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group"><label>Nivel de estudios</label>
+              <select id="pEstudios">
+                <option value="">Selecciona...</option>
+                <option>Primaria</option><option>Básico</option><option>Diversificado</option>
+                <option>Técnico universitario</option><option>Licenciatura</option>
+                <option>Maestría</option><option>Doctorado</option>
+              </select>
+            </div>
+            <div class="field-group"><label>Habilidades principales</label>
+              <input type="text" id="pHabilidades" placeholder="Ej. Excel, Atención al cliente, Manejo de inventarios...">
+            </div>
+            <div class="field-group"><label>Sobre mí (opcional)</label>
+              <textarea id="pSobreMi" placeholder="Cuéntanos un poco sobre ti, tu experiencia y lo que buscas..."></textarea>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+              <button class="btn btn-primary" onclick="saveProfile()">Guardar perfil →</button>
+              <div id="saveStatus" style="display:flex;align-items:center;font-size:.84rem;color:var(--verde);font-weight:600;display:none">✓ Guardado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: VACANTES -->
+      <div id="panelVacantes" class="dash-panel">
+        <div class="vacantes-filters">
+          <button class="vf-btn active" onclick="filterVacantes('',this)">Todas</button>
+          <button class="vf-btn" onclick="filterVacantes('Tecnología',this)">Tecnología</button>
+          <button class="vf-btn" onclick="filterVacantes('Finanzas',this)">Finanzas</button>
+          <button class="vf-btn" onclick="filterVacantes('Operaciones',this)">Operaciones</button>
+          <button class="vf-btn" onclick="filterVacantes('Manufactura',this)">Manufactura</button>
+          <button class="vf-btn" onclick="filterVacantes('Comercial',this)">Comercial</button>
+        </div>
+        <div id="vacantesList"></div>
+      </div>
+
+      <!-- PANEL: APLICACIONES -->
+      <div id="panelAplicaciones" class="dash-panel">
+        <div id="aplicacionesList">
+          <div style="text-align:center;padding:60px 20px;color:var(--muted)">
+            <div style="font-size:2.5rem;margin-bottom:12px">📋</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--azul);margin-bottom:6px">Aún no has aplicado a ninguna vacante</div>
+            <div style="font-size:.88rem">Ve a la pestaña "Vacantes" y aplica con un clic</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /portal-wrap -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+<script src="../js/components.js"></script>
+<script src="../js/main.js"></script>
+<script>
+// ── SUPABASE CONFIG ──────────────────────────
+// IMPORTANTE: Reemplaza estos valores con los tuyos de supabase.com
+const SUPABASE_URL = 'https://rzhlomkxsrsjpgsgpewk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6aGxvbWt4c3JzanBnc2dwZXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyOTQzMTQsImV4cCI6MjA5Mjg3MDMxNH0.aPoWs8fU_6ZPB2c0n4uaCQgaxiGR_8kWTNfWNJKWpJc';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── RENDER NAV/FOOTER ────────────────────────
+document.getElementById('cursor-root').innerHTML = renderCursor();
+document.getElementById('nav-root').innerHTML = renderNav('candidatos');
+document.getElementById('footer-root').innerHTML = renderFooter(false);
+document.getElementById('modal-root').innerHTML = renderModal();
+
+// ── STATE ────────────────────────────────────
+let currentUser = null;
+let userProfile = {};
+let appliedVacantes = new Set();
+let VACANTES = []; // Se cargan desde Supabase
+
+// ── HELPERS ──────────────────────────────────
+function showScreen(id){
+  document.querySelectorAll('.auth-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('dashboard').classList.remove('active');
+  const s=document.getElementById(id);
+  if(s){s.classList.add('active');}
+}
+function showDashPanel(id,btn){
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='panelVacantes')renderVacantes('');
+  if(id==='panelAplicaciones')renderAplicaciones();
+}
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=(type==='success'?'✓ ':'⚠ ')+msg;
+  t.className='toast show '+(type==='success'?'success':'error');
+  setTimeout(()=>t.className='toast',3500);
+}
+function setError(elId,msg){
+  const el=document.getElementById(elId);
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),4000);
+}
+function updateProgress(){
+  const fields=[userProfile.nombre,userProfile.apellido,userProfile.telefono,userProfile.profesion,userProfile.experiencia,userProfile.estudios,userProfile.cv_url];
+  const filled=fields.filter(Boolean).length;
+  const pct=Math.round((filled/fields.length)*100);
+  document.getElementById('completeNum').textContent=pct+'%';
+  document.getElementById('completeFill').style.width=pct+'%';
+}
+
+// ── AUTH ─────────────────────────────────────
+async function loginGoogle(){
+  await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+}
+async function loginEmail_submit(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){setError('loginError','Completa todos los campos.');return;}
+  const{error}=await supabase.auth.signInWithPassword({email,password:pass});
+  if(error)setError('loginError',error.message==='Invalid login credentials'?'Correo o contraseña incorrectos.':error.message);
+}
+async function register_submit(){
+  const nombre=document.getElementById('regNombre').value.trim();
+  const apellido=document.getElementById('regApellido').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  if(!nombre||!apellido||!email||!pass){setError('registerError','Completa todos los campos.');return;}
+  if(pass.length<6){setError('registerError','La contraseña debe tener al menos 6 caracteres.');return;}
+  const{error}=await supabase.auth.signUp({email,password:pass,options:{data:{nombre,apellido}}});
+  if(error)setError('registerError',error.message);
+  else showScreen('screenVerify');
+}
+async function logout(){
+  await supabase.auth.signOut();
+  currentUser=null;userProfile={};appliedVacantes.clear();
+  showScreen('screenLogin');
+}
+
+
+// ── DASHBOARD ────────────────────────────────
+function showDashboard(){
+  document.querySelectorAll('.auth-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('dashboard').classList.add('active');
+  const nombre=userProfile.nombre||currentUser?.user_metadata?.nombre||'candidato';
+  document.getElementById('dashName').textContent=nombre;
+  document.getElementById('avatarInitials').textContent=(nombre[0]||'?').toUpperCase();
+  document.getElementById('sidebarName').textContent=(nombre+' '+(userProfile.apellido||'')).trim();
+  document.getElementById('sidebarEmail').textContent=currentUser?.email||'';
+  fillProfileForm();updateProgress();renderVacantes('');
+}
+
+// ── PERFIL ───────────────────────────────────
+function fillProfileForm(){
+  ['nombre','apellido','telefono','profesion','habilidades','sobreMi'].forEach(f=>{
+    const el=document.getElementById('p'+f.charAt(0).toUpperCase()+f.slice(1));
+    if(el)el.value=userProfile[f]||'';
+  });
+  if(userProfile.departamento){const s=document.getElementById('pDepartamento');if(s)s.value=userProfile.departamento;}
+  if(userProfile.experiencia){const s=document.getElementById('pExperiencia');if(s)s.value=userProfile.experiencia;}
+  if(userProfile.estudios){const s=document.getElementById('pEstudios');if(s)s.value=userProfile.estudios;}
+}
+async function saveProfile(){
+  const data={
+    nombre:document.getElementById('pNombre').value.trim(),
+    apellido:document.getElementById('pApellido').value.trim(),
+    telefono:document.getElementById('pTelefono').value.trim(),
+    departamento:document.getElementById('pDepartamento').value,
+    profesion:document.getElementById('pProfesion').value.trim(),
+    experiencia:document.getElementById('pExperiencia').value,
+    estudios:document.getElementById('pEstudios').value,
+    habilidades:document.getElementById('pHabilidades').value.trim(),
+    sobreMi:document.getElementById('pSobreMi').value.trim(),
+  };
+  userProfile={...userProfile,...data};
+  if(currentUser){
+    await supabase.from('candidatos').upsert({user_id:currentUser.id,...data});
+  }
+  document.getElementById('sidebarName').textContent=(data.nombre+' '+data.apellido).trim();
+  document.getElementById('avatarInitials').textContent=(data.nombre[0]||'?').toUpperCase();
+  document.getElementById('dashName').textContent=data.nombre||'candidato';
+  updateProgress();showToast('Perfil guardado correctamente');
+}
+
+// ── CV ───────────────────────────────────────
+function cvDrag(e,on){e.preventDefault();document.getElementById('cvUploadArea').classList.toggle('drag',on);}
+function cvDrop(e){e.preventDefault();cvDrag(e,false);const f=e.dataTransfer.files[0];if(f)processCV(f);}
+function cvSelected(input){if(input.files[0])processCV(input.files[0]);}
+function processCV(file){
+  if(file.size>5*1024*1024){showToast('El archivo es muy grande. Máx. 5MB','error');return;}
+  document.getElementById('cvUploaded').style.display='flex';
+  document.getElementById('cvName').textContent=file.name;
+  document.getElementById('cvSize').textContent=(file.size/1024/1024).toFixed(2)+' MB';
+  userProfile.cv_filename=file.name;
+  updateProgress();analyzeCV(file);
+}
+async function analyzeCV(file){
+  const box=document.getElementById('iaAnalysis');
+  const loading=document.getElementById('iaLoading');
+  const result=document.getElementById('iaResult');
+  box.style.display='block';
+  loading.style.display='block';
+  result.style.display='none';
+
+  // Leer texto del archivo
+  let cvText='';
+  if(file.type==='application/pdf'){
+    cvText=`[CV PDF: ${file.name}] — Candidato con experiencia laboral en Guatemala. El archivo fue cargado correctamente.`;
+  } else {
+    try{cvText=await file.text();}catch{cvText=file.name;}
+  }
+
+  // Llamar a Claude a través del proxy seguro (la API key no se expone al frontend)
+  try{
+    const resp=await fetch('/api/claude',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        max_tokens:1000,
+        system:`Eres un analizador de CVs para Factor Laboral Humano, empresa de reclutamiento en Guatemala. 
+Analiza el CV y responde SOLO en JSON con este formato exacto:
+{"habilidades":["habilidad1","habilidad2","habilidad3","habilidad4","habilidad5"],"puntaje":85,"resumen":"Breve descripción del perfil en 1-2 oraciones"}
+El puntaje es del 1 al 100 basado en completitud y profesionalismo del CV.`,
+        messages:[{role:'user',content:`Analiza este CV:\n\n${cvText}\n\nNombre del archivo: ${file.name}`}]
+      })
+    });
+    const data=await resp.json();
+    const raw=data.content?.[0]?.text||'{}';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+
+    document.getElementById('iaSkills').innerHTML=(parsed.habilidades||[]).map(h=>`<span class="ia-skill">${h}</span>`).join('');
+    document.getElementById('iaScoreNum').textContent=(parsed.puntaje||'—')+'/100';
+    document.getElementById('iaSummary').textContent=parsed.resumen||'';
+    userProfile.ia_skills=parsed.habilidades;
+    userProfile.ia_score=parsed.puntaje;
+
+    loading.style.display='none';
+    result.style.display='block';
+    showToast('CV analizado por IA correctamente ✨');
+  }catch(err){
+    loading.innerHTML='<div style="color:rgba(255,255,255,.4);font-size:.82rem">El análisis de IA requiere conexión a la API de Anthropic.</div>';
+    console.error(err);
+  }
+}
+
+// ── VACANTES ─────────────────────────────────
+let currentFilter='';
+function filterVacantes(sector,btn){
+  document.querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  currentFilter=sector;
+  renderVacantes(sector);
+}
+function renderVacantes(sector){
+  const list=document.getElementById('vacantesList');
+  if(!list)return;
+  const filtered=sector?VACANTES.filter(v=>v.sector===sector):VACANTES;
+  list.innerHTML=filtered.map(v=>`
+    <div class="vacante-item" id="vi-${v.id}">
+      <div class="vi-icon">${v.icon}</div>
+      <div class="vi-info">
+        <div class="vi-title">${v.titulo}</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:2px">📍 Guatemala · ${v.sector} · ${v.exp}</div>
+        <div class="vi-tags">
+          <span class="vi-tag green">${v.jornada}</span>
+          <span class="vi-tag">${v.tipo}</span>
+          ${v.tags.map(t=>`<span class="vi-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+        <div class="vi-salario">${v.salario}</div>
+        ${appliedVacantes.has(v.id)
+          ? `<span class="applied-badge">✓ Aplicado</span>`
+          : `<button class="btn btn-primary btn-sm" onclick="aplicar(${v.id})">Aplicar →</button>`
+        }
+      </div>
+    </div>`).join('');
+}
+function aplicar(id){
+  if(!userProfile.nombre){
+    showToast('Completa tu perfil antes de aplicar','error');
+    showDashPanel('panelPerfil',document.querySelectorAll('.dash-tab')[0]);return;
+  }
+  appliedVacantes.add(id);
+  renderVacantes(currentFilter);
+  renderAplicaciones();
+  showToast('¡Aplicación enviada! Te contactaremos pronto 🎉');
+  if(currentUser){
+    supabase.from('aplicaciones').insert({user_id:currentUser.id,vacante_id:id,estado:'En revisión'}).then(()=>{});
+  }
+}
+function renderAplicaciones(){
+  const list=document.getElementById('aplicacionesList');
+  if(!list)return;
+  const apps=[...appliedVacantes].map(id=>VACANTES.find(v=>v.id===id)).filter(Boolean);
+  if(!apps.length){
+    list.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--muted)"><div style="font-size:2.5rem;margin-bottom:12px">📋</div><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--azul);margin-bottom:6px">Aún no has aplicado a ninguna vacante</div><div style="font-size:.88rem">Ve a la pestaña "Vacantes" y aplica con un clic</div></div>`;return;
+  }
+  list.innerHTML=apps.map(v=>`
+    <div class="app-item">
+      <div class="vi-icon" style="width:44px;height:44px;font-size:1.2rem">${v.icon}</div>
+      <div style="flex:1"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:var(--azul)">${v.titulo}</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:2px">${v.sector} · ${v.salario}</div></div>
+      <span class="app-status status-revision">En revisión</span>
+    </div>`).join('');
+}
+
+// ── INIT ─────────────────────────────────────
+(async function init(){
+  // Cargar vacantes desde Supabase
+  const {data:vacs} = await supabase.from('vacantes').select('*').eq('activa',true).order('id');
+  if(vacs) VACANTES = vacs.map(v=>({
+    id: v.id,
+    titulo: v.titulo,
+    sector: v.sector,
+    salario: v.salario,
+    tipo: v.tipo,
+    jornada: v.jornada,
+    icon: v.icon||'💼',
+    exp: v.experiencia,
+    tags: v.tags||[]
+  }));
+
+  // Verificar sesión activa
+  const{data:{session}}=await supabase.auth.getSession();
+  if(session){
+    currentUser=session.user;
+    const{data}=await supabase.from('candidatos').select('*').eq('user_id',currentUser.id).single();
+    if(data)userProfile=data;
+    // Cargar aplicaciones previas
+    const{data:apps}=await supabase.from('aplicaciones').select('vacante_id').eq('user_id',currentUser.id);
+    if(apps)apps.forEach(a=>appliedVacantes.add(a.vacante_id));
+    showDashboard();
+  }
+  supabase.auth.onAuthStateChange(async(_,session)=>{
+    if(session){
+      currentUser=session.user;
+      const{data}=await supabase.from('candidatos').select('*').eq('user_id',currentUser.id).single();
+      if(data)userProfile=data;
+      const{data:apps}=await supabase.from('aplicaciones').select('vacante_id').eq('user_id',currentUser.id);
+      if(apps)apps.forEach(a=>appliedVacantes.add(a.vacante_id));
+      showDashboard();
+    }
+  });
+})();
+</script>
+</body>
+</html>

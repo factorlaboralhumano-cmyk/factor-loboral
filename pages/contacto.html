@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — Factor Laboral Humano</title>
+  <meta name="description" content="Contáctanos: Factor Laboral Humano, empresa de reclutamiento en Guatemala.">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .contact-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:start}
+    .contact-form-box{background:#fff;border-radius:22px;padding:42px;border:1.5px solid var(--gris-2);box-shadow:var(--shadow)}
+    .contact-form-box h3{font-size:1.4rem;font-weight:800;color:var(--azul);margin-bottom:6px}
+    .contact-form-box>p{color:var(--muted);margin-bottom:28px;font-size:.9rem}
+    .contact-sidebar .section-label{margin-bottom:12px}
+    .contact-sidebar h2{font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:800;color:var(--azul);margin-bottom:16px}
+    .contact-sidebar>p{color:var(--muted);line-height:1.7;margin-bottom:36px}
+    .contact-items{display:flex;flex-direction:column;gap:14px;margin-bottom:36px}
+    .contact-item-box{display:flex;gap:14px;align-items:flex-start;background:var(--gris);border-radius:14px;padding:16px 18px;border:1.5px solid var(--gris-2);transition:all .2s}
+    .contact-item-box:hover{border-color:rgba(0,200,151,.3);background:#fff;box-shadow:0 4px 16px rgba(0,200,151,.08)}
+    .ci-icon{width:42px;height:42px;border-radius:10px;background:rgba(0,200,151,.1);border:1px solid rgba(0,200,151,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .ci-label{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+    .ci-val{font-weight:600;color:var(--azul);font-size:.93rem}
+    .ci-val a{color:var(--azul-light);transition:color .2s}
+    .ci-val a:hover{color:var(--verde)}
+    .wa-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#25D366;color:#fff;border-radius:14px;padding:17px 24px;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;transition:all .2s;margin-bottom:16px;box-shadow:0 4px 20px rgba(37,211,102,.25)}
+    .wa-btn:hover{background:#1ebe5d;transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.35)}
+    .social-row{display:flex;gap:10px;margin-top:8px}
+    .soc-link{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;background:var(--gris);border:1.5px solid var(--gris-2);font-size:.82rem;font-weight:600;color:var(--azul);transition:all .2s}
+    .soc-link:hover{border-color:var(--verde);background:#fff;color:var(--verde)}
+    #form-status{display:none;padding:14px 18px;border-radius:12px;margin-top:16px;font-weight:600;font-size:.9rem}
+    #form-status.success{background:rgba(0,200,151,.1);border:1.5px solid rgba(0,200,151,.3);color:var(--verde-dark)}
+    #form-status.error{background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);color:#dc2626}
+    @media(max-width:768px){.contact-wrap{grid-template-columns:1fr}.social-row{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+<div id="cursor-root"></div>
+<div id="nav-root"></div>
+
+<section class="page-hero">
+  <div class="breadcrumb"><a href="../index.html">Inicio</a><span>/</span><span>Contacto</span></div>
+  <div class="section-label">Estamos aquí para ayudarte</div>
+  <h1>Hablemos de<br><span style="color:var(--verde)">tu necesidad</span></h1>
+  <p>Un especialista te atenderá en menos de 24 horas. Sin compromisos iniciales.</p>
+</section>
+
+<section class="section" style="background:var(--gris);">
+  <div class="container">
+    <div class="contact-wrap">
+
+      <!-- FORMULARIO -->
+      <div class="contact-form-box reveal">
+        <h3>Escríbenos</h3>
+        <p>Completa el formulario y te contactamos a la brevedad.</p>
+
+        <div class="tipo-selector" style="margin-bottom:24px;">
+          <button class="tipo-btn active" id="btn-empresa" onclick="setTipo('empresa')">🏢 Soy empresa</button>
+          <button class="tipo-btn" id="btn-candidato" onclick="setTipo('candidato')">👤 Busco trabajo</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre completo *</label>
+            <input type="text" id="f-nombre" placeholder="Ej. Ana García">
+          </div>
+          <div class="form-group">
+            <label>Teléfono / WhatsApp *</label>
+            <input type="tel" id="f-telefono" placeholder="3719-0890">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico *</label>
+          <input type="email" id="f-correo" placeholder="tu@correo.com">
+        </div>
+        <div class="form-group" id="field-empresa">
+          <label>Nombre de la empresa</label>
+          <input type="text" id="f-empresa" placeholder="Ej. Mi Empresa S.A.">
+        </div>
+        <div class="form-group" id="field-puesto">
+          <label>Puesto que deseas cubrir</label>
+          <input type="text" id="f-puesto" placeholder="Ej. Gerente de Ventas...">
+        </div>
+        <div class="form-group">
+          <label>Mensaje</label>
+          <textarea id="f-mensaje" placeholder="Cuéntanos más sobre lo que necesitas..." style="min-height:100px;"></textarea>
+        </div>
+        <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" onclick="enviarFormulario()">
+          Enviar mensaje →
+        </button>
+        <div id="form-status"></div>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:12px;text-align:center;">
+          Al enviar, el mensaje se abrirá en WhatsApp y en tu correo de email para que puedas enviarlo directamente.
+        </p>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="contact-sidebar reveal">
+        <div class="section-label">Contáctanos directamente</div>
+        <h2>¿Prefieres escribirnos tú?</h2>
+        <p>Estamos disponibles de lunes a viernes de 8:00 a 18:00 hrs. También puedes escribirnos por WhatsApp en cualquier momento.</p>
+
+        <a href="https://wa.me/50237190890" target="_blank" class="wa-btn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp: 3719-0890
+        </a>
+
+        <div class="contact-items">
+          <div class="contact-item-box">
+            <div class="ci-icon">📱</div>
+            <div>
+              <div class="ci-label">WhatsApp / Teléfono</div>
+              <div class="ci-val"><a href="https://wa.me/50237190890" target="_blank">3719-0890</a></div>
+            </div>
+          </div>
+          <div class="contact-item-box">
+            <div class="ci-icon">✉️</div>
+            <div>
+              <div class="ci-label">Correo electrónico</div>
+              <div class="ci-val"><a href="mailto:factorlaboralhumano@gmail.com">factorlaboralhumano@gmail.com</a></div>
+            </div>
+          </div>
+          <div class="contact-item-box">
+            <div class="ci-icon">🕐</div>
+            <div>
+              <div class="ci-label">Horario de atención</div>
+              <div class="ci-val">Lunes a Viernes: 8:00 – 18:00 hrs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Redes sociales -->
+        <div style="margin-bottom:12px;">
+          <div class="ci-label" style="margin-bottom:10px;">Síguenos en redes sociales</div>
+          <div class="social-row">
+            <a href="https://www.linkedin.com/in/factor-laboral-humano-296441406" target="_blank" class="soc-link">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+            <a href="https://www.facebook.com/share/g/14avjVS6KRY/" target="_blank" class="soc-link">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </a>
+            <a href="https://www.tiktok.com/@reclutamiento.tal53" target="_blank" class="soc-link">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.15 8.15 0 004.77 1.52V6.76a4.85 4.85 0 01-1-.07z"/></svg>
+              TikTok
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="chat-root"></div>
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+<script src="../js/components.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  document.getElementById('cursor-root').innerHTML = renderCursor();
+  document.getElementById('nav-root').innerHTML = renderNav('contacto');
+  document.getElementById('footer-root').innerHTML = renderFooter(false);
+  document.getElementById('chat-root').innerHTML = renderChatWidget();
+  document.getElementById('modal-root').innerHTML = renderModal();
+
+  let tipoActual = 'empresa';
+
+  function setTipo(tipo) {
+    tipoActual = tipo;
+    ['empresa','candidato'].forEach(t => {
+      const btn = document.getElementById('btn-' + t);
+      if (btn) btn.classList.toggle('active', t === tipo);
+    });
+    const fe = document.getElementById('field-empresa');
+    if (fe) fe.style.display = tipo === 'empresa' ? 'block' : 'none';
+    const lbl = document.querySelector('#field-puesto label');
+    const inp = document.getElementById('f-puesto');
+    if (lbl && inp) {
+      lbl.textContent = tipo === 'empresa' ? 'Puesto que deseas cubrir' : 'Puesto que buscas';
+      inp.placeholder = tipo === 'empresa' ? 'Ej. Gerente de Ventas...' : 'Ej. Desarrollador, Contador...';
+    }
+  }
+
+  function enviarFormulario() {
+    const nombre   = document.getElementById('f-nombre').value.trim();
+    const telefono = document.getElementById('f-telefono').value.trim();
+    const correo   = document.getElementById('f-correo').value.trim();
+    const empresa  = document.getElementById('f-empresa') ? document.getElementById('f-empresa').value.trim() : '';
+    const puesto   = document.getElementById('f-puesto').value.trim();
+    const mensaje  = document.getElementById('f-mensaje').value.trim();
+    const status   = document.getElementById('form-status');
+
+    if (!nombre || !telefono || !correo) {
+      status.className = 'error';
+      status.style.display = 'block';
+      status.textContent = '⚠️ Por favor completa nombre, teléfono y correo.';
+      return;
+    }
+
+    // Armar texto del mensaje
+    const tipo = tipoActual === 'empresa' ? 'Empresa' : 'Candidato';
+    let texto = `*Nuevo contacto - Factor Laboral Humano*\n\n`;
+    texto += `Tipo: ${tipo}\n`;
+    texto += `Nombre: ${nombre}\n`;
+    texto += `Teléfono: ${telefono}\n`;
+    texto += `Correo: ${correo}\n`;
+    if (empresa) texto += `Empresa: ${empresa}\n`;
+    if (puesto)  texto += `Puesto: ${puesto}\n`;
+    if (mensaje) texto += `Mensaje: ${mensaje}\n`;
+
+    // 1) Abrir WhatsApp con el mensaje
+    const waURL = `https://wa.me/50237190890?text=${encodeURIComponent(texto)}`;
+    window.open(waURL, '_blank');
+
+    // 2) Abrir cliente de correo como respaldo
+    const emailSubject = `Contacto desde web - ${tipo}: ${nombre}`;
+    const emailBody = texto.replace(/\*/g, '').replace(/\n/g, '%0A');
+    setTimeout(() => {
+      window.location.href = `mailto:factorlaboralhumano@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${emailBody}`;
+    }, 800);
+
+    // Mostrar confirmación
+    status.className = 'success';
+    status.style.display = 'block';
+    status.textContent = '✅ ¡Se abrió WhatsApp con tu mensaje! Si no abrió, escríbenos directamente al 3719-0890.';
+
+    // Limpiar form
+    ['f-nombre','f-telefono','f-correo','f-empresa','f-puesto','f-mensaje'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+
+  setTipo('empresa');
+</script>
+</body>
+</html>

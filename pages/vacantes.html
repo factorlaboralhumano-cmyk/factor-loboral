@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vacantes — Factor Laboral Humano</title>
+  <meta name="description" content="Bolsa de trabajo de Factor Laboral Humano. Encuentra empleos en Guatemala en tecnología, finanzas, manufactura, logística y más sectores.">
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .filter-bar {
+      display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;
+    }
+    .filter-btn {
+      padding:8px 18px; border-radius:100px; font-family:'Syne',sans-serif;
+      font-size:0.82rem; font-weight:700; border:1.5px solid var(--gris-2);
+      background:var(--gris); color:var(--muted); cursor:pointer;
+      transition:all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background:var(--azul); color:#fff; border-color:var(--azul);
+    }
+    .vacantes-list { display:flex; flex-direction:column; gap:16px; }
+    .vacante-card { background:#fff; border:1.5px solid var(--gris-2); border-radius:16px; padding:24px; display:flex; gap:20px; align-items:flex-start; transition:all 0.25s; }
+    .vacante-card:hover { border-color:var(--verde); box-shadow:0 8px 28px rgba(0,200,151,0.1); transform:translateY(-2px); }
+    .vacante-icon { width:52px; height:52px; border-radius:14px; background:rgba(0,200,151,0.1); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .vacante-info { flex:1; }
+    .vacante-info h3 { font-size:1rem; font-weight:700; color:var(--azul); margin-bottom:4px; }
+    .empresa-line { font-size:0.82rem; color:var(--muted); margin-bottom:10px; }
+    .vtags { display:flex; gap:6px; flex-wrap:wrap; }
+    .vtag { font-size:0.72rem; font-weight:600; padding:4px 11px; border-radius:100px; background:var(--gris); color:var(--muted); }
+    .vtag.green { background:rgba(0,200,151,0.1); color:var(--verde-dark); }
+    .vtag.blue { background:rgba(37,99,168,0.1); color:var(--azul-light); }
+    .vacante-actions { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+    .vacante-salario { font-family:'Syne',sans-serif; font-size:0.88rem; font-weight:800; color:var(--azul); text-align:right; margin-bottom:4px; }
+    .search-box {
+      display:flex; gap:12px; margin-bottom:28px; flex-wrap:wrap;
+    }
+    .search-box input {
+      flex:1; min-width:200px; padding:13px 18px; border:1.5px solid var(--gris-2);
+      border-radius:12px; font-family:'DM Sans',sans-serif; font-size:0.9rem;
+      color:var(--texto); background:var(--gris); outline:none;
+      transition:border-color 0.2s;
+    }
+    .search-box input:focus { border-color:var(--verde); background:#fff; }
+  </style>
+</head>
+<body>
+<div id="cursor-root"></div>
+<div id="nav-root"></div>
+
+<section class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Inicio</a><span>/</span><span>Vacantes</span>
+  </div>
+  <div class="section-label">Bolsa de trabajo</div>
+  <h1>Oportunidades<br><span style="color:var(--verde)">de Empleo</span></h1>
+  <p>Más de 200 vacantes activas en las mejores empresas de Guatemala. Encuentra tu próximo empleo aquí.</p>
+</section>
+
+<section class="section" style="background:var(--gris);">
+  <div class="container">
+
+    <!-- Buscador -->
+    <div class="search-box reveal">
+      <input type="text" placeholder="🔍 Buscar por puesto, empresa o habilidad...">
+      <input type="text" placeholder="📍 Departamento o ciudad" style="max-width:220px;">
+      <a href="#" class="btn btn-primary" onclick="return false;">Buscar</a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-bar reveal">
+      <button class="filter-btn active">Todos</button>
+      <button class="filter-btn">Tecnología</button>
+      <button class="filter-btn">Finanzas</button>
+      <button class="filter-btn">Operaciones</button>
+      <button class="filter-btn">Manufactura</button>
+      <button class="filter-btn">Comercial</button>
+      <button class="filter-btn">RRHH</button>
+      <button class="filter-btn">Logística</button>
+    </div>
+
+    <!-- Lista de vacantes -->
+    <div class="vacantes-list">
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">💻</div>
+        <div class="vacante-info">
+          <h3>Desarrollador Full Stack · Node.js + React</h3>
+          <div class="empresa-line">📍 Zona 10, Ciudad de Guatemala · Tecnología</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Presencial/Híbrido</span>
+            <span class="vtag">JavaScript</span>
+            <span class="vtag">3+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q14,000–Q18,000</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">📊</div>
+        <div class="vacante-info">
+          <h3>Gerente de Finanzas</h3>
+          <div class="empresa-line">📍 Ciudad de Guatemala · Sector Financiero</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Presencial</span>
+            <span class="vtag">CPA preferido</span>
+            <span class="vtag">5+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q22,000–Q28,000</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">🏭</div>
+        <div class="vacante-info">
+          <h3>Supervisor de Producción</h3>
+          <div class="empresa-line">📍 Villa Nueva, Guatemala · Manufactura</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Presencial</span>
+            <span class="vtag">Ingeniería Industrial</span>
+            <span class="vtag">3+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q9,000–Q13,000</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">🛒</div>
+        <div class="vacante-info">
+          <h3>Ejecutivo de Ventas Corporativas</h3>
+          <div class="empresa-line">📍 Ciudad de Guatemala · Comercial / Retail</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Híbrido</span>
+            <span class="vtag">Ventas B2B</span>
+            <span class="vtag">2+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q7,500 + comisiones</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">🚛</div>
+        <div class="vacante-info">
+          <h3>Coordinador de Logística y Distribución</h3>
+          <div class="empresa-line">📍 Puerto Quetzal, Escuintla · Logística</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Presencial</span>
+            <span class="vtag">Supply Chain</span>
+            <span class="vtag">4+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q10,000–Q14,000</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">🎓</div>
+        <div class="vacante-info">
+          <h3>Especialista de Recursos Humanos</h3>
+          <div class="empresa-line">📍 Zona 4, Ciudad de Guatemala · RRHH</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Híbrido</span>
+            <span class="vtag">Psicología/Administración</span>
+            <span class="vtag">2+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q7,000–Q9,500</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">🌾</div>
+        <div class="vacante-info">
+          <h3>Agrónomo de Campo</h3>
+          <div class="empresa-line">📍 Retalhuleu · Agroindustria</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Presencial</span>
+            <span class="vtag">Ing. Agronomía</span>
+            <span class="vtag">2+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q8,500–Q11,000</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+      <div class="vacante-card reveal">
+        <div class="vacante-icon">🏗️</div>
+        <div class="vacante-info">
+          <h3>Ingeniero de Proyectos Civiles</h3>
+          <div class="empresa-line">📍 Ciudad de Guatemala · Construcción</div>
+          <div class="vtags">
+            <span class="vtag green">Tiempo completo</span>
+            <span class="vtag blue">Presencial</span>
+            <span class="vtag">Ing. Civil</span>
+            <span class="vtag">3+ años exp.</span>
+          </div>
+        </div>
+        <div class="vacante-actions">
+          <div class="vacante-salario">Q11,000–Q16,000</div>
+          <a href="#" class="btn btn-primary btn-sm" onclick="openModal('candidato'); return false;">Aplicar →</a>
+        </div>
+      </div>
+
+    </div><!-- /vacantes-list -->
+
+    <div style="text-align:center;margin-top:40px;" class="reveal">
+      <a href="#" class="btn btn-dark btn-lg" onclick="openModal('candidato'); return false;">¿No encontraste lo que buscas? Regístrate →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Banner candidatos -->
+<section style="background:var(--azul);padding:60px 6%;text-align:center;">
+  <div class="reveal">
+    <div style="font-size:3rem;margin-bottom:16px;">📄</div>
+    <h2 style="color:#fff;font-size:clamp(1.6rem,2.5vw,2.2rem);margin-bottom:12px;">¿Eres candidato? Sube tu CV</h2>
+    <p style="color:rgba(255,255,255,0.55);max-width:520px;margin:0 auto 28px;line-height:1.7;">Regístrate en nuestra base de datos y te contactamos cuando tengamos una vacante que coincida con tu perfil.</p>
+    <a href="#" class="btn btn-primary btn-lg" onclick="openModal('candidato'); return false;">Registrar mi CV →</a>
+  </div>
+</section>
+
+<div id="chat-root"></div>
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+<script src="../js/components.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  document.getElementById('cursor-root').innerHTML = renderCursor();
+  document.getElementById('nav-root').innerHTML = renderNav('vacantes');
+  document.getElementById('footer-root').innerHTML = renderFooter(false);
+  document.getElementById('chat-root').innerHTML = renderChatWidget();
+  document.getElementById('modal-root').innerHTML = renderModal();
+
+  // Filtros
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

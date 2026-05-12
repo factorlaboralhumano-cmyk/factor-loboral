@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factor Laboral Humano — Reclutamiento en Guatemala</title>
+  <meta name="description" content="Factor Laboral Humano: empresa líder de reclutamiento y selección de personal en Guatemala. Conectamos empresas con el mejor talento humano del país. Reclutamiento masivo, ejecutivo y outsourcing de RRHH.">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div id="cursor-root"></div>
+<div id="nav-root"></div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-badge fade-in">Guatemala · Reclutamiento Profesional</div>
+    <h1 class="fade-in fade-in-delay-1">
+      El talento<br>que tu empresa<br><em>necesita</em>
+    </h1>
+    <p class="hero-desc fade-in fade-in-delay-2">
+      Conectamos empresas guatemaltecas con el talento que necesitan. Reclutamiento ejecutivo, masivo y soluciones tecnológicas — todo bajo un mismo techo.
+    </p>
+    <div class="hero-btns fade-in fade-in-delay-3">
+      <a href="#" class="btn btn-primary btn-lg" onclick="openModal('empresa'); return false;">Publicar vacante →</a>
+      <a href="pages/vacantes.html" class="btn btn-outline btn-lg">Ver empleos</a>
+    </div>
+    <div class="hero-stats fade-in fade-in-delay-4">
+      <div>
+        <div class="stat-num">+500<span></span></div>
+        <div class="stat-label">Empresas clientes</div>
+      </div>
+      <div>
+        <div class="stat-num">98<span>%</span></div>
+        <div class="stat-label">Satisfacción</div>
+      </div>
+      <div>
+        <div class="stat-num">12<span></span></div>
+        <div class="stat-label">Días promedio</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-img"
+      src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=80"
+      alt="Equipo profesional en entrevista">
+    <div class="hero-img-overlay"></div>
+    <!-- Floating cards -->
+    <div class="hero-float">
+      <div class="fc-label">Última colocación</div>
+      <div class="fc-val">12 días</div>
+      <div class="fc-sub">Promedio de colocación exitosa</div>
+    </div>
+    <div class="hero-float2">
+      <div class="fc2-num">+40</div>
+      <div class="fc2-txt">Variables de match analizadas</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE CLIENTES ═══ -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Industria Textil</span>
+    <span class="marquee-item">Banca & Finanzas</span>
+    <span class="marquee-item">Manufactura</span>
+    <span class="marquee-item">Tecnología</span>
+    <span class="marquee-item">Retail & Comercio</span>
+    <span class="marquee-item">Agroindustria</span>
+    <span class="marquee-item">Logística</span>
+    <span class="marquee-item">Salud</span>
+    <span class="marquee-item">Construcción</span>
+    <span class="marquee-item">Educación</span>
+    <span class="marquee-item">Hotelería</span>
+    <span class="marquee-item">Legal</span>
+    <!-- duplicado para loop infinito -->
+    <span class="marquee-item">Industria Textil</span>
+    <span class="marquee-item">Banca & Finanzas</span>
+    <span class="marquee-item">Manufactura</span>
+    <span class="marquee-item">Tecnología</span>
+    <span class="marquee-item">Retail & Comercio</span>
+    <span class="marquee-item">Agroindustria</span>
+    <span class="marquee-item">Logística</span>
+    <span class="marquee-item">Salud</span>
+    <span class="marquee-item">Construcción</span>
+    <span class="marquee-item">Educación</span>
+    <span class="marquee-item">Hotelería</span>
+    <span class="marquee-item">Legal</span>
+  </div>
+</section>
+
+<!-- ═══ NOSOTROS / ABOUT ═══ -->
+<section class="about-section" id="nosotros">
+  <div class="about-img-wrap">
+    <img class="about-img"
+      src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80"
+      alt="Equipo Factor Laboral Humano">
+    <div class="about-badge">
+      Guatemala<br>
+      <small>Presencia nacional</small>
+    </div>
+  </div>
+  <div class="about-content">
+    <div class="section-label reveal">Quiénes somos</div>
+    <h2 class="section-title reveal">Expertos en conectar personas con oportunidades</h2>
+    <p class="reveal">Factor Laboral Humano es una consultora de reclutamiento y selección de personal con presencia en toda la república guatemalteca. Combinamos experiencia humana, metodología probada y tecnología de vanguardia para encontrar el candidato ideal en el menor tiempo posible.</p>
+    <p class="reveal">Trabajamos con empresas de todos los sectores — desde startups hasta grandes corporaciones — ayudándolas a construir equipos de alto rendimiento.</p>
+    <ul class="check-list reveal">
+      <li>Proceso de selección validado y transparente</li>
+      <li>Amplia red de candidatos calificados en todos los sectores</li>
+      <li>Especialistas por sector e industria</li>
+      <li>Garantía de reposición sin costo adicional</li>
+      <li>Acompañamiento durante todo el proceso de integración</li>
+    </ul>
+    <div class="reveal" style="margin-top:28px;">
+      <a href="pages/nosotros.html" class="btn btn-dark">Conoce más sobre nosotros →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICIOS CON TABS ═══ -->
+<section class="tabs-section" id="servicios">
+  <div class="section-label reveal">Lo que ofrecemos</div>
+  <h2 class="section-title reveal">Soluciones de reclutamiento a tu medida</h2>
+  <p class="section-sub reveal">Desde la búsqueda de un gerente hasta la contratación masiva de operarios — tenemos el servicio que necesitas.</p>
+
+  <div class="tabs-header reveal">
+    <button class="tab-btn active" onclick="switchTab('ejecutivo', this)">Ejecutivo</button>
+    <button class="tab-btn" onclick="switchTab('masivo', this)">Masivo</button>
+    <button class="tab-btn" onclick="switchTab('capacitacion', this)">Capacitación</button>
+    <button class="tab-btn" onclick="switchTab('evaluaciones', this)">Evaluaciones</button>
+  </div>
+
+  <div id="tab-ejecutivo" class="tab-content active">
+    <div class="service-card">
+      <div class="service-icon">🎯</div>
+      <h3>Búsqueda de gerencias</h3>
+      <p>Identificamos ejecutivos y directivos de alto perfil para liderar tus equipos estratégicos.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🤝</div>
+      <h3>Atracción de talento</h3>
+      <p>Identificamos perfiles calificados mediante nuestra red de contactos y búsqueda activa en el mercado guatemalteco.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🧪</div>
+      <h3>Evaluaciones ejecutivas</h3>
+      <p>Psicometría, assessment center y entrevistas por competencias para validar a cada candidato.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🛡️</div>
+      <h3>Garantía de reposición</h3>
+      <p>Si el candidato no supera el período de prueba, lo reponemos sin costo adicional.</p>
+    </div>
+  </div>
+
+  <div id="tab-masivo" class="tab-content">
+    <div class="service-card">
+      <div class="service-icon">👥</div>
+      <h3>Contrataciones a escala</h3>
+      <p>Proyectos de expansión, temporadas altas y nuevas sucursales — cubrimos volúmenes grandes sin sacrificar calidad.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🏭</div>
+      <h3>Personal operativo</h3>
+      <p>Operarios, bodegueros, asistentes de producción y personal de distribución con verificación incluida.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⚡</div>
+      <h3>Contratación express</h3>
+      <p>Cobertura de emergencias en 48 horas con validación básica para situaciones operativas urgentes.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <h3>Seguimiento en tiempo real</h3>
+      <p>Estado actualizado de cada candidato, métricas de avance y cronograma de colocación.</p>
+    </div>
+  </div>
+
+  <div id="tab-capacitacion" class="tab-content">
+    <div class="service-card">
+      <div class="service-icon">🎓</div>
+      <h3>Programas de inducción</h3>
+      <p>Onboarding estructurado para que el nuevo colaborador sea productivo desde el primer día.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🧠</div>
+      <h3>Habilidades técnicas y blandas</h3>
+      <p>Talleres orientados a las necesidades específicas de tu empresa y sector.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🌡️</div>
+      <h3>Clima organizacional</h3>
+      <p>Diagnóstico y mejora del ambiente laboral para reducir rotación y aumentar productividad.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📈</div>
+      <h3>Planes de desarrollo</h3>
+      <p>Rutas de crecimiento profesional alineadas a los objetivos de tu empresa y colaboradores.</p>
+    </div>
+  </div>
+
+  <div id="tab-evaluaciones" class="tab-content">
+    <div class="service-card">
+      <div class="service-icon">🧠</div>
+      <h3>Pruebas de inteligencia</h3>
+      <p>Razonamiento verbal, numérico y abstracto adaptado al nivel del puesto.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🌡️</div>
+      <h3>Perfil de personalidad</h3>
+      <p>Compatibilidad con la cultura organizacional y estilo de trabajo del equipo.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🤝</div>
+      <h3>Competencias laborales</h3>
+      <p>Liderazgo, trabajo en equipo, orientación a resultados y comunicación efectiva.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔒</div>
+      <h3>Pruebas de honestidad</h3>
+      <p>Integridad y confiabilidad para puestos con manejo de recursos o información sensible.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:40px; text-align:center;" class="reveal">
+    <a href="pages/servicios.html" class="btn btn-dark">Ver todos los servicios →</a>
+  </div>
+</section>
+
+<!-- ═══ CÓMO FUNCIONA ═══ -->
+<section class="how-section" id="proceso">
+  <div class="container" style="max-width:100%;">
+    <div class="section-label reveal">Nuestro proceso</div>
+    <h2 class="section-title reveal">Simple, transparente y efectivo</h2>
+    <p class="section-sub reveal">En promedio colocamos candidatos en 12 días. Este es el proceso que lo hace posible.</p>
+    <div class="steps-wrap">
+      <div class="steps-line"></div>
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Análisis de la vacante</h4>
+        <p>Estudiamos el perfil ideal, la cultura de tu empresa y el contexto del puesto.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Búsqueda activa</h4>
+        <p>Activamos nuestra base de datos, redes y plataformas para atraer candidatos calificados.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Filtro y evaluación</h4>
+        <p>Entrevistas, pruebas psicométricas y verificación de referencias de los mejores perfiles.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Terna finalista</h4>
+        <p>Te presentamos los 3 mejores candidatos con informe detallado de cada uno.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <h4>Incorporación</h4>
+        <p>Acompañamos la negociación, contratación y primeros 90 días del nuevo colaborador.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECH HIGHLIGHT ═══ -->
+<section class="tech-dark-section">
+  <div class="tech-dark-inner">
+    <div>
+      <div class="section-label" style="color:var(--verde)">¿Tienes un negocio?</div>
+      <h2 class="section-title tech-dark-title">Lleva tu negocio al <span class="ia-gradient">mundo digital</span></h2>
+      <p class="tech-dark-desc">Además de reclutamiento, ofrecemos plataformas web y aplicaciones para todo tipo de negocio en Guatemala. Desde ferreterías y restaurantes hasta hospitales — listos en días, desde <strong style="color:var(--verde);">Q200/mes</strong>.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="pages/tecnologia.html" class="btn btn-primary btn-lg">Ver planes y precios →</a>
+        <a href="https://wa.me/50237190890?text=Hola%2C%20me%20interesa%20una%20plataforma%20web%20para%20mi%20negocio" target="_blank" class="btn btn-outline btn-lg">Consultar gratis</a>
+      </div>
+    </div>
+    <div class="tech-cards-grid">
+      <div class="tech-mini-card"><div class="tech-mini-icon">🌐</div><div class="tech-mini-name">Página web</div><div class="tech-mini-price">Desde Q200/mes</div></div>
+      <div class="tech-mini-card"><div class="tech-mini-icon">🏪</div><div class="tech-mini-name">Tienda online</div><div class="tech-mini-price">E-commerce listo</div></div>
+      <div class="tech-mini-card"><div class="tech-mini-icon">📱</div><div class="tech-mini-name">App móvil</div><div class="tech-mini-price">iOS y Android</div></div>
+      <div class="tech-mini-card"><div class="tech-mini-icon">⚙️</div><div class="tech-mini-name">Sistema a medida</div><div class="tech-mini-price">Cotización gratis</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ GALERÍA ═══ -->
+<section class="galeria-section">
+  <div class="section-label reveal">Nuestro trabajo</div>
+  <h2 class="section-title reveal">Personas reales, resultados reales</h2>
+  <div class="galeria-grid reveal">
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80" alt="Entrevista profesional">
+      <div class="gal-overlay"><span class="gal-label">Selección de personal</span></div>
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="Reunión de equipo">
+      <div class="gal-overlay"><span class="gal-label">Cultura organizacional</span></div>
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1565688534245-05d6b5be184a?w=600&q=80" alt="Capacitación laboral">
+      <div class="gal-overlay"><span class="gal-label">Evaluación de candidatos</span></div>
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80" alt="Handshake acuerdo">
+      <div class="gal-overlay"><span class="gal-label">Colocación exitosa</span></div>
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80" alt="Trabajo en equipo">
+      <div class="gal-overlay"><span class="gal-label">Reclutamiento masivo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTADORES ═══ -->
+<section class="counter-section">
+  <div class="counters-grid">
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="500"><span class="count">0</span><span class="accent">+</span></div>
+      <div class="counter-desc">Empresas que confían en nosotros</div>
+    </div>
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="98"><span class="count">0</span><span class="accent">%</span></div>
+      <div class="counter-desc">Tasa de satisfacción</div>
+    </div>
+    <div class="counter-item reveal">
+      <div class="counter-num" data-target="12"><span class="count">0</span><span class="accent"> días</span></div>
+      <div class="counter-desc">Promedio de colocación</div>
+    </div>
+    <div class="counter-item reveal">
+      <div class="counter-num" style="font-size:2rem;color:var(--verde)">Nacional</div>
+      <div class="counter-desc">Presencia en toda la república</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECNOLOGÍA / METODOLOGÍA ═══ -->
+<section class="ia-section">
+  <div class="ia-content">
+    <div class="ia-left">
+      <div class="section-label" style="color:var(--verde)">Nuestra metodología</div>
+      <h2 class="section-title">Selección respaldada por <span class="ia-gradient">tecnología</span></h2>
+      <p>No solo publicamos una vacante y esperamos. Aplicamos un proceso estructurado con herramientas tecnológicas propias para garantizar que el candidato que llega a tu entrevista ya fue validado en múltiples dimensiones.</p>
+      <div class="ia-features">
+        <div class="ia-feat">
+          <div class="ia-feat-icon">🔍</div>
+          <div>
+            <h4>Análisis inteligente de perfiles</h4>
+            <p>Procesamos y evaluamos CVs cruzando habilidades, experiencia y compatibilidad con el puesto antes de hacer cualquier contacto.</p>
+          </div>
+        </div>
+        <div class="ia-feat">
+          <div class="ia-feat-icon">🎯</div>
+          <div>
+            <h4>Matching multivariable</h4>
+            <p>Comparamos al candidato contra más de 40 criterios: técnicos, conductuales y de alineación cultural con tu empresa.</p>
+          </div>
+        </div>
+        <div class="ia-feat">
+          <div class="ia-feat-icon">🧪</div>
+          <div>
+            <h4>Evaluaciones psicométricas digitales</h4>
+            <p>Aplicamos pruebas validadas en línea para medir inteligencia, personalidad, honestidad y competencias específicas del puesto.</p>
+          </div>
+        </div>
+        <div class="ia-feat">
+          <div class="ia-feat-icon">📋</div>
+          <div>
+            <h4>Entrevistas estructuradas por competencias</h4>
+            <p>Solo los candidatos que pasan los filtros previos llegan a entrevista — para que tú inviertas tu tiempo en los mejores.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ia-right">
+      <div class="ia-visual">
+        <div class="ia-orb"></div>
+        <div class="ia-orb ia-orb2"></div>
+        <div class="ia-panel">
+          <div class="ia-panel-header">
+            <div class="ia-panel-dots"><span></span><span></span><span></span></div>
+            <span class="ia-panel-title">Proceso de validación FLH</span>
+          </div>
+          <div class="ia-scan-wrap"><div class="ia-scan-line"></div></div>
+          <!-- Pasos del proceso como filas visuales -->
+          <div class="ia-match-row">
+            <div class="ia-avatar" style="background:linear-gradient(135deg,#00C897,#009A73);font-size:1rem">1</div>
+            <div class="ia-match-info">
+              <div class="ia-match-name">Análisis de perfil</div>
+              <div class="ia-match-role">CV, experiencia y habilidades clave</div>
+              <div class="ia-match-bar-wrap">
+                <div class="ia-match-bar" style="--w:100%"></div>
+                <span>✓ Completado</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-match-row">
+            <div class="ia-avatar" style="background:linear-gradient(135deg,#1A4A7A,#0D2137);font-size:1rem">2</div>
+            <div class="ia-match-info">
+              <div class="ia-match-name">Evaluación psicométrica</div>
+              <div class="ia-match-role">Personalidad, inteligencia, honestidad</div>
+              <div class="ia-match-bar-wrap">
+                <div class="ia-match-bar" style="--w:100%"></div>
+                <span>✓ Completado</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-match-row">
+            <div class="ia-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2);font-size:1rem">3</div>
+            <div class="ia-match-info">
+              <div class="ia-match-name">Entrevista por competencias</div>
+              <div class="ia-match-role">Validación conductual y cultural</div>
+              <div class="ia-match-bar-wrap">
+                <div class="ia-match-bar" style="--w:88%"></div>
+                <span>En proceso</span>
+              </div>
+            </div>
+          </div>
+          <div class="ia-processing">
+            <div class="ia-proc-dot"></div>
+            <span>3 candidatos listos para presentar a tu empresa</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTORES ═══ -->
+<section class="sectors-section" id="sectores">
+  <div class="section-label reveal">Cobertura sectorial</div>
+  <h2 class="section-title reveal">Sectores que atendemos</h2>
+  <p class="section-sub reveal">Experiencia en los principales sectores de la economía guatemalteca.</p>
+  <div class="sectors-grid reveal">
+    <div class="sector-card"><div class="sector-icon">💻</div><div class="sector-name">Tecnología</div></div>
+    <div class="sector-card"><div class="sector-icon">🏥</div><div class="sector-name">Salud</div></div>
+    <div class="sector-card"><div class="sector-icon">🏭</div><div class="sector-name">Manufactura</div></div>
+    <div class="sector-card"><div class="sector-icon">🛒</div><div class="sector-name">Retail</div></div>
+    <div class="sector-card"><div class="sector-icon">🏦</div><div class="sector-name">Banca y Finanzas</div></div>
+    <div class="sector-card"><div class="sector-icon">🌾</div><div class="sector-name">Agroindustria</div></div>
+    <div class="sector-card"><div class="sector-icon">🚢</div><div class="sector-name">Logística</div></div>
+    <div class="sector-card"><div class="sector-icon">🏗️</div><div class="sector-name">Construcción</div></div>
+    <div class="sector-card"><div class="sector-icon">🍽️</div><div class="sector-name">Alimentos</div></div>
+    <div class="sector-card"><div class="sector-icon">📚</div><div class="sector-name">Educación</div></div>
+    <div class="sector-card"><div class="sector-icon">🏨</div><div class="sector-name">Hotelería</div></div>
+    <div class="sector-card"><div class="sector-icon">⚖️</div><div class="sector-name">Legal</div></div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIOS ═══ -->
+<section class="testi-section">
+  <div class="section-label reveal">Testimonios</div>
+  <h2 class="section-title reveal">Lo que dicen nuestros clientes</h2>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-card-inner">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p>En menos de 10 días teníamos tres candidatos excelentes para nuestra gerencia de operaciones. El proceso fue muy profesional y transparente.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#E8F4FF;color:#1A3F6F">MR</div>
+          <div>
+            <div class="testi-name">María Rodríguez</div>
+            <div class="testi-role">Directora de RRHH · Industria Textil</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-card-inner">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p>Gracias a Factor Laboral Humano encontré trabajo en mi área en 3 semanas. Me orientaron en el CV y me prepararon muy bien para la entrevista.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#E8FFF5;color:#007A5E">JA</div>
+          <div>
+            <div class="testi-name">Jorge Alvarado</div>
+            <div class="testi-role">Ing. en Sistemas · Colocado exitosamente</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-card-inner">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p>Contratamos 40 operarios para nuestra planta nueva en Escuintla. La calidad de los candidatos y la rapidez del proceso nos sorprendió gratamente.</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#FFF5E8;color:#7A4000">CA</div>
+          <div>
+            <div class="testi-name">Carlos Archila</div>
+            <div class="testi-role">Gerente General · Agroindustrial</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="cta-section">
+  <div class="cta-img-wrap">
+    <img class="cta-img" src="https://images.unsplash.com/photo-1529539795054-3c162aab037a?w=800&q=80" alt="Profesional guatemalteco">
+    <div class="cta-img-overlay"></div>
+  </div>
+  <div class="cta-content">
+    <div class="section-label" style="color:var(--verde)">Empecemos hoy</div>
+    <h2>¿Listo para encontrar el talento que necesitas?</h2>
+    <p>Sin compromisos iniciales. Cuéntanos qué necesitas y un especialista te contactará en menos de 24 horas.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn btn-primary btn-lg" onclick="openModal('empresa'); return false;">Publicar vacante →</a>
+      <a href="#" class="btn btn-outline btn-lg" onclick="openModal('candidato'); return false;">Buscar empleo</a>
+    </div>
+  </div>
+</section>
+
+<div id="chat-root"></div>
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('cursor-root').innerHTML = renderCursor();
+  document.getElementById('nav-root').innerHTML = renderNavHome('inicio');
+  document.getElementById('footer-root').innerHTML = renderFooter(true);
+  document.getElementById('chat-root').innerHTML = renderChatWidget();
+  document.getElementById('modal-root').innerHTML = renderModal();
+</script>
+</body>
+</html>
