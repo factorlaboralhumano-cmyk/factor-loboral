@@ -54,13 +54,27 @@
   window.addEventListener('load', attachCursorEvents);
 })();
 
-/* ── NAV SCROLL ──────────────────────────────── */
+// ── NAV SCROLL ──────────────────────────────── 
 (function initNavScroll() {
   const nav = document.getElementById('mainNav');
   if (!nav) return;
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
+  // Mostrar link admin si URL tiene ?admin en la barra
+  if(window.location.search.includes('admin')||localStorage.getItem('flh_admin_access')){
+    localStorage.setItem('flh_admin_access','1');
+    const navLinks=nav.querySelector('.nav-links');
+    if(navLinks){
+      const adminLink=document.createElement('a');
+      adminLink.href='pages/admin.html';
+      adminLink.style.cssText='font-size:.78rem;color:rgba(0,200,151,.5);border:1px solid rgba(0,200,151,.2);padding:5px 10px;border-radius:8px;transition:all .2s';
+      adminLink.textContent='⚙ Admin';
+      adminLink.onmouseover=()=>adminLink.style.color='var(--verde)';
+      adminLink.onmouseout=()=>adminLink.style.color='rgba(0,200,151,.5)';
+      navLinks.insertBefore(adminLink,navLinks.querySelector('.nav-cta'));
+    }
+  }
 })();
 
 /* ── MOBILE MENU ─────────────────────────────── */
@@ -197,6 +211,7 @@ function submitForm() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeMobileMenu(); } });
+
 
 /* ── CHAT WIDGET ─────────────────────────────── */
 const CW_SYSTEM = `Eres el asistente virtual de Factor Laboral Humano, empresa líder de reclutamiento y selección de personal en Guatemala.

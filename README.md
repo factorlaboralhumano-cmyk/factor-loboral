@@ -23,7 +23,7 @@
 En tu proyecto de Vercel → Settings → Environment Variables:
 
 ```
-ANTHROPIC_API_KEY = sk-ant-api03-...
+GROQ_API_KEY = gsk_...
 ```
 
 Sin esto, la IA del chat y el análisis de CV no funcionarán.

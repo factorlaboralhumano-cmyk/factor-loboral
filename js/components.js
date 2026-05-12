@@ -155,6 +155,7 @@ function renderCursor() {
   return `<div id="cursor"></div><div id="cursor-ring"></div>`;
 }
 
+
 /* ════════════════════════════════
    CHATBOT / WHATSAPP FLOTANTE
    ════════════════════════════════ */
