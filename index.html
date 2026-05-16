@@ -24,7 +24,7 @@
     </p>
     <div class="hero-btns fade-in fade-in-delay-3">
       <a href="#" class="btn btn-primary btn-lg" onclick="openModal('empresa'); return false;">Publicar vacante →</a>
-      <a href="pages/vacantes.html" class="btn btn-outline btn-lg">Ver empleos</a>
+      <a href="pages/candidatos.html" class="btn btn-outline btn-lg">Ver empleos disponibles</a>
     </div>
     <div class="hero-stats fade-in fade-in-delay-4">
       <div>
@@ -267,7 +267,7 @@
 </section>
 
 <!-- ═══ TECH HIGHLIGHT ═══ -->
-<section style="background:linear-gradient(135deg,#060F1E 0%,#081828 100%);padding:clamp(56px,6vw,80px) clamp(20px,4%,60px);position:relative;overflow:hidden;">
+<section style="background:linear-gradient(135deg,#0E5F6E 0%,#1A7A8A 100%);padding:clamp(56px,6vw,80px) clamp(20px,4%,60px);position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,151,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,151,.025) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;"></div>
   <div style="position:absolute;top:-100px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(0,200,151,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
   <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;position:relative;z-index:1;">
@@ -416,7 +416,7 @@
             </div>
           </div>
           <div class="ia-match-row">
-            <div class="ia-avatar" style="background:linear-gradient(135deg,#1A4A7A,#0D2137);font-size:1rem">2</div>
+            <div class="ia-avatar" style="background:linear-gradient(135deg,#0E5F6E,#0A4A58);font-size:1rem">2</div>
             <div class="ia-match-info">
               <div class="ia-match-name">Evaluación psicométrica</div>
               <div class="ia-match-role">Personalidad, inteligencia, honestidad</div>
@@ -479,7 +479,7 @@
         <div class="stars">★★★★★</div>
         <p>En menos de 10 días teníamos tres candidatos excelentes para nuestra gerencia de operaciones. El proceso fue muy profesional y transparente.</p>
         <div class="testi-author">
-          <div class="testi-avatar" style="background:#E8F4FF;color:#1A3F6F">MR</div>
+          <div class="testi-avatar" style="background:#E0F5F8;color:#0E5F6E">MR</div>
           <div>
             <div class="testi-name">María Rodríguez</div>
             <div class="testi-role">Directora de RRHH · Industria Textil</div>
@@ -518,6 +518,31 @@
   </div>
 </section>
 
+
+<!-- ═══ DUAL PORTAL ═══ -->
+<section class="section" style="background:#F2F9FA;">
+  <div class="container">
+    <div class="section-label reveal" style="text-align:center;margin-bottom:12px">Accesos directos</div>
+    <h2 class="section-title reveal" style="text-align:center;margin-bottom:36px">¿Qué necesitas hoy?</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px;margin:0 auto;">
+      <!-- Empresas -->
+      <div class="reveal" style="background:#fff;border-radius:20px;padding:36px 28px;border:2px solid var(--gris-2);text-align:center;transition:all .25s;">
+        <div style="font-size:2.8rem;margin-bottom:16px">🏢</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--azul);margin-bottom:10px">Soy empresa</h3>
+        <p style="font-size:.88rem;color:var(--muted);margin-bottom:24px;line-height:1.6">Publica una vacante, accede a candidatos evaluados y gestiona tu proceso de reclutamiento.</p>
+        <a href="#" onclick="openModal('empresa');return false;" class="btn btn-dark" style="display:inline-block">Publicar vacante →</a>
+      </div>
+      <!-- Candidatos -->
+      <div class="reveal" style="background:var(--azul);border-radius:20px;padding:36px 28px;border:2px solid var(--azul);text-align:center;transition:all .25s;">
+        <div style="font-size:2.8rem;margin-bottom:16px">👤</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:10px">Busco trabajo</h3>
+        <p style="font-size:.88rem;color:rgba(255,255,255,.7);margin-bottom:24px;line-height:1.6">Crea tu perfil, sube tu CV y aplica a las mejores vacantes en Guatemala con un clic.</p>
+        <a href="pages/candidatos.html" class="btn btn-primary" style="display:inline-block">Entrar al portal →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ CTA FINAL ═══ -->
 <section class="cta-section">
   <div class="cta-img-wrap">
@@ -530,7 +555,7 @@
     <p>Sin compromisos iniciales. Cuéntanos qué necesitas y un especialista te contactará en menos de 24 horas.</p>
     <div class="cta-btns">
       <a href="#" class="btn btn-primary btn-lg" onclick="openModal('empresa'); return false;">Publicar vacante →</a>
-      <a href="#" class="btn btn-outline btn-lg" onclick="openModal('candidato'); return false;">Buscar empleo</a>
+      <a href="pages/candidatos.html" class="btn btn-outline btn-lg">Buscar empleo →</a>
     </div>
   </div>
 </section>

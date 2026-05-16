@@ -8,142 +8,175 @@
   <link rel="stylesheet" href="../css/main.css">
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    /* ── PORTAL LAYOUT ── */
-    .portal-wrap{min-height:100vh;background:#F0F4F8;padding-top:0}
+<style>
+    /* ── PORTAL ── */
+    .portal-wrap{min-height:100vh;background:#F7F3EE;padding-top:0}
 
-    /* AUTH SCREENS */
-    .auth-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(160deg,#040C18 0%,#081525 60%,#040C18 100%);position:relative;overflow:hidden}
-    .auth-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,151,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,151,.025) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
+    /* CHIPS */
+    .pub-chip{padding:7px 18px;border-radius:100px;font-family:'Syne',sans-serif;font-size:.76rem;font-weight:700;border:1.5px solid #D4C5A9;background:#fff;color:#7A6A52;cursor:pointer;transition:all .2s}
+    .pub-chip.active,.pub-chip:hover{background:var(--azul);color:#fff;border-color:var(--azul)}
+
+    /* AUTH */
+    .auth-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(160deg,#083A48 0%,#0A4A58 50%,#0C5565 100%);position:relative;overflow:hidden}
+    .auth-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(16,185,129,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
     .auth-screen.active{display:flex}
-    .auth-box{background:#fff;border-radius:24px;padding:48px 44px;max-width:460px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.4);position:relative;overflow:hidden;z-index:1}
-    .auth-box::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,200,151,.08) 0%,transparent 70%);border-radius:50%}
-    .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px}
-    .auth-logo img{height:40px}
-    .auth-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--azul);margin-bottom:6px}
-    .auth-sub{color:var(--muted);font-size:.9rem;margin-bottom:28px;line-height:1.6}
-    .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border:1.5px solid #E2E8F0;border-radius:12px;background:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--azul);cursor:pointer;transition:all .2s;margin-bottom:18px}
-    .google-btn:hover{border-color:var(--verde);background:rgba(0,200,151,.03);transform:translateY(-1px)}
+    .auth-box{background:#fff;border-radius:24px;padding:48px 44px;max-width:460px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.35);position:relative;overflow:hidden;z-index:1}
+    .auth-box::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(16,185,129,.07) 0%,transparent 70%);border-radius:50%}
+    .auth-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+    .auth-logo img{height:38px}
+    .auth-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#0A3D4A;margin-bottom:6px}
+    .auth-sub{color:#6B7E8A;font-size:.9rem;margin-bottom:24px;line-height:1.6}
+    .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border:1.5px solid #E2E8F0;border-radius:12px;background:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#0A3D4A;cursor:pointer;transition:all .2s;margin-bottom:18px}
+    .google-btn:hover{border-color:var(--verde);transform:translateY(-1px)}
     .divider{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#E2E8F0}
-    .divider span{font-size:.78rem;color:var(--muted)}
-    .auth-switch{text-align:center;margin-top:20px;font-size:.87rem;color:var(--muted)}
-    .auth-switch a{color:var(--verde);font-weight:600;cursor:pointer}
-    .auth-switch a:hover{text-decoration:underline}
-    .auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#dc2626;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px;display:none}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:#E8EFF2}
+    .divider span{font-size:.78rem;color:#8FA0AA}
+    .auth-switch{text-align:center;margin-top:20px;font-size:.87rem;color:#6B7E8A}
+    .auth-switch a{color:var(--verde);font-weight:700;cursor:pointer}
+    .auth-error{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#dc2626;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px;display:none}
     .auth-error.show{display:block}
 
     /* DASHBOARD */
-    .dashboard{display:none;background:#0D1929;min-height:100vh}
+    .dashboard{display:none;background:#F7F3EE;min-height:100vh}
     .dashboard.active{display:block}
-
-    /* TOPBAR ya definida inline */
-
-    /* MAIN LAYOUT: sidebar + content */
     .dash-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 60px)}
 
-    /* LEFT SIDEBAR */
-    .dash-sidebar{background:#060F1E;border-right:1px solid rgba(255,255,255,.06);padding:28px 16px;display:flex;flex-direction:column;gap:4px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
-    .sidebar-profile-mini{text-align:center;padding:20px 12px 24px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:12px}
-    .sidebar-photo-wrap{position:relative;width:72px;height:72px;margin:0 auto 12px;cursor:pointer}
-    .sidebar-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(0,200,151,.3)}
+    /* SIDEBAR — dorado/teal */
+    .dash-sidebar{background:linear-gradient(180deg,#0A3D4A 0%,#0E5F6E 100%);border-right:1px solid rgba(255,255,255,.08);padding:24px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
+    .sidebar-profile-mini{text-align:center;padding:18px 10px 22px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+    .sidebar-photo-wrap{position:relative;width:68px;height:68px;margin:0 auto 10px;cursor:pointer}
+    .sidebar-photo{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2.5px solid rgba(212,175,80,.5)}
     .sidebar-photo-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-size:.65rem;color:#fff;font-weight:600;text-align:center;line-height:1.2}
     .sidebar-photo-wrap:hover .sidebar-photo-overlay{opacity:1}
     .sidebar-photo-input{display:none}
-    .sidebar-username{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:#fff;margin-bottom:2px}
-    .sidebar-useremail{font-size:.72rem;color:rgba(255,255,255,.3);margin-bottom:10px;word-break:break-all}
+    .sidebar-username{font-family:'Syne',sans-serif;font-weight:800;font-size:.92rem;color:#fff;margin-bottom:2px;line-height:1.3}
+    .sidebar-useremail{font-size:.7rem;color:rgba(255,255,255,.45);margin-bottom:10px;word-break:break-all}
     .sidebar-progress{background:rgba(255,255,255,.06);border-radius:8px;padding:8px 12px}
-    .sidebar-progress-label{display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,.3);margin-bottom:5px}
-    .sidebar-progress-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
-    .sidebar-progress-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--verde-claro));border-radius:2px;transition:width .5s ease}
-
-    .dash-nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:.86rem;font-weight:600;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s;border:none;background:none;width:100%;text-align:left}
-    .dash-nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
-    .dash-nav-item.active{background:rgba(0,200,151,.1);color:var(--verde);border:1px solid rgba(0,200,151,.15)}
+    .sidebar-progress-label{display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,.4);margin-bottom:5px}
+    .sidebar-progress-bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+    .sidebar-progress-fill{height:100%;background:linear-gradient(90deg,#D4AF50,#F0CE70);border-radius:2px;transition:width .5s ease}
+    .dash-nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:.86rem;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;border:none;background:none;width:100%;text-align:left}
+    .dash-nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+    .dash-nav-item.active{background:rgba(212,175,80,.15);color:#F0CE70;border:1px solid rgba(212,175,80,.2)}
     .dash-nav-item .ni-icon{font-size:1rem;flex-shrink:0;width:20px;text-align:center}
-    .dash-nav-divider{height:1px;background:rgba(255,255,255,.06);margin:8px 0}
-    .dash-nav-logout{margin-top:auto;color:rgba(255,100,100,.5)!important}
-    .dash-nav-logout:hover{background:rgba(255,80,80,.08)!important;color:rgba(255,100,100,.8)!important}
+    .dash-nav-divider{height:1px;background:rgba(255,255,255,.07);margin:8px 0}
+    .dash-nav-logout{margin-top:auto;color:rgba(255,120,120,.5)!important}
+    .dash-nav-logout:hover{background:rgba(255,80,80,.08)!important;color:rgba(255,120,120,.8)!important}
 
-    /* RIGHT CONTENT */
-    .dash-content{padding:32px clamp(20px,3%,48px);overflow-y:auto}
+    /* CONTENT */
+    .dash-content{padding:28px clamp(16px,3%,44px);overflow-y:auto}
     .dash-panel{display:none}.dash-panel.active{display:block}
-    .content-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:6px}
-    .content-sub{font-size:.84rem;color:rgba(255,255,255,.35);margin-bottom:28px}
+    .content-title{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#0A3D4A;margin-bottom:5px}
+    .content-sub{font-size:.84rem;color:#7A8E98;margin-bottom:24px}
 
-    /* PROFILE FORM CARD */
-    .form-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px;margin-bottom:20px}
-    .form-card-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+    /* FORM CARDS */
+    .form-card{background:#fff;border:1.5px solid #E8E0D4;border-radius:18px;padding:26px;margin-bottom:18px;box-shadow:0 2px 12px rgba(14,95,110,.06)}
+    .form-card-title{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;color:#0A3D4A;text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;padding-bottom:10px;border-bottom:1.5px solid #F0EAE0}
     .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .field-group{margin-bottom:14px}
-    .field-group label{display:block;font-size:.78rem;font-weight:600;color:#5A6E85;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-    .field-group input,.field-group select,.field-group textarea{width:100%;padding:11px 14px;border:1.5px solid #DDE6F0;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:#141E2E;background:#F0F5FB;outline:none;transition:all .2s}
-    .field-group input::placeholder,.field-group textarea::placeholder{color:#9AAAB8}
-    .field-group select option{background:#fff;color:#141E2E}
-    .field-group input:focus,.field-group select:focus,.field-group textarea:focus{border-color:var(--verde);background:rgba(0,200,151,.05);box-shadow:0 0 0 3px rgba(0,200,151,.08)}
+    .field-group label{display:block;font-size:.75rem;font-weight:700;color:#7A8E98;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+    .field-group input,.field-group select,.field-group textarea{width:100%;padding:11px 14px;border:1.5px solid #E0D8CC;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:#1A2A30;background:#FDFAF6;outline:none;transition:all .2s;box-sizing:border-box}
+    .field-group input::placeholder,.field-group textarea::placeholder{color:#AABBC2}
+    .field-group input:focus,.field-group select:focus,.field-group textarea:focus{border-color:var(--verde);background:#fff;box-shadow:0 0 0 3px rgba(16,185,129,.08)}
     .field-group textarea{resize:vertical;min-height:80px}
-
-    /* CV UPLOAD — dark style */
-    .cv-upload-area{border:2px dashed rgba(255,255,255,.12);border-radius:14px;padding:32px;text-align:center;cursor:pointer;transition:all .3s;background:rgba(255,255,255,.03);position:relative}
-    .cv-upload-area:hover,.cv-upload-area.drag{border-color:var(--verde);background:rgba(0,200,151,.05)}
-    .cv-upload-icon{font-size:2.2rem;margin-bottom:10px}
-    .cv-upload-title{font-family:'Syne',sans-serif;font-weight:700;color:#fff;margin-bottom:4px;font-size:.92rem}
-    .cv-upload-sub{font-size:.8rem;color:rgba(255,255,255,.3)}
-    .cv-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
-    .cv-uploaded{background:rgba(0,200,151,.08);border:1.5px solid rgba(0,200,151,.25);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-top:12px}
-    .cv-uploaded-icon{font-size:1.6rem;flex-shrink:0}
-    .cv-uploaded-name{font-weight:600;font-size:.88rem;color:#fff}
-    .cv-uploaded-size{font-size:.74rem;color:rgba(255,255,255,.4)}
-    .cv-change{margin-left:auto;font-size:.76rem;color:var(--verde);font-weight:600;cursor:pointer;flex-shrink:0}
-
-    /* IA ANALYSIS */
-    .ia-analysis{background:linear-gradient(135deg,rgba(0,200,151,.1),rgba(0,200,151,.04));border:1px solid rgba(0,200,151,.2);border-radius:14px;padding:20px;margin-top:14px;position:relative;overflow:hidden}
-    .ia-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-    .ia-dot{width:7px;height:7px;background:var(--verde);border-radius:50%;animation:blink 1.5s ease infinite;flex-shrink:0}
-    .ia-header-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;color:var(--verde)}
-    .ia-loading-bar{height:2px;background:rgba(0,200,151,.1);border-radius:2px;overflow:hidden;margin-bottom:8px}
-    .ia-loading-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--verde-claro));border-radius:2px;animation:shimmer 1.5s ease-in-out infinite;background-size:200%}
-    .ia-loading-text{font-size:.78rem;color:rgba(255,255,255,.4)}
-    .ia-result{display:none}
-    .ia-skills{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-    .ia-skill{background:rgba(0,200,151,.12);border:1px solid rgba(0,200,151,.2);color:var(--verde-claro);border-radius:100px;padding:3px 10px;font-size:.73rem;font-weight:600}
-    .ia-score{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,200,151,.1)}
-    .ia-score-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--verde)}
-    .ia-score-label{font-size:.76rem;color:rgba(255,255,255,.4);line-height:1.4}
 
     /* VACANTES */
     .vacantes-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
-    .vf-btn{padding:7px 16px;border-radius:100px;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;border:1.5px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s}
-    .vf-btn.active,.vf-btn:hover{background:rgba(0,200,151,.12);color:var(--verde);border-color:rgba(0,200,151,.3)}
-    .vacante-item{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:14px;padding:20px;display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;transition:all .25s}
-    .vacante-item:hover{border-color:rgba(0,200,151,.25);background:rgba(0,200,151,.04);transform:translateY(-1px)}
-    .vi-icon{width:46px;height:46px;border-radius:12px;background:rgba(0,200,151,.1);border:1px solid rgba(0,200,151,.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+    .vf-btn{padding:7px 16px;border-radius:100px;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;border:1.5px solid #D4C5A9;background:#fff;color:#7A6A52;cursor:pointer;transition:all .2s}
+    .vf-btn.active,.vf-btn:hover{background:rgba(16,185,129,.1);color:var(--verde-dark);border-color:rgba(16,185,129,.3)}
+    .vacante-item{background:#fff;border:1.5px solid #E8E0D4;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:0;margin-bottom:12px;transition:all .25s;box-shadow:0 2px 8px rgba(14,95,110,.05)}
+    .vacante-item:hover{border-color:rgba(16,185,129,.3);transform:translateY(-1px);box-shadow:0 6px 20px rgba(14,95,110,.1)}
+    .vi-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(16,185,129,.05));border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
     .vi-info{flex:1}
-    .vi-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.94rem;color:#fff;margin-bottom:3px}
+    .vi-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:#0A3D4A;margin-bottom:3px}
     .vi-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
-    .vi-tag{font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.45)}
-    .vi-tag.green{background:rgba(0,200,151,.1);color:var(--verde)}
-    .vi-salario{font-family:'Syne',sans-serif;font-size:.86rem;font-weight:800;color:var(--verde);white-space:nowrap}
-    .applied-badge{background:rgba(0,200,151,.1);border:1px solid rgba(0,200,151,.2);color:var(--verde);border-radius:100px;padding:4px 12px;font-size:.7rem;font-weight:700}
+    .vi-tag{font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:100px;background:#F2EDE4;color:#7A6A52}
+    .vi-tag.green{background:rgba(16,185,129,.1);color:var(--verde-dark)}
+    .vi-salario{font-family:'Syne',sans-serif;font-size:.86rem;font-weight:800;color:var(--verde-dark);white-space:nowrap}
+    .applied-badge{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:var(--verde-dark);border-radius:100px;padding:4px 12px;font-size:.7rem;font-weight:700}
 
     /* APLICACIONES */
-    .app-item{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:14px;padding:18px;display:flex;gap:12px;align-items:center;margin-bottom:10px;transition:all .25s}
-    .app-item:hover{border-color:rgba(0,200,151,.2)}
+    .app-item{background:#fff;border:1.5px solid #E8E0D4;border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center;margin-bottom:10px;transition:all .25s;box-shadow:0 2px 8px rgba(14,95,110,.05)}
+    .app-item:hover{border-color:rgba(16,185,129,.2)}
     .app-status{padding:4px 12px;border-radius:100px;font-size:.7rem;font-weight:700;font-family:'Syne',sans-serif;white-space:nowrap}
-    .status-revision{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.2)}
-    .status-preseleccionado{background:rgba(0,200,151,.1);color:var(--verde);border:1px solid rgba(0,200,151,.25)}
-    .status-entrevista{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
-    .status-rechazado{background:rgba(239,68,68,.08);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+    .status-revision{background:rgba(234,179,8,.1);color:#B8860B;border:1px solid rgba(234,179,8,.2)}
+    .status-preseleccionado{background:rgba(16,185,129,.1);color:var(--verde-dark);border:1px solid rgba(16,185,129,.25)}
+    .status-entrevista{background:rgba(59,130,246,.1);color:#2563EB;border:1px solid rgba(59,130,246,.2)}
+    .status-rechazado{background:rgba(239,68,68,.07);color:#B91C1C;border:1px solid rgba(239,68,68,.15)}
+
+    /* CV */
+    .cv-upload-area{border:2px dashed #D4C5A9;border-radius:14px;padding:32px;text-align:center;cursor:pointer;transition:all .3s;background:#FDFAF6;position:relative}
+    .cv-upload-area:hover,.cv-upload-area.drag{border-color:var(--verde);background:rgba(16,185,129,.04)}
+    .cv-upload-icon{font-size:2.2rem;margin-bottom:10px}
+    .cv-upload-title{font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;margin-bottom:4px;font-size:.92rem}
+    .cv-upload-sub{font-size:.8rem;color:#8FA0AA}
+    .cv-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .cv-uploaded{background:rgba(16,185,129,.08);border:1.5px solid rgba(16,185,129,.25);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-top:12px}
+    .cv-uploaded-icon{font-size:1.6rem;flex-shrink:0}
+    .cv-uploaded-name{font-weight:600;font-size:.88rem;color:#0A3D4A}
+    .cv-uploaded-size{font-size:.74rem;color:#8FA0AA}
+    .cv-change{margin-left:auto;font-size:.76rem;color:var(--verde);font-weight:700;cursor:pointer}
+
+    /* IA */
+    .ia-analysis{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;margin-top:14px}
+    .ia-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+    .ia-dot{width:7px;height:7px;background:var(--verde);border-radius:50%;animation:blink 1.5s ease infinite}
+    .ia-header-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;color:var(--verde-dark)}
+    .ia-loading-bar{height:2px;background:rgba(16,185,129,.1);border-radius:2px;overflow:hidden;margin-bottom:8px}
+    .ia-loading-fill{height:100%;background:linear-gradient(90deg,var(--verde),var(--verde-claro));animation:shimmer 1.5s ease-in-out infinite;background-size:200%}
+    .ia-loading-text{font-size:.78rem;color:#8FA0AA}
+    .ia-result{display:none}
+    .ia-skills{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+    .ia-skill{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:var(--verde-dark);border-radius:100px;padding:3px 10px;font-size:.73rem;font-weight:600}
+    .ia-score{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(16,185,129,.12)}
+    .ia-score-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--verde-dark)}
+    .ia-score-label{font-size:.76rem;color:#8FA0AA;line-height:1.4}
 
     /* TOAST */
-    .toast{position:fixed;bottom:24px;right:24px;background:#0F2A45;color:#fff;border-radius:12px;padding:12px 18px;font-size:.86rem;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:3000;transform:translateY(60px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px;max-width:320px}
+    .toast{position:fixed;bottom:24px;right:24px;background:#0A3D4A;color:#fff;border-radius:12px;padding:12px 18px;font-size:.86rem;font-weight:600;box-shadow:0 8px 32px rgba(10,61,74,.3);z-index:3000;transform:translateY(60px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px;max-width:320px}
     .toast.show{transform:translateY(0);opacity:1}
     .toast.success{border-left:3px solid var(--verde)}
-    .toast.error{border-left:3px solid #ff5f57}
+    .toast.error{border-left:3px solid #ef4444}
 
-    /* RESPONSIVE */
-    @media(max-width:900px){.dash-layout{grid-template-columns:1fr}.dash-sidebar{display:none}}
-    @media(max-width:600px){.auth-box{padding:28px 20px}.field-row{grid-template-columns:1fr}}
+    /* MOBILE */
+    /* BOTTOM NAV - MOBILE */
+    .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,#0A3D4A,#083240);border-top:1px solid rgba(212,175,80,.15);z-index:200;padding:0 4px 4px}
+    .mobile-nav-inner{display:flex;justify-content:space-around;align-items:center}
+    .mnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;background:none;border:none;cursor:pointer;transition:all .2s;border-radius:10px;min-width:0}
+    .mnav-btn.active .mnav-icon{background:rgba(212,175,80,.15);color:#F0CE70}
+    .mnav-btn.active .mnav-label{color:#F0CE70}
+    .mnav-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all .2s}
+    .mnav-label{font-family:'Syne',sans-serif;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.3px}
+
+    @media(max-width:900px){
+      .dash-layout{grid-template-columns:1fr}
+      .dash-sidebar{display:none}
+      .mobile-nav{display:block}
+      .dash-content{padding:20px 16px 90px}
+    }
+    @media(max-width:600px){
+      /* AUTH */
+      .auth-box{padding:24px 16px;border-radius:18px}
+      .auth-title{font-size:1.3rem}
+      .field-row{grid-template-columns:1fr}
+      /* PERFIL TIPS */
+      #perfilTips{grid-template-columns:1fr!important}
+      /* TOPBAR */
+      .topbar-back-text{display:none}
+      /* PUBLIC VACANTES HERO */
+      .pub-stats{flex-direction:column!important;gap:0!important}
+      .pub-stats>div{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.08)}
+      .pub-stats>div:last-child{border-bottom:none}
+      /* FILTROS */
+      #pubSectorChips > div:first-child{flex-direction:column!important;gap:6px!important}
+      #pubSectorChips > div:last-child{flex-direction:column!important;align-items:stretch!important}
+      #pubSectorChips select{width:100%}
+      /* VACANTE CARDS */
+      .vac-card-inner{flex-direction:column!important;gap:10px!important}
+      .vac-card-right{flex-direction:row!important;justify-content:space-between!important;align-items:center!important;width:100%!important}
+      /* FORM */
+      .field-row{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
@@ -152,8 +185,54 @@
 
 <div class="portal-wrap" id="portalWrap">
 
-  <!-- ═══ PANTALLA: LOGIN ═══ -->
-  <div class="auth-screen active" id="screenLogin">
+  <!-- ═══ PANTALLA: VACANTES PÚBLICAS ═══ -->
+  <div id="screenVacantesPublicas" style="min-height:100vh;background:#F2F9FA;">
+    <div style="background:linear-gradient(160deg,#072E38,#0A4A58);padding:clamp(80px,10vw,120px) clamp(20px,5%,60px) clamp(40px,6vw,72px);text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,151,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,151,.025) 1px,transparent 1px);background-size:50px 50px;pointer-events:none"></div>
+      <div style="position:relative;z-index:1;max-width:600px;margin:0 auto;">
+        <img src="../assets/logo.png" alt="FLH" style="height:48px;margin:0 auto 20px;display:block;">
+        <div style="font-size:.78rem;font-weight:700;color:var(--verde);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Bolsa de empleo</div>
+        <h1 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:#fff;margin-bottom:16px;line-height:1.15;">Oportunidades de empleo<br><span style="color:var(--verde)">en Guatemala</span></h1>
+        <p style="color:rgba(255,255,255,.5);font-size:.95rem;line-height:1.7;margin-bottom:28px;">Encuentra tu próxima oportunidad laboral. Regístrate y aplica en minutos.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showScreen('screenRegister')" style="font-size:.9rem;">Crear cuenta y aplicar →</button>
+          <button class="btn btn-outline" onclick="showScreen('screenLogin')" style="font-size:.9rem;border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7);">Ya tengo cuenta</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:860px;margin:0 auto;padding:24px clamp(12px,4%,40px) 80px;">
+      <!-- filtro rápido -->
+      <div id="pubSectorChips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;"></div>
+      <!-- lista -->
+      <div id="pubVacantesList"><div style="text-align:center;padding:60px;color:var(--muted);">Cargando vacantes...</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ PANTALLA: CAMBIAR CONTRASEÑA ═══ -->
+  <div class="auth-screen" id="screenChangePass">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <img src="../assets/logo.png" alt="FLH">
+        <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:#0A3D4A;">Factor Laboral <span style="color:var(--verde)">Humano</span></div>
+      </div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:#0A3D4A;margin-bottom:6px">Nueva contraseña</h2>
+      <p style="font-size:.87rem;color:#6B7E8A;margin-bottom:22px">Ingresa tu nueva contraseña para continuar.</p>
+      <div id="changePassMsg" style="display:none;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px"></div>
+      <div class="field-group">
+        <label>Nueva contraseña</label>
+        <input type="password" id="newPass1" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="field-group">
+        <label>Confirmar contraseña</label>
+        <input type="password" id="newPass2" placeholder="Repite la contraseña" onkeydown="if(event.key==='Enter')changePassword()">
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:4px" onclick="changePassword()">
+        Guardar nueva contraseña →
+      </button>
+    </div>
+  </div>
+  <div class="auth-screen" id="screenLogin">
     <div class="auth-box">
       <div class="auth-logo">
         <img src="../assets/logo.png" alt="FLH">
@@ -178,8 +257,32 @@
       <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:4px" onclick="loginEmail_submit()">
         Iniciar sesión →
       </button>
+      <div style="text-align:center;margin-top:12px">
+        <a onclick="showScreen('screenForgot')" style="font-size:.82rem;color:var(--verde);cursor:pointer;font-weight:600">¿Olvidaste tu contraseña?</a>
+      </div>
       <div class="auth-switch">¿No tienes cuenta? <a onclick="showScreen('screenRegister')">Regístrate gratis</a></div>
       <div style="text-align:center;margin-top:16px"><a href="../index.html" style="font-size:.78rem;color:rgba(255,255,255,.25);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(0,200,151,.7)'" onmouseout="this.style.color='rgba(255,255,255,.25)'">← Volver al sitio principal</a></div>
+    </div>
+  </div>
+
+  <!-- ═══ PANTALLA: RECUPERAR CONTRASEÑA ═══ -->
+  <div class="auth-screen" id="screenForgot">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <img src="../assets/logo.png" alt="FLH">
+        <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--azul);">Factor Laboral <span style="color:var(--verde)">Humano</span></div>
+      </div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--azul);margin-bottom:6px">Recuperar contraseña</h2>
+      <p style="font-size:.87rem;color:var(--muted);margin-bottom:22px">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <div id="forgotMsg" style="display:none;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px"></div>
+      <div class="field-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="forgotEmail" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter')sendReset()">
+      </div>
+      <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-top:4px" onclick="sendReset()">
+        Enviar enlace →
+      </button>
+      <div class="auth-switch"><a onclick="showScreen('screenLogin')">← Volver al inicio de sesión</a></div>
     </div>
   </div>
 
@@ -224,17 +327,19 @@
   <!-- ═══ DASHBOARD ═══ -->
   <div class="dashboard" id="dashboard">
     <!-- Topbar -->
-    <div style="background:#060F1E;border-bottom:1px solid rgba(0,200,151,.1);padding:0 clamp(16px,3%,40px);display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;">
+    <div style="background:linear-gradient(90deg,#0A3D4A,#0E5F6E);border-bottom:1px solid rgba(212,175,80,.15);padding:0 clamp(16px,3%,40px);display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100;">
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="../assets/logo.png" alt="FLH" style="height:34px;filter:brightness(1.2)">
+        <img src="../assets/logo.png" alt="FLH" style="height:30px;filter:brightness(1.2)">
         <div>
           <div style="font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:#fff;line-height:1.1">Factor Laboral <span style="color:var(--verde)">Humano</span></div>
-          <div style="font-size:.6rem;color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase">Portal de candidatos</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase;display:none;display:block" class="portal-label">Portal de candidatos</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:12px">
-        <a href="../index.html" style="font-size:.78rem;color:rgba(255,255,255,.4);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.08);transition:all .2s" onmouseover="this.style.borderColor='rgba(0,200,151,.3)';this.style.color='rgba(0,200,151,.8)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.color='rgba(255,255,255,.4)'">← Sitio principal</a>
-        <div id="topbar-avatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--verde),var(--azul));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.82rem;color:#fff;cursor:pointer;overflow:hidden" onclick="showPanel('panelPerfil')">?</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div id="topbar-avatar" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--verde),var(--azul));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.82rem;color:#fff;cursor:pointer;overflow:hidden;border:2px solid rgba(212,175,80,.4);flex-shrink:0" onclick="document.getElementById('photoInputTopbar').click()" title="Cambiar foto">?</div>
+          <input type="file" id="photoInputTopbar" style="display:none" accept="image/*" onchange="photoSelected(this)">
+        </div>
       </div>
     </div>
 
@@ -244,7 +349,7 @@
       <div class="dash-sidebar">
         <div class="sidebar-profile-mini">
           <!-- Foto de perfil -->
-          <div class="sidebar-photo-wrap" onclick="document.getElementById('photoInput').click()">
+          <div class="sidebar-photo-wrap" onclick="document.getElementById('photoInputTopbar').click()">
             <img class="sidebar-photo" id="sidebarPhoto" src="https://ui-avatars.com/api/?name=?&background=0A2540&color=00C897&size=128" alt="Foto">
             <div class="sidebar-photo-overlay">📷<br>Cambiar foto</div>
           </div>
@@ -271,78 +376,112 @@
         <!-- PANEL PERFIL -->
         <div id="panelPerfil" class="dash-panel active">
           <div class="content-title">Mi Perfil</div>
-          <div class="content-sub">Completa tu información para aparecer en nuestras búsquedas de candidatos.</div>
-          <div class="form-card">
-            <div class="form-card-title">Información personal</div>
-            <div class="field-row">
-              <div class="field-group"><label>Nombre *</label><input type="text" id="pNombre" placeholder="Ana"></div>
-              <div class="field-group"><label>Apellido *</label><input type="text" id="pApellido" placeholder="García"></div>
+          <div class="content-sub">Mantén tu información actualizada para que las empresas puedan encontrarte.</div>
+
+          <!-- TIPS + IA TEASER -->
+          <div id="perfilTips" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+            <div style="background:linear-gradient(135deg,#EBF8F2,#F0FBF6);border:1.5px solid rgba(16,185,129,.2);border-radius:16px;padding:20px">
+              <div style="font-size:1.4rem;margin-bottom:8px">📝</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#059669;margin-bottom:5px">Consejos para tu CV</div>
+              <ul style="font-size:.82rem;color:#047857;line-height:1.9;padding-left:14px">
+                <li>Usa verbos de acción: <em>lideré, desarrollé, aumenté</em></li>
+                <li>Incluye logros con números cuando puedas</li>
+                <li>Máximo 2 páginas, sin errores ortográficos</li>
+                <li>Foto profesional, fondo neutro</li>
+              </ul>
             </div>
-            <div class="field-row">
-              <div class="field-group"><label>Teléfono</label><input type="tel" id="pTelefono" placeholder="3719-0890"></div>
-              <div class="field-group"><label>Departamento</label>
-                <select id="pDepartamento">
-                  <option value="">Selecciona...</option>
-                  <option>Ciudad de Guatemala</option><option>Escuintla</option><option>Quetzaltenango</option>
-                  <option>Sacatepéquez</option><option>Chimaltenango</option><option>Alta Verapaz</option>
-                  <option>Baja Verapaz</option><option>El Progreso</option><option>Zacapa</option>
-                  <option>Chiquimula</option><option>Jalapa</option><option>Jutiapa</option>
-                  <option>Santa Rosa</option><option>Sololá</option><option>Totonicapán</option>
-                  <option>Huehuetenango</option><option>Quiché</option><option>San Marcos</option>
-                  <option>Retalhuleu</option><option>Suchitepéquez</option><option>Petén</option><option>Izabal</option>
-                </select>
-              </div>
-            </div>
-            <div class="field-group"><label>LinkedIn (opcional)</label>
-              <input type="url" id="pLinkedin" placeholder="https://linkedin.com/in/tu-perfil">
+            <div style="background:linear-gradient(135deg,#EFF6FF,#F0F7FF);border:1.5px solid rgba(46,134,193,.2);border-radius:16px;padding:20px;cursor:pointer" onclick="showPanel('panelCV')">
+              <div style="font-size:1.4rem;margin-bottom:8px">🤖</div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#0E5F6E;margin-bottom:5px">IA analiza tu CV</div>
+              <p style="font-size:.82rem;color:#5A7A96;line-height:1.7;margin-bottom:12px">¿Está bien tu CV? Nuestra inteligencia artificial lo revisa y te dice qué mejorar para destacar ante los reclutadores.</p>
+              <span style="font-size:.78rem;font-weight:700;color:#2E86C1">Ir a Mi CV →</span>
             </div>
           </div>
-          <div class="form-card">
-            <div class="form-card-title">Experiencia profesional</div>
-            <div class="field-row">
-              <div class="field-group"><label>Profesión / Puesto que buscas</label><input type="text" id="pProfesion" placeholder="Ej. Contador, Ingeniero..."></div>
-              <div class="field-group"><label>Años de experiencia</label>
-                <select id="pExperiencia">
+
+          <!-- PROGRESS SUMMARY -->
+          <div id="perfilResumen" style="background:#fff;border:1.5px solid #E1EAF3;border-radius:16px;padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
+            <div style="flex:1">
+              <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:#0A3D4A;margin-bottom:4px">Completado: <span id="completeNum2" style="color:var(--verde)">0%</span></div>
+              <div style="height:6px;background:#E8E0D4;border-radius:3px;overflow:hidden"><div id="completeFill2" style="height:100%;background:linear-gradient(90deg,#D4AF50,#F0CE70);border-radius:3px;transition:width .5s;width:0%"></div></div>
+            </div>
+            <button onclick="togglePerfilForm()" style="padding:9px 20px;border-radius:10px;background:#0E5F6E;color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;border:none;cursor:pointer;white-space:nowrap;transition:all .2s" onmouseover="this.style.background='#1A7A8A'" onmouseout="this.style.background='#0E5F6E'" id="perfilEditBtn">✏️ Editar información</button>
+          </div>
+
+          <!-- COLLAPSIBLE FORM -->
+          <div id="perfilFormWrap" style="display:none">
+            <div class="form-card">
+              <div class="form-card-title">Información personal</div>
+              <div class="field-row">
+                <div class="field-group"><label>Nombre *</label><input type="text" id="pNombre" placeholder="Ana"></div>
+                <div class="field-group"><label>Apellido *</label><input type="text" id="pApellido" placeholder="García"></div>
+              </div>
+              <div class="field-row">
+                <div class="field-group"><label>Teléfono</label><input type="tel" id="pTelefono" placeholder="3719-0890"></div>
+                <div class="field-group"><label>Departamento</label>
+                  <select id="pDepartamento">
+                    <option value="">Selecciona...</option>
+                    <option>Ciudad de Guatemala</option><option>Escuintla</option><option>Quetzaltenango</option>
+                    <option>Sacatepéquez</option><option>Chimaltenango</option><option>Alta Verapaz</option>
+                    <option>Baja Verapaz</option><option>El Progreso</option><option>Zacapa</option>
+                    <option>Chiquimula</option><option>Jalapa</option><option>Jutiapa</option>
+                    <option>Santa Rosa</option><option>Sololá</option><option>Totonicapán</option>
+                    <option>Huehuetenango</option><option>Quiché</option><option>San Marcos</option>
+                    <option>Retalhuleu</option><option>Suchitepéquez</option><option>Petén</option><option>Izabal</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-group"><label>LinkedIn (opcional)</label>
+                <input type="url" id="pLinkedin" placeholder="https://linkedin.com/in/tu-perfil">
+              </div>
+            </div>
+            <div class="form-card">
+              <div class="form-card-title">Experiencia profesional</div>
+              <div class="field-row">
+                <div class="field-group"><label>Profesión / Puesto que buscas</label><input type="text" id="pProfesion" placeholder="Ej. Contador, Ingeniero..."></div>
+                <div class="field-group"><label>Años de experiencia</label>
+                  <select id="pExperiencia">
+                    <option value="">Selecciona...</option>
+                    <option>Sin experiencia</option><option>Menos de 1 año</option>
+                    <option>1–2 años</option><option>3–5 años</option>
+                    <option>5–10 años</option><option>Más de 10 años</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-group"><label>Nivel de estudios</label>
+                <select id="pEstudios">
                   <option value="">Selecciona...</option>
-                  <option>Sin experiencia</option><option>Menos de 1 año</option>
-                  <option>1–2 años</option><option>3–5 años</option>
-                  <option>5–10 años</option><option>Más de 10 años</option>
+                  <option>Primaria</option><option>Básico</option><option>Diversificado</option>
+                  <option>Técnico universitario</option><option>Licenciatura</option>
+                  <option>Maestría</option><option>Doctorado</option>
                 </select>
               </div>
-            </div>
-            <div class="field-group"><label>Nivel de estudios</label>
-              <select id="pEstudios">
-                <option value="">Selecciona...</option>
-                <option>Primaria</option><option>Básico</option><option>Diversificado</option>
-                <option>Técnico universitario</option><option>Licenciatura</option>
-                <option>Maestría</option><option>Doctorado</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-group"><label>Pretensión salarial (Q/mes)</label>
-                <input type="text" id="pSalario" placeholder="Ej. Q5,000 – Q7,000">
+              <div class="field-row">
+                <div class="field-group"><label>Pretensión salarial (Q/mes)</label>
+                  <input type="text" id="pSalario" placeholder="Ej. Q5,000 – Q7,000">
+                </div>
+                <div class="field-group"><label>Disponibilidad</label>
+                  <select id="pDisponibilidad">
+                    <option value="">Selecciona...</option>
+                    <option>Inmediata</option><option>15 días</option>
+                    <option>1 mes</option><option>Más de 1 mes</option>
+                  </select>
+                </div>
               </div>
-              <div class="field-group"><label>Disponibilidad</label>
-                <select id="pDisponibilidad">
-                  <option value="">Selecciona...</option>
-                  <option>Inmediata</option>
-                  <option>15 días</option>
-                  <option>1 mes</option>
-                  <option>Más de 1 mes</option>
-                </select>
+              <div class="field-group"><label>Idiomas</label>
+                <input type="text" id="pIdiomas" placeholder="Ej. Español (nativo), Inglés (intermedio)">
+              </div>
+              <div class="field-group"><label>Habilidades principales</label>
+                <input type="text" id="pHabilidades" placeholder="Ej. Excel, Atención al cliente, Manejo de inventarios...">
+              </div>
+              <div class="field-group"><label>Sobre mí (opcional)</label>
+                <textarea id="pSobreMi" placeholder="Cuéntanos sobre ti, tu experiencia y lo que buscas..."></textarea>
               </div>
             </div>
-            <div class="field-group"><label>Idiomas</label>
-              <input type="text" id="pIdiomas" placeholder="Ej. Español (nativo), Inglés (intermedio), Francés (básico)">
-            </div>
-            <div class="field-group"><label>Habilidades principales</label>
-              <input type="text" id="pHabilidades" placeholder="Ej. Excel, Atención al cliente, Manejo de inventarios...">
-            </div>
-            <div class="field-group"><label>Sobre mí (opcional)</label>
-              <textarea id="pSobreMi" placeholder="Cuéntanos sobre ti, tu experiencia y lo que buscas..."></textarea>
+            <div style="display:flex;gap:10px;margin-bottom:20px">
+              <button class="btn btn-primary btn-lg" onclick="saveProfile()">Guardar cambios →</button>
+              <button onclick="togglePerfilForm()" style="padding:12px 20px;border-radius:12px;background:#F0F5FB;color:#5A7A96;font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;border:1.5px solid #E1EAF3;cursor:pointer">Cancelar</button>
             </div>
           </div>
-          <button class="btn btn-primary btn-lg" onclick="saveProfile()">Guardar cambios →</button>
         </div>
 
         <!-- PANEL CV -->
@@ -388,14 +527,31 @@
         <div id="panelVacantes" class="dash-panel">
           <div class="content-title">Vacantes disponibles</div>
           <div class="content-sub">Aplica con un clic. Te contactaremos si tu perfil es seleccionado.</div>
-          <div class="vacantes-filters">
-            <button class="vf-btn active" onclick="filterVacantes('',this)">Todas</button>
-            <button class="vf-btn" onclick="filterVacantes('Tecnología',this)">Tecnología</button>
-            <button class="vf-btn" onclick="filterVacantes('Finanzas',this)">Finanzas</button>
-            <button class="vf-btn" onclick="filterVacantes('Operaciones',this)">Operaciones</button>
-            <button class="vf-btn" onclick="filterVacantes('Manufactura',this)">Manufactura</button>
-            <button class="vf-btn" onclick="filterVacantes('Comercial',this)">Comercial</button>
+
+          <!-- FILTROS -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px">
+            <div style="flex:1;min-width:160px">
+              <div style="font-size:.68rem;font-weight:700;color:#7A8E98;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">📍 Departamento</div>
+              <select id="vDptoFilter" onchange="onVacDptoChange(this.value)" style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid #E0D8CC;font-family:'DM Sans',sans-serif;font-size:.86rem;color:#1A2A30;background:#FDFAF6;outline:none;cursor:pointer">
+                <option value="">Todos los departamentos</option>
+                <option>Ciudad de Guatemala</option><option>Chimaltenango</option><option>Escuintla</option>
+                <option>Sacatepéquez</option><option>Quetzaltenango</option><option>Alta Verapaz</option>
+                <option>Baja Verapaz</option><option>El Progreso</option><option>Zacapa</option>
+                <option>Chiquimula</option><option>Jalapa</option><option>Jutiapa</option>
+                <option>Santa Rosa</option><option>Sololá</option><option>Totonicapán</option>
+                <option>Huehuetenango</option><option>Quiché</option><option>San Marcos</option>
+                <option>Retalhuleu</option><option>Suchitepéquez</option><option>Petén</option><option>Izabal</option>
+              </select>
+            </div>
+            <div id="vSectorFilterWrap" style="flex:1;min-width:160px;display:none">
+              <div style="font-size:.68rem;font-weight:700;color:#7A8E98;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🏢 Área</div>
+              <select id="vSectorFilter" onchange="onVacSectorChange(this.value)" style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid #E0D8CC;font-family:'DM Sans',sans-serif;font-size:.86rem;color:#1A2A30;background:#FDFAF6;outline:none;cursor:pointer">
+                <option value="">Todas las áreas</option>
+              </select>
+            </div>
+            <button onclick="resetVacFiltros()" id="vResetBtn" style="display:none;padding:9px 14px;border-radius:10px;background:#F2F9FA;border:1.5px solid #D9EDF0;color:#5A7A85;font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;white-space:nowrap">✕ Limpiar</button>
           </div>
+          <div id="vResultCount" style="font-size:.8rem;color:#7A8E98;margin-bottom:12px"></div>
           <div id="vacantesList"></div>
         </div>
 
@@ -414,6 +570,27 @@
 
       </div><!-- /dash-content -->
     </div><!-- /dash-layout -->
+    <!-- MOBILE BOTTOM NAV -->
+    <div class="mobile-nav" id="mobileNav">
+      <div class="mobile-nav-inner">
+        <button class="mnav-btn active" id="mnav-panelPerfil" onclick="showPanel('panelPerfil')">
+          <div class="mnav-icon">👤</div><span class="mnav-label">Perfil</span>
+        </button>
+        <button class="mnav-btn" id="mnav-panelCV" onclick="showPanel('panelCV')">
+          <div class="mnav-icon">📄</div><span class="mnav-label">Mi CV</span>
+        </button>
+        <button class="mnav-btn" id="mnav-panelVacantes" onclick="showPanel('panelVacantes')">
+          <div class="mnav-icon">💼</div><span class="mnav-label">Vacantes</span>
+        </button>
+        <button class="mnav-btn" id="mnav-panelAplicaciones" onclick="showPanel('panelAplicaciones')">
+          <div class="mnav-icon">📋</div><span class="mnav-label">Apliqué</span>
+        </button>
+        <button class="mnav-btn" onclick="logout()">
+          <div class="mnav-icon">🚪</div><span class="mnav-label">Salir</span>
+        </button>
+      </div>
+    </div>
+
   </div><!-- /dashboard -->
 
 </div><!-- /portal-wrap -->
@@ -436,39 +613,250 @@ const sb = window.supabase
 let currentUser = null;
 let userProfile = {};
 let appliedVacantes = new Set();
-const VACANTES = [
-  { id:1, titulo:'Desarrollador Full Stack · Node.js + React', sector:'Tecnología', salario:'Q14,000–Q18,000', tipo:'Presencial/Híbrido', jornada:'Tiempo completo', icon:'💻', exp:'3+ años', tags:['JavaScript','Node.js','React'] },
-  { id:2, titulo:'Gerente de Finanzas', sector:'Finanzas', salario:'Q22,000–Q28,000', tipo:'Presencial', jornada:'Tiempo completo', icon:'📊', exp:'5+ años', tags:['CPA preferido','Excel avanzado'] },
-  { id:3, titulo:'Supervisor de Producción', sector:'Manufactura', salario:'Q9,000–Q13,000', tipo:'Presencial', jornada:'Tiempo completo', icon:'🏭', exp:'3+ años', tags:['Ing. Industrial','Manufactura'] },
-  { id:4, titulo:'Ejecutivo de Ventas Corporativas', sector:'Comercial', salario:'Q7,500 + comisiones', tipo:'Híbrido', jornada:'Tiempo completo', icon:'🛒', exp:'2+ años', tags:['Ventas B2B','CRM'] },
-  { id:5, titulo:'Coordinador de Logística', sector:'Operaciones', salario:'Q10,000–Q14,000', tipo:'Presencial', jornada:'Tiempo completo', icon:'🚛', exp:'4+ años', tags:['Supply Chain','SAP'] },
-  { id:6, titulo:'Especialista de RRHH', sector:'Operaciones', salario:'Q7,000–Q9,500', tipo:'Híbrido', jornada:'Tiempo completo', icon:'🎓', exp:'2+ años', tags:['Psicología','Nómina'] },
-];
+let VACANTES = []; // Se carga dinámicamente desde Supabase
+
+async function loadVacantesPortal(){
+  if(!sb) return;
+  const {data, error} = await sb.from('vacantes').select('*').eq('activa',true).order('created_at',{ascending:false});
+  if(!error && data){
+    VACANTES = data.map(v=>({
+      id: v.id,
+      titulo: v.titulo||'',
+      sector: v.sector||'General',
+      salario: v.salario||'A convenir',
+      tipo: v.modalidad||v.tipo||'Presencial',
+      jornada: v.jornada||'Tiempo completo',
+      icon: v.icon||'💼',
+      exp: v.experiencia||v.exp||'—',
+      tags: v.tags ? (Array.isArray(v.tags)?v.tags:v.tags.split(',').map(t=>t.trim())) : []
+    }));
+  }
+  renderVacantes(currentFilter);
+}
+
+// ── VACANTES PÚBLICAS (sin login) ──────────────────
+let pubVacantes=[], pubSectorActivo='';
+async function loadVacantesPublicas(){
+  const list=document.getElementById('pubVacantesList');
+  if(!sb||!list)return;
+  const{data,error}=await sb.from('vacantes').select('*').eq('activa',true).order('created_at',{ascending:false});
+  if(error||!data){list.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)">No hay vacantes disponibles en este momento.</div>';return;}
+  pubVacantes=data;
+  renderSectorChips();
+  renderVacantesPublicas('');
+}
+let pubFiltros={sector:'',dpto:'',orden:'nuevo'};
+
+const GT_DPTOS=['Ciudad de Guatemala','Chimaltenango','Escuintla','Sacatepéquez','Quetzaltenango',
+  'Alta Verapaz','Baja Verapaz','El Progreso','Zacapa','Chiquimula','Jalapa','Jutiapa',
+  'Santa Rosa','Sololá','Totonicapán','Huehuetenango','Quiché','San Marcos',
+  'Retalhuleu','Suchitepéquez','Petén','Izabal'];
+
+function buildPubFilters(){
+  // Mostrar dptos que tienen vacantes (o todos si ninguna tiene dpto)
+  const dptosConVacantes=new Set(pubVacantes.map(v=>v.departamento).filter(Boolean));
+  const dptos = dptosConVacantes.size > 0
+    ? GT_DPTOS.filter(d=>dptosConVacantes.has(d))
+    : GT_DPTOS;
+  const chips=document.getElementById('pubSectorChips');
+  if(!chips)return;
+  chips.innerHTML=`
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
+      <div>
+        <div style="font-size:.72rem;font-weight:700;color:#4D7A85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">📍 Departamento</div>
+        <select id="filtroDpto" onchange="onDptoChange(this.value)" style="padding:9px 16px;border-radius:10px;border:1.5px solid #D9EDF0;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#0F2B33;background:#fff;outline:none;cursor:pointer;min-width:220px">
+          <option value="">Todos los departamentos</option>
+          ${dptos.map(d=>`<option value="${d}">${d}</option>`).join('')}
+        </select>
+      </div>
+      <div id="filtroSectorWrap" style="display:none">
+        <div style="font-size:.72rem;font-weight:700;color:#4D7A85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🏢 Área / Sector</div>
+        <div id="filtroSectorChips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div style="margin-left:auto">
+        <div style="font-size:.72rem;font-weight:700;color:#4D7A85;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">🕐 Ordenar</div>
+        <select onchange="setPubFiltro('orden',this.value)" style="padding:9px 16px;border-radius:10px;border:1.5px solid #D9EDF0;font-family:'DM Sans',sans-serif;font-size:.88rem;color:#0F2B33;background:#fff;outline:none;cursor:pointer">
+          <option value="nuevo">Más reciente primero</option>
+          <option value="antiguo">Más antiguo primero</option>
+        </select>
+      </div>
+    </div>
+    <div id="resultCount" style="font-size:.82rem;color:#4D7A85;margin-bottom:12px"></div>`;
+}
+
+function onDptoChange(dpto){
+  pubFiltros.dpto=dpto;
+  pubFiltros.sector='';
+  const wrap=document.getElementById('filtroSectorWrap');
+  const chipsEl=document.getElementById('filtroSectorChips');
+  if(!wrap||!chipsEl)return;
+  if(!dpto){
+    wrap.style.display='none';
+  } else {
+    // Filter vacantes by dpto - if vacante has no departamento, skip it when dpto selected
+    const vacsEnDpto=pubVacantes.filter(v=>!v.departamento||v.departamento===dpto);
+    const sectores=[...new Set(vacsEnDpto.map(v=>v.sector).filter(Boolean))].sort();
+    if(sectores.length>0){
+      wrap.style.display='block';
+      chipsEl.innerHTML=`<button onclick="setSectorFiltro('')" class="pub-chip active" id="schip-todos">Todos</button>`
+        +sectores.map(s=>`<button onclick="setSectorFiltro('${s}')" class="pub-chip" id="schip-${s.replace(/[^a-zA-Z]/g,'_')}">${s}</button>`).join('');
+    } else {
+      wrap.style.display='none';
+    }
+  }
+  renderVacantesPublicas();
+}
+
+function setSectorFiltro(sector){
+  pubFiltros.sector=sector;
+  document.querySelectorAll('.pub-chip').forEach(c=>c.classList.remove('active'));
+  const chip=document.getElementById(sector?`schip-${sector.replace(/[^a-zA-Z]/g,'_')}`:'schip-todos');
+  if(chip)chip.classList.add('active');
+  renderVacantesPublicas();
+}
+
+function setPubFiltro(key,val){ pubFiltros[key]=val; renderVacantesPublicas(); }
+
+function renderSectorChips(){
+  buildPubFilters();
+  renderVacantesPublicas();
+  const el=document.getElementById('statVacantes');
+  if(el)el.textContent=pubVacantes.length||'0';
+}
+
+function renderVacantesPublicas(){
+  const list=document.getElementById('pubVacantesList');
+  if(!list)return;
+  let filtered=[...pubVacantes];
+  if(pubFiltros.dpto) filtered=filtered.filter(v=>!v.departamento||v.departamento===pubFiltros.dpto);
+  if(pubFiltros.sector) filtered=filtered.filter(v=>v.sector===pubFiltros.sector);
+  filtered.sort((a,b)=>{
+    const da=new Date(a.created_at||0), db=new Date(b.created_at||0);
+    return pubFiltros.orden==='antiguo'?da-db:db-da;
+  });
+  const rc=document.getElementById('resultCount');
+  if(rc)rc.textContent=filtered.length===1?'1 vacante encontrada':`${filtered.length} vacantes encontradas`;
+  if(!filtered.length){list.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)">No hay vacantes con estos filtros. Intenta con otro departamento o sector.</div>';return;}
+  list.innerHTML=filtered.map(v=>{
+    const fecha=v.created_at?new Date(v.created_at).toLocaleDateString('es-GT',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    const hasExtra=v.descripcion||v.exp_requerida;
+    return `<div style="background:#fff;border:1.5px solid #E1EAF3;border-radius:18px;margin-bottom:12px;overflow:hidden;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 6px 24px rgba(26,60,94,.1)'" onmouseout="this.style.boxShadow='none'">
+      <div style="padding:16px 18px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+        <div style="width:46px;height:46px;border-radius:12px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">${v.icon||'💼'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:#0E5F6E;margin-bottom:3px">${v.titulo}</div>
+          <div style="font-size:.78rem;color:#5A7A96;margin-bottom:8px">📍 ${v.departamento||'Guatemala'} · ${v.sector||'General'} · 🗓 ${fecha}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <span style="font-size:.71rem;font-weight:600;padding:3px 9px;border-radius:100px;background:rgba(16,185,129,.1);color:#059669">${v.jornada||'Tiempo completo'}</span>
+            <span style="font-size:.71rem;font-weight:600;padding:3px 9px;border-radius:100px;background:#F0F5FB;color:#5A7A96">${v.tipo||'Presencial'}</span>
+            ${v.exp_requerida?`<span style="font-size:.71rem;font-weight:600;padding:3px 9px;border-radius:100px;background:#F0F5FB;color:#5A7A96">${v.exp_requerida}</span>`:''}
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+          <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:#0E5F6E;white-space:nowrap">${v.salario||'A convenir'}</div>
+          <button onclick="showScreen('screenRegister')" style="padding:7px 16px;border-radius:10px;background:linear-gradient(135deg,#10B981,#34D399);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;border:none;cursor:pointer;transition:all .2s" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='none'">Aplicar →</button>
+        </div>
+      </div>
+      ${hasExtra?`<div id="extra-pub-${v.id}" style="display:none;padding:0 22px 18px;border-top:1px solid #EDF2F7">
+        ${v.descripcion?`<p style="font-size:.84rem;color:#5A7A96;margin-top:14px;line-height:1.7">${v.descripcion}</p>`:''}
+      </div>
+      <button onclick="toggleExtraPub(${v.id},this)" style="width:100%;padding:10px;background:#F4F7FB;border:none;border-top:1px solid #EDF2F7;font-family:'Syne',sans-serif;font-size:.74rem;font-weight:700;color:#5A7A96;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px" onmouseover="this.style.background='#EBF2FA'" onmouseout="this.style.background='#F4F7FB'">
+        <span>Más información</span><span style="font-size:.7rem">▼</span>
+      </button>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleExtraPub(id, btn){
+  const el=document.getElementById('extra-pub-'+id);
+  if(!el)return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  const span=btn.querySelector('span:last-child');
+  if(span)span.textContent=open?'▼':'▲';
+  btn.querySelector('span:first-child').textContent=open?'Más información':'Menos información';
+}
 
 // ── HELPERS ──────────────────────────────────
 function showScreen(id){
   document.querySelectorAll('.auth-screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('dashboard').classList.remove('active');
+  const pub=document.getElementById('screenVacantesPublicas');
+  if(pub) pub.style.display='none';
+  if(id==='screenVacantesPublicas'){
+    if(pub) pub.style.display='block';
+    return;
+  }
   const s=document.getElementById(id);
   if(s){s.classList.add('active');}
+}
+function togglePerfilForm(){
+  const wrap=document.getElementById('perfilFormWrap');
+  const btn=document.getElementById('perfilEditBtn');
+  if(!wrap)return;
+  const open=wrap.style.display==='block';
+  wrap.style.display=open?'none':'block';
+  if(btn)btn.textContent=open?'✏️ Editar información':'✕ Cancelar edición';
+  if(!open) fillProfileForm();
 }
 function showPanel(id){
   document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.dash-nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mnav-btn').forEach(b=>b.classList.remove('active'));
   const panel=document.getElementById(id);
   if(panel)panel.classList.add('active');
   const nav=document.getElementById('nav-'+id);
   if(nav)nav.classList.add('active');
+  const mnav=document.getElementById('mnav-'+id);
+  if(mnav)mnav.classList.add('active');
   if(id==='panelVacantes')renderVacantes('');
   if(id==='panelAplicaciones')renderAplicaciones();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 // Aliases for backwards compat
 function showDashPanel(id,btn){ showPanel(id); }
+let vacFiltros={dpto:'',sector:''};
+
+function onVacDptoChange(dpto){
+  vacFiltros.dpto=dpto;
+  vacFiltros.sector='';
+  const wrap=document.getElementById('vSectorFilterWrap');
+  const sel=document.getElementById('vSectorFilter');
+  const reset=document.getElementById('vResetBtn');
+  if(!wrap||!sel)return;
+  if(!dpto){
+    wrap.style.display='none';
+    if(reset)reset.style.display='none';
+  } else {
+    const sectores=[...new Set(VACANTES.filter(v=>!v.departamento||v.departamento===dpto).map(v=>v.sector).filter(Boolean))].sort();
+    sel.innerHTML='<option value="">Todas las áreas</option>'+sectores.map(s=>`<option>${s}</option>`).join('');
+    wrap.style.display=sectores.length?'block':'none';
+    if(reset)reset.style.display='block';
+  }
+  renderVacantes();
+}
+
+function onVacSectorChange(sector){
+  vacFiltros.sector=sector;
+  renderVacantes();
+}
+
+function resetVacFiltros(){
+  vacFiltros={dpto:'',sector:''};
+  const dp=document.getElementById('vDptoFilter');
+  const sc=document.getElementById('vSectorFilter');
+  const wrap=document.getElementById('vSectorFilterWrap');
+  const reset=document.getElementById('vResetBtn');
+  if(dp)dp.value='';
+  if(sc)sc.value='';
+  if(wrap)wrap.style.display='none';
+  if(reset)reset.style.display='none';
+  renderVacantes();
+}
+
 function filterVacantes(sector,btn){
-  document.querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  currentFilter=sector;
-  renderVacantes(sector);
+  vacFiltros.sector=sector;
+  renderVacantes();
 }
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
@@ -486,13 +874,12 @@ function updateProgress(){
     userProfile.nombre, userProfile.apellido, userProfile.telefono,
     userProfile.profesion, userProfile.experiencia, userProfile.estudios,
     userProfile.disponibilidad, userProfile.salario_pretension,
-    userProfile.habilidades,
-    userProfile.cv_filename
+    userProfile.habilidades, userProfile.cv_filename
   ];
   const filled=fields.filter(Boolean).length;
   const pct=Math.round((filled/fields.length)*100);
-  const cn=document.getElementById('completeNum');if(cn)cn.textContent=pct+'%';
-  const cf=document.getElementById('completeFill');if(cf)cf.style.width=pct+'%';
+  ['completeNum','completeNum2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pct+'%';});
+  ['completeFill','completeFill2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
 }
 
 // ── AUTH ─────────────────────────────────────
@@ -503,6 +890,33 @@ async function loginGoogle(){
   }
   await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
 }
+async function changePassword(){
+  const p1=document.getElementById('newPass1').value;
+  const p2=document.getElementById('newPass2').value;
+  const msg=document.getElementById('changePassMsg');
+  const ok=(s,t)=>{msg.style.cssText=`display:block;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:#059669;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px`;msg.textContent=t;}
+  const err=(t)=>{msg.style.cssText=`display:block;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#dc2626;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px`;msg.textContent=t;}
+  if(!p1||p1.length<6){err('La contraseña debe tener al menos 6 caracteres.');return;}
+  if(p1!==p2){err('Las contraseñas no coinciden.');return;}
+  const{error}=await sb.auth.updateUser({password:p1});
+  if(error){err('Error: '+error.message);}
+  else{ok('✓','Contraseña actualizada correctamente. Iniciando sesión...');setTimeout(()=>{window.location.hash='';window.location.reload();},1500);}
+}
+
+async function sendReset(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  const msg=document.getElementById('forgotMsg');
+  if(!email){msg.style.display='block';msg.style.cssText='display:block;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#dc2626;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px';msg.textContent='Ingresa tu correo.';return;}
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+  if(error){
+    msg.style.cssText='display:block;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#dc2626;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px';
+    msg.textContent='Error: '+error.message;
+  } else {
+    msg.style.cssText='display:block;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:#059669;border-radius:10px;padding:10px 14px;font-size:.84rem;margin-bottom:14px';
+    msg.textContent='✓ Enviamos un enlace a '+email+'. Revisa tu bandeja de entrada y spam.';
+  }
+}
+
 async function loginEmail_submit(){
   if(!sb){demoLogin();return;}
   const email=document.getElementById('loginEmail').value.trim();
@@ -538,8 +952,8 @@ async function register_submit(){
 }
 async function logout(){
   if(sb)await sb.auth.signOut();
-  currentUser=null;userProfile={};appliedVacantes.clear();
-  showScreen('screenLogin');
+  // Reload page to clear all state cleanly
+  window.location.reload();
 }
 
 // Demo login (cuando Supabase no está configurado)
@@ -552,6 +966,8 @@ function demoLogin(){
 // ── DASHBOARD ────────────────────────────────
 function showDashboard(){
   document.querySelectorAll('.auth-screen').forEach(s=>s.classList.remove('active'));
+  const pub=document.getElementById('screenVacantesPublicas');
+  if(pub) pub.style.display='none';
   document.getElementById('dashboard').classList.add('active');
   const nombre=userProfile.nombre||currentUser?.user_metadata?.nombre||'candidato';
   const apellido=userProfile.apellido||currentUser?.user_metadata?.apellido||'';
@@ -563,9 +979,29 @@ function showDashboard(){
   const ta=document.getElementById('topbar-avatar');
   if(ta){if(userProfile.photo_url){ta.innerHTML=`<img src="${userProfile.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;}else{ta.textContent=initial;}}
   updateSidebarPhoto();
-  fillProfileForm();updateProgress();renderVacantes('');
+  fillProfileForm();updateProgress();loadVacantesPortal();
   // Cargar aplicaciones guardadas
   getApps().forEach(a=>appliedVacantes.add(a.id));
+  // Sincronizar aplicaciones desde Supabase
+  if(sb && currentUser){
+    sb.from('aplicaciones').select('*').eq('user_id',currentUser.id).then(({data})=>{
+      if(data && data.length){
+        const stored=getApps();
+        const storedIds=new Set(stored.map(a=>a.id));
+        data.forEach(a=>{
+          appliedVacantes.add(a.vacante_id);
+          if(!storedIds.has(a.vacante_id)){
+            stored.push({id:a.vacante_id,titulo:'Vacante',sector:'',salario:'',icon:'💼',estado:a.estado||'revision',fecha:a.created_at?new Date(a.created_at).toLocaleDateString('es-GT'):'—'});
+          } else {
+            const existing=stored.find(s=>s.id===a.vacante_id);
+            if(existing) existing.estado=a.estado||existing.estado;
+          }
+        });
+        localStorage.setItem('flh_apps_'+currentUser.id,JSON.stringify(stored));
+        renderAplicaciones();
+      }
+    });
+  }
   // Mostrar CV guardado si existe
   if(userProfile.cv_filename){
     const cu=document.getElementById('cvUploaded');
@@ -614,22 +1050,42 @@ function updateSidebarPhoto(){
   const nombre=userProfile.nombre||'?';
   img.src=userProfile.photo_url||`https://ui-avatars.com/api/?name=${encodeURIComponent(nombre)}&background=0A2540&color=00C897&size=128`;
 }
-function photoSelected(input){
+async function photoSelected(input){
   const file=input.files[0];
   if(!file)return;
   if(file.size>3*1024*1024){showToast('La foto debe ser menor a 3MB','error');return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const url=e.target.result;
-    userProfile.photo_url=url;
-    // Guardar en localStorage (persiste entre sesiones)
-    if(currentUser) localStorage.setItem('flh_photo_'+currentUser.id, url);
-    updateSidebarPhoto();
-    const ta=document.getElementById('topbar-avatar');
-    if(ta)ta.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    showToast('Foto actualizada ✓');
-  };
-  reader.readAsDataURL(file);
+  showToast('Subiendo foto...');
+  try {
+    if(sb && currentUser){
+      // Subir a Supabase Storage
+      const ext=file.name.split('.').pop();
+      const path=`fotos/${currentUser.id}.${ext}`;
+      const{error:upErr}=await sb.storage.from('candidatos-media').upload(path,file,{upsert:true,contentType:file.type});
+      if(!upErr){
+        const{data}=sb.storage.from('candidatos-media').getPublicUrl(path);
+        const url=data.publicUrl+'?t='+Date.now(); // cache bust
+        userProfile.photo_url=url;
+        await sb.from('candidatos').update({photo_url:url}).eq('user_id',currentUser.id);
+        updateSidebarPhoto();
+        const ta=document.getElementById('topbar-avatar');
+        if(ta)ta.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+        showToast('Foto actualizada ✓');
+        return;
+      }
+    }
+    // Fallback: base64 en BD
+    const reader=new FileReader();
+    reader.onload=async e=>{
+      const url=e.target.result;
+      userProfile.photo_url=url;
+      if(sb&&currentUser) await sb.from('candidatos').update({photo_url:url}).eq('user_id',currentUser.id);
+      updateSidebarPhoto();
+      const ta=document.getElementById('topbar-avatar');
+      if(ta)ta.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      showToast('Foto actualizada ✓');
+    };
+    reader.readAsDataURL(file);
+  } catch(e){ showToast('Error al subir foto','error'); }
 }
 
 // ── PERFIL ───────────────────────────────────
@@ -671,14 +1127,15 @@ async function saveProfile(){
   userProfile={...userProfile,...data};
 
   if(sb && currentUser){
+    const dataConEmail={...data, email: currentUser.email||''};
     // Primero intenta update, si no existe hace insert
     const{data:existing}=await sb.from('candidatos').select('id').eq('user_id',currentUser.id).single();
     let error;
     if(existing){
-      const res=await sb.from('candidatos').update(data).eq('user_id',currentUser.id);
+      const res=await sb.from('candidatos').update(dataConEmail).eq('user_id',currentUser.id);
       error=res.error;
     } else {
-      const res=await sb.from('candidatos').insert({user_id:currentUser.id,...data});
+      const res=await sb.from('candidatos').insert({user_id:currentUser.id,...dataConEmail});
       error=res.error;
     }
     if(error){ showToast('Error: '+error.message,'error'); console.error(error); return; }
@@ -845,38 +1302,83 @@ Responde SOLO el JSON.`}
 
 // ── VACANTES ─────────────────────────────────
 let currentFilter='';
+let vacFiltros={dpto:'',sector:''};
+
+function onVacDptoChange(dpto){
+  vacFiltros.dpto=dpto;
+  vacFiltros.sector='';
+  const wrap=document.getElementById('vSectorFilterWrap');
+  const sel=document.getElementById('vSectorFilter');
+  const reset=document.getElementById('vResetBtn');
+  if(!wrap||!sel)return;
+  if(!dpto){
+    wrap.style.display='none';
+    if(reset)reset.style.display='none';
+  } else {
+    const sectores=[...new Set(VACANTES.filter(v=>!v.departamento||v.departamento===dpto).map(v=>v.sector).filter(Boolean))].sort();
+    sel.innerHTML='<option value="">Todas las áreas</option>'+sectores.map(s=>`<option>${s}</option>`).join('');
+    wrap.style.display=sectores.length?'block':'none';
+    if(reset)reset.style.display='block';
+  }
+  renderVacantes();
+}
+
+function onVacSectorChange(sector){
+  vacFiltros.sector=sector;
+  renderVacantes();
+}
+
+function resetVacFiltros(){
+  vacFiltros={dpto:'',sector:''};
+  const dp=document.getElementById('vDptoFilter');
+  const sc=document.getElementById('vSectorFilter');
+  const wrap=document.getElementById('vSectorFilterWrap');
+  const reset=document.getElementById('vResetBtn');
+  if(dp)dp.value='';
+  if(sc)sc.value='';
+  if(wrap)wrap.style.display='none';
+  if(reset)reset.style.display='none';
+  renderVacantes();
+}
+
 function filterVacantes(sector,btn){
-  document.querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  currentFilter=sector;
-  renderVacantes(sector);
+  vacFiltros.sector=sector;
+  renderVacantes();
 }
 function renderVacantes(sector){
   const list=document.getElementById('vacantesList');
   if(!list)return;
-  const filtered=sector?VACANTES.filter(v=>v.sector===sector):VACANTES;
+  let filtered=[...VACANTES];
+  if(vacFiltros.dpto) filtered=filtered.filter(v=>!v.departamento||v.departamento===vacFiltros.dpto);
+  if(vacFiltros.sector) filtered=filtered.filter(v=>v.sector===vacFiltros.sector);
+  else if(sector) filtered=filtered.filter(v=>v.sector===sector);
+  const rc=document.getElementById('vResultCount');
+  if(rc)rc.textContent=filtered.length===1?'1 vacante encontrada':`${filtered.length} vacantes encontradas`;
+  if(!filtered.length){list.innerHTML='<div style="text-align:center;padding:40px;color:#7A8E98">No hay vacantes con estos filtros.</div>';return;}
   list.innerHTML=filtered.map(v=>`
     <div class="vacante-item" id="vi-${v.id}">
-      <div class="vi-icon">${v.icon}</div>
-      <div class="vi-info">
-        <div class="vi-title">${v.titulo}</div>
-        <div style="font-size:.8rem;color:var(--muted);margin-top:2px">📍 Guatemala · ${v.sector} · ${v.exp}</div>
-        <div class="vi-tags">
-          <span class="vi-tag green">${v.jornada}</span>
-          <span class="vi-tag">${v.tipo}</span>
-          ${v.tags.map(t=>`<span class="vi-tag">${t}</span>`).join('')}
+      <div style="display:flex;gap:12px;align-items:flex-start;width:100%">
+        <div class="vi-icon">${v.icon}</div>
+        <div class="vi-info" style="flex:1;min-width:0">
+          <div class="vi-title">${v.titulo}</div>
+          <div style="font-size:.78rem;color:#7A8E98;margin-top:2px">📍 ${v.departamento||'Guatemala'} · ${v.sector}</div>
+          <div class="vi-tags">
+            <span class="vi-tag green">${v.jornada}</span>
+            <span class="vi-tag">${v.tipo}</span>
+            ${(v.tags||[]).map(t=>`<span class="vi-tag">${t}</span>`).join('')}
+          </div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid #F0EAE0;width:100%">
         <div class="vi-salario">${v.salario}</div>
         ${appliedVacantes.has(v.id)
           ? `<span class="applied-badge">✓ Aplicado</span>`
-          : `<button class="btn btn-primary btn-sm" onclick="aplicar(${v.id})">Aplicar →</button>`
+          : `<button class="btn btn-primary btn-sm" onclick="aplicar(${v.id})" style="white-space:nowrap">Aplicar →</button>`
         }
       </div>
     </div>`).join('');
 }
-function aplicar(id){
+async function aplicar(id){
   if(!userProfile.nombre){
     showToast('Completa tu perfil antes de aplicar','error');
     showPanel('panelPerfil');return;
@@ -895,10 +1397,17 @@ function aplicar(id){
   }
   renderVacantes(currentFilter);
   renderAplicaciones();
-  showToast('¡Aplicación enviada! Te contactaremos pronto 🎉');
   if(sb&&currentUser){
-    sb.from('aplicaciones').insert({user_id:currentUser.id,vacante_id:id,estado:'En revisión'}).then(()=>{});
+    const{error}=await sb.from('aplicaciones').insert({
+      user_id:currentUser.id,
+      vacante_id:id,
+      estado:'revision',
+      vacante_titulo:vacante.titulo,
+      vacante_sector:vacante.sector
+    });
+    if(error)console.error('Error guardando aplicación:',error.message);
   }
+  showToast('¡Aplicación enviada! Te contactaremos pronto 🎉');
 }
 
 function getApps(){
@@ -920,13 +1429,12 @@ function renderAplicaciones(){
   const list=document.getElementById('aplicacionesList');
   if(!list)return;
   const apps=getApps();
-  // Sync appliedVacantes
   apps.forEach(a=>appliedVacantes.add(a.id));
   if(!apps.length){
     list.innerHTML=`<div style="text-align:center;padding:60px 20px">
       <div style="font-size:2.5rem;margin-bottom:12px">📋</div>
-      <div style="font-family:'Syne',sans-serif;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:6px">Aún no has aplicado a ninguna vacante</div>
-      <div style="font-size:.84rem;color:rgba(255,255,255,.25)">Ve a "Vacantes" y aplica con un clic</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;margin-bottom:6px">Aún no has aplicado a ninguna vacante</div>
+      <div style="font-size:.84rem;color:#7A8E98">Ve a "Vacantes" y aplica con un clic</div>
     </div>`;return;
   }
   list.innerHTML=apps.map(app=>{
@@ -934,38 +1442,40 @@ function renderAplicaciones(){
     const rechazado = app.estado==='rechazado';
 
     const timelineHTML = rechazado
-      ? `<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;margin-top:16px">
+      ? `<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:10px;margin-top:14px">
           <span style="font-size:1.1rem">❌</span>
           <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#fca5a5;font-size:.84rem">No fue seleccionado en esta ocasión</div>
-            <div style="font-size:.78rem;color:rgba(255,255,255,.3);margin-top:2px">No te desanimes, sigue aplicando a otras vacantes.</div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#B91C1C;font-size:.84rem">No fue seleccionado en esta ocasión</div>
+            <div style="font-size:.78rem;color:#7A8E98;margin-top:2px">No te desanimes, sigue aplicando a otras vacantes.</div>
           </div>
         </div>`
-      : `<div style="margin-top:16px;position:relative">
+      : `<div style="margin-top:14px;position:relative">
           <div style="display:flex;gap:0;position:relative">
             ${TIMELINE_ESTADOS.map((step,i)=>{
               const done = i <= currentStep;
               const active = i === currentStep;
-              const color = done ? 'var(--verde)' : 'rgba(255,255,255,.12)';
-              const textColor = done ? '#fff' : 'rgba(255,255,255,.25)';
+              const dotBg = done ? 'var(--verde)' : '#E8E0D4';
+              const borderColor = done ? 'var(--verde)' : '#D4C5A9';
+              const textColor = active ? '#0A3D4A' : done ? '#059669' : '#AABBC2';
+              const numColor = done ? '#fff' : '#AABBC2';
               return `<div style="flex:1;text-align:center;position:relative">
-                <div style="width:28px;height:28px;border-radius:50%;background:${done?'var(--verde)':'rgba(255,255,255,.08)'};border:2px solid ${color};margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:${done?'#060F1E':'rgba(255,255,255,.2)'};position:relative;z-index:1;${active?'box-shadow:0 0 0 4px rgba(0,200,151,.2)':''}">${done&&!active?'✓':i+1}</div>
-                <div style="font-size:.65rem;font-weight:${active?700:500};color:${textColor};line-height:1.3">${step.label}</div>
-                ${i<TIMELINE_ESTADOS.length-1?`<div style="position:absolute;top:13px;left:50%;right:-50%;height:2px;background:${i<currentStep?'var(--verde)':'rgba(255,255,255,.08)'};z-index:0"></div>`:''}
+                <div style="width:28px;height:28px;border-radius:50%;background:${dotBg};border:2px solid ${borderColor};margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:${numColor};position:relative;z-index:1;${active?'box-shadow:0 0 0 4px rgba(16,185,129,.15)':''}">${done&&!active?'✓':i+1}</div>
+                <div style="font-size:.63rem;font-weight:${active?700:500};color:${textColor};line-height:1.3">${step.label}</div>
+                ${i<TIMELINE_ESTADOS.length-1?`<div style="position:absolute;top:13px;left:50%;right:-50%;height:2px;background:${i<currentStep?'var(--verde)':'#E8E0D4'};z-index:0"></div>`:''}
               </div>`;
             }).join('')}
           </div>
-          ${currentStep>=0?`<div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:14px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border-left:2px solid var(--verde)">
+          ${currentStep>=0?`<div style="font-size:.8rem;color:#4D7A85;margin-top:12px;padding:10px 14px;background:#fff;border-radius:10px;border-left:3px solid var(--verde);border:1.5px solid #E8E0D4;border-left:3px solid var(--verde)">
             ${TIMELINE_ESTADOS[currentStep]?.desc||''}
           </div>`:''}
         </div>`;
 
-    return `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:22px;margin-bottom:16px">
+    return `<div style="background:#fff;border:1.5px solid #E8E0D4;border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 10px rgba(14,95,110,.06)">
       <div style="display:flex;align-items:flex-start;gap:14px">
         <div class="vi-icon" style="width:44px;height:44px;font-size:1.2rem;flex-shrink:0">${app.icon||'💼'}</div>
         <div style="flex:1">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.94rem;color:#fff">${app.titulo}</div>
-          <div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:2px">${app.sector} · ${app.salario} · Aplicado el ${app.fecha}</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.94rem;color:#0A3D4A">${app.titulo}</div>
+          <div style="font-size:.78rem;color:#7A8E98;margin-top:2px">${app.sector||''} ${app.salario?'· '+app.salario:''} · Aplicado el ${app.fecha}</div>
         </div>
       </div>
       ${timelineHTML}
@@ -975,26 +1485,39 @@ function renderAplicaciones(){
 
 // ── INIT ─────────────────────────────────────
 (async function init(){
-  if(!sb){ return; }
+  // Handle Supabase password reset redirect
+  const hash = window.location.hash;
+  if(hash.includes('type=recovery') || hash.includes('type=signup')){
+    // Show change password screen
+    showScreen('screenChangePass');
+    return;
+  }
+  if(!sb){ showScreen('screenVacantesPublicas'); return; }
   try {
     const{data:{session}}=await sb.auth.getSession();
     if(session){
       currentUser=session.user;
       const{data}=await sb.from('candidatos').select('*').eq('user_id',currentUser.id).single();
-      if(data)userProfile=data;
-      // Cargar foto guardada localmente
-      const savedPhoto=localStorage.getItem('flh_photo_'+currentUser.id);
-      if(savedPhoto)userProfile.photo_url=savedPhoto;
+      if(data){ userProfile=data; }
+      else {
+        await sb.from('candidatos').insert({user_id:currentUser.id, email:currentUser.email||''});
+        userProfile={email:currentUser.email||''};
+      }
       showDashboard();
+    } else {
+      showScreen('screenVacantesPublicas');
+      loadVacantesPublicas();
     }
     sb.auth.onAuthStateChange(async(_,session)=>{
       if(session){
         currentUser=session.user;
         const{data}=await sb.from('candidatos').select('*').eq('user_id',currentUser.id).single();
-        if(data)userProfile=data;
-        // Cargar foto guardada localmente
-        const savedPhoto=localStorage.getItem('flh_photo_'+currentUser.id);
-        if(savedPhoto)userProfile.photo_url=savedPhoto;
+        if(data){ userProfile=data; }
+        else {
+          // Primera vez: crear registro con email
+          await sb.from('candidatos').insert({user_id:currentUser.id, email:currentUser.email||''});
+          userProfile={email:currentUser.email||''};
+        }
         showDashboard();
       }
     });

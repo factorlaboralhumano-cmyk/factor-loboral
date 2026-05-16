@@ -7,6 +7,8 @@
 CREATE TABLE IF NOT EXISTS candidatos (
   id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id       UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  email         TEXT,
+  rol           TEXT DEFAULT 'candidato',
   nombre        TEXT,
   apellido      TEXT,
   telefono      TEXT,
@@ -35,6 +37,8 @@ CREATE TABLE IF NOT EXISTS vacantes (
   tipo        TEXT,
   jornada     TEXT,
   exp_requerida TEXT,
+  departamento  TEXT,
+  icon        TEXT DEFAULT '💼',
   tags        TEXT[],
   activa      BOOLEAN DEFAULT TRUE,
   created_at  TIMESTAMPTZ DEFAULT NOW()
@@ -111,3 +115,42 @@ CREATE POLICY "cv_propio_read" ON storage.objects
 -- 5. En Authentication > Providers activa Google OAuth
 -- 6. En Authentication > URL Configuration agrega tu dominio
 -- ═══════════════════════════════════════════════════════
+
+-- MIGRACIÓN: Agregar columnas nuevas si ya tienes la tabla
+ALTER TABLE vacantes ADD COLUMN IF NOT EXISTS departamento TEXT;
+ALTER TABLE vacantes ADD COLUMN IF NOT EXISTS icon TEXT DEFAULT '💼';
+ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS rol TEXT DEFAULT 'candidato';
+
+-- ═══ TABLA APLICACIONES (si no existe) ═══
+CREATE TABLE IF NOT EXISTS aplicaciones (
+  id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id       UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  vacante_id    UUID REFERENCES vacantes(id) ON DELETE CASCADE,
+  vacante_titulo TEXT,
+  vacante_sector TEXT,
+  estado        TEXT DEFAULT 'revision',
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, vacante_id)
+);
+ALTER TABLE aplicaciones DISABLE ROW LEVEL SECURITY;
+
+-- ═══ STORAGE BUCKETS ═══
+-- Corre esto en Supabase Dashboard > Storage > New bucket:
+-- 1. Bucket: "cvs"           → Private (usa signed URLs)
+-- 2. Bucket: "candidatos-media" → Public (fotos de perfil)
+-- O crea los buckets via SQL:
+INSERT INTO storage.buckets (id, name, public) VALUES ('cvs', 'cvs', false) ON CONFLICT DO NOTHING;
+INSERT INTO storage.buckets (id, name, public) VALUES ('candidatos-media', 'candidatos-media', true) ON CONFLICT DO NOTHING;
+
+-- Políticas de storage para que candidatos puedan subir sus archivos
+CREATE POLICY "candidatos upload cv" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id='cvs');
+CREATE POLICY "candidatos read own cv" ON storage.objects FOR SELECT TO authenticated USING (bucket_id='cvs');
+CREATE POLICY "candidatos upload foto" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id='candidatos-media');
+CREATE POLICY "public read fotos" ON storage.objects FOR SELECT TO public USING (bucket_id='candidatos-media');
+
+-- Columna cv_url en candidatos
+ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS cv_url TEXT;
+ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS photo_url TEXT;
+ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS ia_score INTEGER;
+ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS ia_resumen TEXT;
