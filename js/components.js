@@ -16,7 +16,8 @@ function renderNav(activePage) {
     { id:'contacto',   href:'contacto.html',           label:'Contacto' },
   ];
   const links = pages.map(p=>`<a href="${p.href}" class="${p.id===activePage?'active':''}">${p.label}</a>`).join('');
-  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()">${p.label}</a>`).join('');
+  const icons={'Inicio':'🏠','Reclutamiento':'🤝','Tecnología':'💻','Vacantes':'💼','Sectores':'🏢','Nosotros':'👥','Contacto':'📞'};
+  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()" class="${p.id===activePage?'active-link':''}"><span>${icons[p.label]||'•'}</span>${p.label}</a>`).join('');
   return `
     <nav class="nav" id="mainNav">
       <a href="../index.html" class="nav-logo">
@@ -31,10 +32,17 @@ function renderNav(activePage) {
       <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
     </nav>
     <div class="nav-mobile" id="mobileMenu">
-      <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
-      ${mobileLinks}
-      <a href="candidatos.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.3)" onclick="closeMobileMenu()">👤 Busco trabajo</a>
-      <a href="#" class="btn btn-primary" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante</a>
+      <div class="nav-mobile-header">
+        <img src="../assets/logo.png" alt="FLH" style="height:32px">
+        <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
+      </div>
+      <div class="nav-mobile-links">
+        ${mobileLinks}
+      </div>
+      <div class="nav-mobile-actions">
+        <a href="candidatos.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.8);justify-content:center" onclick="closeMobileMenu()">👤 Busco trabajo</a>
+        <a href="#" class="btn btn-primary" style="justify-content:center" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante →</a>
+      </div>
     </div>`;
 }
 
@@ -49,7 +57,8 @@ function renderNavHome(activePage) {
     { id:'contacto',   href:'pages/contacto.html',      label:'Contacto' },
   ];
   const links = pages.map(p=>`<a href="${p.href}" class="${p.id===activePage?'active':''}">${p.label}</a>`).join('');
-  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()">${p.label}</a>`).join('');
+  const icons={'Inicio':'🏠','Reclutamiento':'🤝','Tecnología':'💻','Vacantes':'💼','Sectores':'🏢','Nosotros':'👥','Contacto':'📞'};
+  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()" class="${p.id===activePage?'active-link':''}"><span>${icons[p.label]||'•'}</span>${p.label}</a>`).join('');
   return `
     <nav class="nav" id="mainNav">
       <a href="#home" class="nav-logo">
@@ -64,10 +73,17 @@ function renderNavHome(activePage) {
       <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
     </nav>
     <div class="nav-mobile" id="mobileMenu">
-      <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
-      ${mobileLinks}
-      <a href="pages/candidatos.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.3)" onclick="closeMobileMenu()">👤 Busco trabajo</a>
-      <a href="#" class="btn btn-primary" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante</a>
+      <div class="nav-mobile-header">
+        <img src="assets/logo.png" alt="FLH" style="height:32px">
+        <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
+      </div>
+      <div class="nav-mobile-links">
+        ${mobileLinks}
+      </div>
+      <div class="nav-mobile-actions">
+        <a href="pages/candidatos.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.8);justify-content:center" onclick="closeMobileMenu()">👤 Busco trabajo</a>
+        <a href="#" class="btn btn-primary" style="justify-content:center" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante →</a>
+      </div>
     </div>`;
 }
 

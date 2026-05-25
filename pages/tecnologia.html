@@ -87,6 +87,16 @@
       .savings-banner{flex-direction:column}
       .cta-tech{padding:40px 24px}
     }
+
+    @media(max-width:480px){
+      .negocios-grid{grid-template-columns:repeat(3,1fr)!important;gap:10px!important}
+      .negocio-card{padding:14px 8px!important}
+      .negocio-icon{font-size:1.5rem!important}
+      .negocio-name{font-size:.7rem!important}
+      .pricing-card{padding:24px 18px!important}
+      .proceso-grid{grid-template-columns:1fr!important}
+      .why-grid{grid-template-columns:1fr 1fr!important}
+    }
   </style>
 </head>
 <body>
@@ -119,7 +129,7 @@
       <p style="text-align:center;color:var(--muted);max-width:520px;margin:0 auto 40px;font-size:.9rem;line-height:1.7;">
         Una presencia digital profesional para tu negocio. Incluye dominio y alojamiento para que no tengas que preocuparte por nada técnico.
       </p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;">
 
         <div class="pricing-card reveal">
           <h3>Página Esencial</h3>
@@ -177,7 +187,7 @@
       <p style="text-align:center;color:var(--muted);max-width:520px;margin:0 auto 40px;font-size:.9rem;line-height:1.7;">
         Una plataforma siempre activa, actualizada y con soporte continuo. Nosotros nos encargamos de todo lo técnico para que tú te concentres en tu negocio.
       </p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;">
 
         <div class="pricing-card reveal">
           <h3>Plataforma Básica</h3>
@@ -234,7 +244,7 @@
       <p style="text-align:center;color:var(--muted);max-width:560px;margin:0 auto 40px;font-size:.9rem;line-height:1.7;">
         Para negocios que necesitan algo único: una app para clientes, un sistema interno, o una plataforma completamente personalizada. Conversemos sin compromiso.
       </p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;">
 
         <div class="pricing-card reveal">
           <div class="p-badge">A medida</div>

@@ -617,18 +617,21 @@ let VACANTES = []; // Se carga dinámicamente desde Supabase
 
 async function loadVacantesPortal(){
   if(!sb) return;
-  const {data, error} = await sb.from('vacantes').select('*').eq('activa',true).order('created_at',{ascending:false});
+  const {data, error} = await sb.from('vacantes').select('*').eq('activa',true).is('deleted_at',null).order('created_at',{ascending:false});
   if(!error && data){
     VACANTES = data.map(v=>({
       id: v.id,
       titulo: v.titulo||'',
       sector: v.sector||'General',
+      departamento: v.departamento||'',
       salario: v.salario||'A convenir',
       tipo: v.modalidad||v.tipo||'Presencial',
       jornada: v.jornada||'Tiempo completo',
       icon: v.icon||'💼',
-      exp: v.experiencia||v.exp||'—',
-      tags: v.tags ? (Array.isArray(v.tags)?v.tags:v.tags.split(',').map(t=>t.trim())) : []
+      exp_requerida: v.exp_requerida||v.exp||'',
+      descripcion: v.descripcion||'',
+      tags: v.tags ? (Array.isArray(v.tags)?v.tags:v.tags.split(',').map(t=>t.trim())) : [],
+      created_at: v.created_at
     }));
   }
   renderVacantes(currentFilter);
@@ -639,7 +642,7 @@ let pubVacantes=[], pubSectorActivo='';
 async function loadVacantesPublicas(){
   const list=document.getElementById('pubVacantesList');
   if(!sb||!list)return;
-  const{data,error}=await sb.from('vacantes').select('*').eq('activa',true).order('created_at',{ascending:false});
+  const{data,error}=await sb.from('vacantes').select('*').eq('activa',true).is('deleted_at',null).order('created_at',{ascending:false});
   if(error||!data){list.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)">No hay vacantes disponibles en este momento.</div>';return;}
   pubVacantes=data;
   renderSectorChips();
@@ -758,9 +761,9 @@ function renderVacantesPublicas(){
         </div>
       </div>
       ${hasExtra?`<div id="extra-pub-${v.id}" style="display:none;padding:0 22px 18px;border-top:1px solid #EDF2F7">
-        ${v.descripcion?`<p style="font-size:.84rem;color:#5A7A96;margin-top:14px;line-height:1.7">${v.descripcion}</p>`:''}
+        ${v.descripcion?`<p style="font-size:.84rem;color:#5A7A96;margin-top:14px;line-height:1.7;white-space:pre-wrap">${v.descripcion}</p>`:''}
       </div>
-      <button onclick="toggleExtraPub(${v.id},this)" style="width:100%;padding:10px;background:#F4F7FB;border:none;border-top:1px solid #EDF2F7;font-family:'Syne',sans-serif;font-size:.74rem;font-weight:700;color:#5A7A96;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px" onmouseover="this.style.background='#EBF2FA'" onmouseout="this.style.background='#F4F7FB'">
+      <button onclick="toggleExtraPub('${v.id}',this)" style="width:100%;padding:10px;background:#F4F7FB;border:none;border-top:1px solid #EDF2F7;font-family:'Syne',sans-serif;font-size:.74rem;font-weight:700;color:#5A7A96;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px" onmouseover="this.style.background='#EBF2FA'" onmouseout="this.style.background='#F4F7FB'">
         <span>Más información</span><span style="font-size:.7rem">▼</span>
       </button>`:''}
     </div>`;
@@ -768,7 +771,7 @@ function renderVacantesPublicas(){
 }
 
 function toggleExtraPub(id, btn){
-  const el=document.getElementById('extra-pub-'+id);
+  const el=document.getElementById('extra-pub-'+String(id));
   if(!el)return;
   const open=el.style.display==='block';
   el.style.display=open?'none':'block';
@@ -951,9 +954,15 @@ async function register_submit(){
   else showScreen('screenVerify');
 }
 async function logout(){
-  if(sb)await sb.auth.signOut();
-  // Reload page to clear all state cleanly
-  window.location.reload();
+  if(sb){
+    await sb.auth.signOut();
+    // Small delay to ensure signOut completes
+    await new Promise(r=>setTimeout(r,300));
+  }
+  currentUser=null;userProfile={};
+  if(typeof appliedVacantes!=='undefined')appliedVacantes.clear();
+  showScreen('screenVacantesPublicas');
+  loadVacantesPublicas();
 }
 
 // Demo login (cuando Supabase no está configurado)
@@ -1302,7 +1311,6 @@ Responde SOLO el JSON.`}
 
 // ── VACANTES ─────────────────────────────────
 let currentFilter='';
-let vacFiltros={dpto:'',sector:''};
 
 function onVacDptoChange(dpto){
   vacFiltros.dpto=dpto;
@@ -1356,37 +1364,55 @@ function renderVacantes(sector){
   if(rc)rc.textContent=filtered.length===1?'1 vacante encontrada':`${filtered.length} vacantes encontradas`;
   if(!filtered.length){list.innerHTML='<div style="text-align:center;padding:40px;color:#7A8E98">No hay vacantes con estos filtros.</div>';return;}
   list.innerHTML=filtered.map(v=>`
-    <div class="vacante-item" id="vi-${v.id}">
+    <div class="vacante-item" id="vi-${v.id}" style="overflow:hidden">
       <div style="display:flex;gap:12px;align-items:flex-start;width:100%">
-        <div class="vi-icon">${v.icon}</div>
+        <div class="vi-icon">${v.icon||'💼'}</div>
         <div class="vi-info" style="flex:1;min-width:0">
           <div class="vi-title">${v.titulo}</div>
-          <div style="font-size:.78rem;color:#7A8E98;margin-top:2px">📍 ${v.departamento||'Guatemala'} · ${v.sector}</div>
+          <div style="font-size:.78rem;color:#7A8E98;margin-top:2px">📍 ${v.departamento||'—'} · ${v.sector}</div>
           <div class="vi-tags">
             <span class="vi-tag green">${v.jornada}</span>
             <span class="vi-tag">${v.tipo}</span>
+            ${v.exp_requerida?`<span class="vi-tag">${v.exp_requerida}</span>`:''}
             ${(v.tags||[]).map(t=>`<span class="vi-tag">${t}</span>`).join('')}
           </div>
         </div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid #F0EAE0;width:100%">
-        <div class="vi-salario">${v.salario}</div>
-        ${appliedVacantes.has(v.id)
+        <div class="vi-salario">${v.salario||'A convenir'}</div>
+        ${appliedVacantes.has(String(v.id))
           ? `<span class="applied-badge">✓ Aplicado</span>`
-          : `<button class="btn btn-primary btn-sm" onclick="aplicar(${v.id})" style="white-space:nowrap">Aplicar →</button>`
+          : `<button class="btn btn-primary btn-sm" onclick="aplicar('${v.id}')" style="white-space:nowrap">Aplicar →</button>`
         }
       </div>
+      ${v.descripcion?`
+      <div id="vinfo-${v.id}" style="display:none;padding:12px 0 4px;border-top:1px solid #F0EAE0;margin-top:8px">
+        <p style="font-size:.83rem;color:#5A7A96;line-height:1.75;white-space:pre-wrap;margin:0">${v.descripcion}</p>
+      </div>
+      <button onclick="toggleVInfo('${v.id}',this)" style="width:100%;padding:8px;margin-top:8px;background:#F7F3EE;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:.73rem;font-weight:700;color:#7A8E98;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px">
+        <span>Más información</span><span>▼</span>
+      </button>`:''}
     </div>`).join('');
 }
+function toggleVInfo(id, btn){
+  const el=document.getElementById('vinfo-'+id);
+  if(!el)return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  const spans=btn.querySelectorAll('span');
+  if(spans[0])spans[0].textContent=open?'Más información':'Menos información';
+  if(spans[1])spans[1].textContent=open?'▼':'▲';
+}
+
 async function aplicar(id){
   if(!userProfile.nombre){
     showToast('Completa tu perfil antes de aplicar','error');
     showPanel('panelPerfil');return;
   }
-  const vacante=VACANTES.find(v=>v.id===id);
+  const vacante=VACANTES.find(v=>String(v.id)===String(id));
   if(!vacante)return;
   const app={id,titulo:vacante.titulo,sector:vacante.sector,salario:vacante.salario,icon:vacante.icon,estado:'revision',fecha:new Date().toLocaleDateString('es-GT')};
-  appliedVacantes.add(id);
+  appliedVacantes.add(String(id));
   // Guardar en localStorage
   if(currentUser){
     const apps=getApps();
@@ -1401,9 +1427,7 @@ async function aplicar(id){
     const{error}=await sb.from('aplicaciones').insert({
       user_id:currentUser.id,
       vacante_id:id,
-      estado:'revision',
-      vacante_titulo:vacante.titulo,
-      vacante_sector:vacante.sector
+      estado:'revision'
     });
     if(error)console.error('Error guardando aplicación:',error.message);
   }
@@ -1485,15 +1509,24 @@ function renderAplicaciones(){
 
 // ── INIT ─────────────────────────────────────
 (async function init(){
-  // Handle Supabase password reset redirect
+  // Handle Supabase auth redirects
   const hash = window.location.hash;
-  if(hash.includes('type=recovery') || hash.includes('type=signup')){
-    // Show change password screen
+  if(hash.includes('type=recovery')){
+    // Password reset - show change password screen
     showScreen('screenChangePass');
     return;
   }
-  if(!sb){ showScreen('screenVacantesPublicas'); return; }
+  if(hash.includes('type=signup') || hash.includes('type=magiclink')){
+    // Email confirmation - let Supabase handle session then go to dashboard
+    window.location.hash = '';
+  }
+  // Siempre mostrar vacantes públicas primero
+  showScreen('screenVacantesPublicas');
+  loadVacantesPublicas();
+
+  if(!sb){ return; }
   try {
+    // Precargar sesión en segundo plano sin redirigir
     const{data:{session}}=await sb.auth.getSession();
     if(session){
       currentUser=session.user;
@@ -1514,7 +1547,6 @@ function renderAplicaciones(){
         const{data}=await sb.from('candidatos').select('*').eq('user_id',currentUser.id).single();
         if(data){ userProfile=data; }
         else {
-          // Primera vez: crear registro con email
           await sb.from('candidatos').insert({user_id:currentUser.id, email:currentUser.email||''});
           userProfile={email:currentUser.email||''};
         }

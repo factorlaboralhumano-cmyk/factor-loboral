@@ -154,3 +154,6 @@ ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS cv_url TEXT;
 ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS photo_url TEXT;
 ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS ia_score INTEGER;
 ALTER TABLE candidatos ADD COLUMN IF NOT EXISTS ia_resumen TEXT;
+
+-- Columna para soft delete de vacantes
+ALTER TABLE vacantes ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;

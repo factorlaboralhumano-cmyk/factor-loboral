@@ -50,7 +50,7 @@
     .sbi:hover{background:var(--s-hover);color:#fff}
     .sbi.active{background:rgba(0,212,161,.1);color:var(--verde);border:1px solid rgba(0,212,161,.14)}
     .sbi-icon{font-size:.95rem;width:20px;text-align:center;flex-shrink:0}
-    .admin-main{flex:1;overflow-y:auto;background:#F2F9FA;padding:24px clamp(14px,3%,40px)}
+    .admin-main{flex:1;overflow-y:auto;background:#F2F9FA;padding:24px clamp(14px,3%,40px) 60px}
     .panel{display:none}.panel.active{display:block}
 
     /* HEADER */
@@ -169,17 +169,41 @@
     @media(max-width:768px){
       .sidebar{display:none}
       .admin-dash{flex-direction:column}
-      .admin-main{padding:16px 12px 90px}
+      .admin-main{padding:14px 10px 96px}
       .admin-mobile-nav{display:block}
       .vform-grid{grid-template-columns:1fr}
       .cm-grid{grid-template-columns:1fr}
-      .stats-row{grid-template-columns:1fr 1fr}
-      .tbl th:nth-child(3),.tbl td:nth-child(3),
-      .tbl th:nth-child(4),.tbl td:nth-child(4){display:none}
+      .stats-row{grid-template-columns:1fr 1fr;gap:8px}
+      .stat{padding:14px 12px}
+      .stat-n{font-size:1.5rem}
+      .stat-l{font-size:.68rem}
+      /* Tables - show only essential columns */
+      .tbl-wrap{border-radius:10px;overflow-x:auto}
+      .tbl{min-width:100%;display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+      .tbl thead,.tbl tbody,.tbl tr{display:block}
+      .tbl thead{display:none}
+      .tbl tr{background:#fff;border:1.5px solid #D9EDF0;border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px}
+      .tbl tr:hover{background:#F7FBFC}
+      .tbl td{border:none!important;padding:0!important;font-size:.83rem;color:#1A2B33;display:flex;align-items:center;gap:6px}
+      .tbl td::before{content:attr(data-label);font-size:.65rem;font-weight:700;color:#5A7A85;text-transform:uppercase;letter-spacing:.5px;min-width:80px;flex-shrink:0}
+      .tbl td:empty{display:none}
       .panel-hdr{flex-direction:column;align-items:flex-start;gap:8px}
-      .filters{flex-direction:column}
-      .dsearch,.dsel{width:100%}
-      .cm-box{padding:20px 16px}
+      .panel-hdr .btn{width:100%;justify-content:center}
+      .filters{flex-direction:column;gap:8px}
+      .dsearch,.dsel{width:100%!important;box-sizing:border-box}
+      .cm-box{padding:18px 14px;margin:10px}
+      .cm-grid{grid-template-columns:1fr 1fr}
+      .tl-lbl{font-size:.55rem}
+      .tl-dot{width:24px;height:24px;font-size:.65rem}
+      .status-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+      .sbtn{font-size:.7rem;padding:7px 8px}
+    }
+    @media(max-width:480px){
+      .stats-row{grid-template-columns:1fr 1fr}
+      .cm-grid{grid-template-columns:1fr}
+      .status-btns{grid-template-columns:1fr}
+      .admin-main{padding:12px 8px 96px}
+      .amnav-label{font-size:.58rem}
     }
   </style>
 </head>
@@ -195,8 +219,8 @@
     <div style="display:inline-block;background:rgba(0,212,161,.08);border:1px solid rgba(0,212,161,.18);color:var(--verde);font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:14px">🔒 Acceso restringido</div>
     <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:18px">Admin Panel</div>
     <div class="admin-error" id="adminError"></div>
-    <input class="di" type="email" id="adminEmail" placeholder="correo@factorlaboralhumano.gt">
-    <input class="di" type="password" id="adminPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="di" type="email" id="adminEmail" placeholder="correo@factorlaboralhumano.gt" autocomplete="off">
+    <input class="di" type="password" id="adminPass" placeholder="Contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" onclick="doLogin()">Ingresar →</button>
   </div>
 </div>
@@ -213,6 +237,7 @@
       <button class="sbi" onclick="showPanel('pCandidatos',this)"><span class="sbi-icon">👥</span> Candidatos</button>
       <button class="sbi" onclick="showPanel('pPostulaciones',this)"><span class="sbi-icon">📋</span> Postulaciones</button>
       <button class="sbi" onclick="showPanel('pVacantes',this)"><span class="sbi-icon">💼</span> Vacantes</button>
+      <button class="sbi" onclick="showPanel('pEliminadas',this)"><span class="sbi-icon">🗑️</span> Eliminadas</button>
     </nav>
     <div style="padding:12px 8px;border-top:1px solid var(--s-border)">
       <button class="sbi" onclick="doLogout()" style="color:rgba(255,100,100,.45)"><span class="sbi-icon">🚪</span> Cerrar sesión</button>
@@ -232,13 +257,35 @@
         <div class="stat"><div class="stat-n" id="sConCV">—</div><div class="stat-l">Con CV subido</div></div>
         <div class="stat"><div class="stat-n" id="sHoy">—</div><div class="stat-l">Registrados hoy</div></div>
       </div>
-      <div class="sec-div">Candidatos recientes</div>
-      <div class="tbl-wrap">
-        <table class="tbl">
-          <thead><tr><th>Candidato</th><th>Profesión</th><th>Dpto.</th><th>CV</th><th>IA</th><th></th></tr></thead>
-          <tbody id="recentTable"><tr><td colspan="6" style="text-align:center;color:var(--s-muted);padding:22px">Cargando...</td></tr></tbody>
-        </table>
+
+      <!-- Accesos rápidos -->
+      <div class="sec-div" style="margin-top:20px">Accesos rápidos</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px">
+        <button onclick="showPanel('pCandidatos',document.querySelector('[onclick*=pCandidatos]'))" style="background:#fff;border:1.5px solid #D9EDF0;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--verde)'" onmouseout="this.style.borderColor='#D9EDF0'">
+          <div style="font-size:1.5rem;margin-bottom:6px">👥</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.82rem">Ver candidatos</div>
+        </button>
+        <button onclick="showPanel('pPostulaciones',document.querySelector('[onclick*=pPostulaciones]'))" style="background:#fff;border:1.5px solid #D9EDF0;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--verde)'" onmouseout="this.style.borderColor='#D9EDF0'">
+          <div style="font-size:1.5rem;margin-bottom:6px">📋</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.82rem">Postulaciones</div>
+        </button>
+        <button onclick="showPanel('pVacantes',document.querySelector('[onclick*=pVacantes]'))" style="background:#fff;border:1.5px solid #D9EDF0;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--verde)'" onmouseout="this.style.borderColor='#D9EDF0'">
+          <div style="font-size:1.5rem;margin-bottom:6px">💼</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.82rem">Vacantes activas</div>
+        </button>
+        <button onclick="showPanel('pEliminadas',document.querySelector('[onclick*=pEliminadas]'))" style="background:#fff;border:1.5px solid #D9EDF0;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='rgba(239,68,68,.3)'" onmouseout="this.style.borderColor='#D9EDF0'">
+          <div style="font-size:1.5rem;margin-bottom:6px">🗑️</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.82rem">Eliminadas</div>
+        </button>
       </div>
+
+      <!-- Últimas postulaciones -->
+      <div class="sec-div">Últimas postulaciones</div>
+      <div id="resumenPostulaciones" style="margin-bottom:20px"><div style="text-align:center;color:#7A8E98;padding:24px">Cargando...</div></div>
+
+      <!-- Vacantes activas resumen -->
+      <div class="sec-div">Vacantes activas</div>
+      <div id="resumenVacantes"></div>
     </div>
 
     <!-- CANDIDATOS -->
@@ -261,18 +308,13 @@
           <option>3–5 años</option><option>5–10 años</option><option>Más de 10 años</option>
         </select>
       </div>
-      <div class="tbl-wrap">
-        <table class="tbl">
-          <thead><tr><th>Candidato</th><th>Profesión</th><th>Exp.</th><th>Dpto.</th><th>Disponib.</th><th>CV</th><th>IA</th><th></th></tr></thead>
-          <tbody id="candidatosTable"><tr><td colspan="8" style="text-align:center;color:var(--s-muted);padding:22px">Cargando...</td></tr></tbody>
-        </table>
-      </div>
+      <div id="candidatosContainer"></div>
     </div>
 
     <!-- POSTULACIONES -->
     <div id="pPostulaciones" class="panel">
       <div class="panel-hdr"><div class="panel-title">Postulaciones recibidas</div></div>
-      <div class="filters">
+      <div class="filters" style="margin-bottom:16px">
         <input class="dsearch" id="searchApp" placeholder="🔍 Buscar candidato..." oninput="filterApps()">
         <select class="dsel" id="filterAppEstado" onchange="filterApps()">
           <option value="">Todos los estados</option>
@@ -285,12 +327,7 @@
           <option value="1">Hoy</option><option value="7">Última semana</option><option value="30">Último mes</option>
         </select>
       </div>
-      <div class="tbl-wrap">
-        <table class="tbl">
-          <thead><tr><th>Candidato</th><th>Correo</th><th>Vacante</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody id="postulacionesTable"><tr><td colspan="6" style="text-align:center;color:var(--s-muted);padding:22px">Cargando...</td></tr></tbody>
-        </table>
-      </div>
+      <div id="postulacionesContainer"><div style="text-align:center;color:#7A8E98;padding:32px">Cargando...</div></div>
     </div>
 
     <!-- VACANTES -->
@@ -352,7 +389,7 @@
         </div>
         <div style="margin-top:12px">
           <div class="vf-label">Descripción</div>
-          <textarea class="vf-input" id="vDescripcion" rows="3" placeholder="Responsabilidades y requisitos del puesto..." style="resize:vertical"></textarea>
+          <textarea class="vf-input" id="vDescripcion" rows="10" placeholder="Responsabilidades y requisitos del puesto..." style="resize:vertical;min-height:200px;white-space:pre-wrap;font-family:'DM Sans',sans-serif;line-height:1.7"></textarea>
         </div>
         <div id="vMsg" style="display:none;margin-top:10px;font-size:.83rem;padding:9px 13px;border-radius:8px"></div>
         <div style="display:flex;gap:8px;margin-top:14px">
@@ -361,13 +398,50 @@
         </div>
       </div>
 
-      <div class="tbl-wrap">
-        <table class="tbl">
-          <thead><tr><th>Vacante</th><th>Sector</th><th>Dpto.</th><th>Salario</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody id="vacantesTable"></tbody>
-        </table>
-      </div>
+      <div id="vacantesContainer"></div>
     </div>
+
+
+  <div id="pEliminadas" class="panel">
+    <div style="margin-bottom:20px">
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#0A3D4A">Vacantes eliminadas</div>
+      <div style="font-size:.78rem;color:#5A7A85;margin-top:2px">Se borran automáticamente a los 30 días.</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+      <select id="eFiltroDpto" onchange="filtrarEliminadas()" class="dsel" style="min-width:160px">
+        <option value="">📍 Todos los departamentos</option>
+        <option>Ciudad de Guatemala</option><option>Chimaltenango</option><option>Escuintla</option>
+        <option>Sacatepéquez</option><option>Quetzaltenango</option><option>Alta Verapaz</option>
+        <option>Baja Verapaz</option><option>El Progreso</option><option>Zacapa</option>
+        <option>Chiquimula</option><option>Jalapa</option><option>Jutiapa</option>
+        <option>Santa Rosa</option><option>Sololá</option><option>Totonicapán</option>
+        <option>Huehuetenango</option><option>Quiché</option><option>San Marcos</option>
+        <option>Retalhuleu</option><option>Suchitepéquez</option><option>Petén</option><option>Izabal</option>
+      </select>
+      <select id="eFiltroSector" onchange="filtrarEliminadas()" class="dsel">
+        <option value="">🏢 Todos los sectores</option>
+        <option>Tecnología</option><option>Finanzas</option><option>Manufactura</option>
+        <option>Comercial</option><option>Operaciones</option><option>Logística</option>
+        <option>RRHH</option><option>Salud</option><option>Educación</option><option>Otro</option>
+      </select>
+      <select id="eFiltroFecha" onchange="filtrarEliminadas()" class="dsel">
+        <option value="">🗓 Cualquier fecha</option>
+        <option value="7">Últimos 7 días</option>
+        <option value="15">Últimos 15 días</option>
+        <option value="30">Últimos 30 días</option>
+      </select>
+    </div>
+    <div id="eliminadasCount" style="font-size:.8rem;color:#5A7A85;margin-bottom:12px"></div>
+    <div class="tbl-wrap">
+      <table class="tbl" style="width:100%">
+        <thead><tr>
+          <th>Vacante</th><th>Sector</th><th>Dpto.</th>
+          <th>Eliminada el</th><th>Expira en</th><th>Acciones</th>
+        </tr></thead>
+        <tbody id="eliminadasTable"></tbody>
+      </table>
+    </div>
+  </div>
 
   </div>
 </div>
@@ -408,6 +482,7 @@
         <button class="sbtn rech" onclick="cambiarEstado('rechazado')">❌ No seleccionado</button>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -455,9 +530,16 @@ async function doLogin(){
 }
 document.getElementById('adminPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 async function doLogout(){
-  await sb.auth.signOut();
+  try { await sb.auth.signOut(); } catch(e){}
   document.getElementById('adminDash').classList.remove('active');
+  const mnav=document.getElementById('adminMobileNav');
+  if(mnav)mnav.style.display='none';
   document.getElementById('adminLogin').style.display='flex';
+  // Clear fields
+  const email=document.getElementById('adminEmail');
+  const pass=document.getElementById('adminPass');
+  if(email)email.value='';
+  if(pass)pass.value='';
 }
 
 // ── AUTO SESSION CHECK ────────────────────────
@@ -478,10 +560,13 @@ function showPanel(id,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.amnav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const panel=document.getElementById(id);
+  if(panel)panel.classList.add('active');
   if(btn)btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='pPostulaciones')loadPostulaciones();
+  if(id==='pEliminadas')loadEliminadas();
+  if(id==='pVacantes')loadVacantesFromDB();
 }
 
 // ── LOAD DATA ─────────────────────────────────
@@ -531,58 +616,133 @@ function renderRecentTable(list){
 }
 
 function renderCandidatosTable(list){
-  document.getElementById('candidatosTable').innerHTML=list.length?list.map(c=>`
-    <tr>
-      <td><div style="display:flex;align-items:center;gap:9px">
-        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--verde),#0E5F6E);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.76rem;color:#fff;flex-shrink:0">${(c.nombre||'?')[0].toUpperCase()}</div>
-        <div><div style="font-weight:700;color:#0A3D4A;font-size:.84rem">${((c.nombre||'')+' '+(c.apellido||'')).trim()||'Sin nombre'}</div><div style="font-size:.7rem;color:#7A8E98">${c.email||''}</div></div>
-      </div></td>
-      <td style="font-size:.82rem">${c.profesion||'—'}</td>
-      <td style="font-size:.8rem;color:var(--s-muted)">${c.experiencia||'—'}</td>
-      <td style="font-size:.8rem;color:var(--s-muted)">${c.departamento||'—'}</td>
-      <td style="font-size:.8rem;color:var(--s-muted)">${c.disponibilidad||'—'}</td>
-      <td>${c.cv_filename?`<span style="color:var(--verde-dark);font-size:.76rem">📄 ${c.cv_filename}</span>`:'<span style="color:#AABBC2;font-size:.76rem">Sin CV</span>'}</td>
-      <td><span style="font-size:.72rem;font-weight:700;color:${c.ia_score?'var(--verde-dark)':'#AABBC2'}">${c.ia_score?'✓':'—'}</span></td>
-      <td><button class="btn btn-sm" style="background:rgba(0,212,161,.1);color:var(--verde);border:1px solid rgba(0,212,161,.2);white-space:nowrap" onclick="openCandModal('${c.user_id}')">Ver →</button></td>
-    </tr>`).join('')
-  :'<tr><td colspan="8" style="text-align:center;color:#7A8E98;padding:32px">No hay candidatos registrados aún.</td></tr>';
-}
-
-function renderAppsTable(apps){
-  const tbody=document.getElementById('postulacionesTable');
-  if(!apps.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--s-muted);padding:22px">Sin postulaciones</td></tr>';return;}
-  tbody.innerHTML=apps.map(app=>{
-    const cand=allCandidatos.find(c=>c.user_id===app.user_id);
-    const nombre=cand?`${cand.nombre||''} ${cand.apellido||''}`.trim():'Candidato';
-    const vac=allVacantes.find(v=>v.id===app.vacante_id);
-    const fecha=app.created_at?new Date(app.created_at).toLocaleDateString('es-GT'):'—';
-    const estado=app.estado||'revision';
-    const pillMap={revision:'p-rev',cv_leido:'p-proc',proceso:'p-proc',entrevista:'p-ent',finalista:'p-fin',rechazado:'p-rec'};
-    const lblMap={revision:'En revisión',cv_leido:'CV leído',proceso:'En proceso',entrevista:'Entrevista',finalista:'Finalista',rechazado:'No seleccionado'};
-    return `<tr>
-      <td><strong style="color:#0A3D4A;font-size:.84rem">${nombre||'Sin nombre'}</strong></td>
-      <td style="color:var(--s-muted);font-size:.78rem">${cand?.email||app.email||'—'}</td>
-      <td style="font-size:.82rem">${vac?.titulo||'Vacante #'+app.vacante_id}</td>
-      <td style="color:var(--s-muted);font-size:.78rem">${fecha}</td>
-      <td><span class="pill ${pillMap[estado]||'p-rev'}">${lblMap[estado]||estado}</span></td>
-      <td><button class="btn btn-sm" style="background:rgba(0,212,161,.1);color:var(--verde);border:1px solid rgba(0,212,161,.2)" onclick="openAppModal('${app.id}','${app.user_id}','${estado}')">Gestionar →</button></td>
-    </tr>`;
+  const container=document.getElementById('candidatosContainer');
+  if(!container)return;
+  const count=document.getElementById('candidatosCount');
+  if(count)count.textContent=list.length?`(${list.length})`:'';
+  if(!list.length){container.innerHTML='<div style="text-align:center;color:#7A8E98;padding:32px">No hay candidatos registrados aún.</div>';return;}
+  container.innerHTML=list.map(c=>{
+    const nombre=((c.nombre||'')+' '+(c.apellido||'')).trim()||'Sin nombre';
+    const inicial=(nombre[0]||'?').toUpperCase();
+    const nApps=allApps.filter(a=>a.user_id===c.user_id).length;
+    return `<div style="background:#fff;border:1.5px solid #D9EDF0;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(14,95,110,.04);transition:all .2s;cursor:pointer" onclick="openCandModal('${c.user_id}')" onmouseover="this.style.borderColor='rgba(16,185,129,.3)';this.style.boxShadow='0 4px 16px rgba(14,95,110,.1)'" onmouseout="this.style.borderColor='#D9EDF0';this.style.boxShadow='0 2px 6px rgba(14,95,110,.04)'">
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--verde),#0E5F6E);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#fff;flex-shrink:0;overflow:hidden">
+        ${c.photo_url?`<img src="${c.photo_url}" style="width:100%;height:100%;object-fit:cover">`:inicial}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.88rem">${nombre}</div>
+        <div style="font-size:.74rem;color:#7A8E98;margin-top:1px">${[c.profesion,c.departamento].filter(Boolean).join(' · ')||c.email||'—'}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px">
+          ${c.cv_filename?`<span style="font-size:.69rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(16,185,129,.1);color:var(--verde-dark)">📄 CV</span>`:''}
+          ${c.experiencia?`<span style="font-size:.69rem;font-weight:600;padding:2px 8px;border-radius:100px;background:#F0F5F7;color:#5A7A85">${c.experiencia}</span>`:''}
+          ${nApps?`<span style="font-size:.69rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(16,185,129,.08);color:var(--verde-dark)">${nApps} postulación${nApps!==1?'es':''}</span>`:''}
+        </div>
+      </div>
+      <div style="color:#AABBC2;font-size:1rem">›</div>
+    </div>`;
   }).join('');
 }
 
+// Track which vacante groups are expanded
+const expandedVacantes = new Set();
+
+function renderAppsTable(apps){
+  const container=document.getElementById('postulacionesContainer');
+  if(!container)return;
+  if(!apps.length){
+    container.innerHTML='<div style="text-align:center;color:#7A8E98;padding:32px">Sin postulaciones recibidas.</div>';
+    return;
+  }
+  // Group by vacante
+  const grupos={};
+  apps.forEach(app=>{
+    const vid=app.vacante_id||'sin-vacante';
+    if(!grupos[vid])grupos[vid]=[];
+    grupos[vid].push(app);
+  });
+  const pillMap={revision:'p-rev',cv_leido:'p-proc',proceso:'p-proc',entrevista:'p-ent',finalista:'p-fin',rechazado:'p-rec'};
+  const lblMap={revision:'En revisión',cv_leido:'CV leído',proceso:'En proceso',entrevista:'Entrevista',finalista:'Finalista',rechazado:'No seleccionado'};
+
+  container.innerHTML=Object.entries(grupos).map(([vid,groupApps])=>{
+    const vac=allVacantes.find(v=>String(v.id)===String(vid));
+    // Only show if vacante is active (or still in allVacantes)
+    const vacTitulo=vac?vac.titulo:'Vacante eliminada';
+    const vacDpto=vac?.departamento||'';
+    const isExpanded=expandedVacantes.has(vid);
+    const candidatosHTML=groupApps.map(app=>{
+      const cand=allCandidatos.find(c=>c.user_id===app.user_id);
+      const nombre=cand?`${cand.nombre||''} ${cand.apellido||''}`.trim()||cand.email:'Candidato';
+      const estado=app.estado||'revision';
+      const fecha=app.created_at?new Date(app.created_at).toLocaleDateString('es-GT'):'—';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #EDF5F7;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-weight:700;color:#0A3D4A;font-size:.84rem">${nombre}</div>
+          <div style="font-size:.72rem;color:#7A8E98">${cand?.email||''} · ${fecha}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="pill ${pillMap[estado]||'p-rev'}" style="font-size:.68rem">${lblMap[estado]||estado}</span>
+          <button class="btn btn-sm" style="background:rgba(0,212,161,.1);color:var(--verde);border:1px solid rgba(0,212,161,.2);font-size:.74rem" onclick="openAppModal('${app.id}','${app.user_id}','${estado}')">Gestionar →</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div style="background:#fff;border:1.5px solid #D9EDF0;border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(14,95,110,.05)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;transition:background .2s" onclick="toggleVacanteGroup('${vid}')" onmouseover="this.style.background='#F7FBFC'" onmouseout="this.style.background='#fff'">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">${vac?.icon||'💼'}</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.9rem">${vacTitulo}</div>
+            <div style="font-size:.74rem;color:#7A8E98">${vacDpto?vacDpto+' · ':''}${groupApps.length} postulante${groupApps.length!==1?'s':''}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="background:rgba(16,185,129,.1);color:var(--verde-dark);font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;padding:3px 10px;border-radius:100px">${groupApps.length}</span>
+          <span style="color:#7A8E98;font-size:.8rem;transition:transform .2s;display:inline-block;transform:rotate(${isExpanded?180:0}deg)" id="arrow-${vid}">▼</span>
+        </div>
+      </div>
+      <div id="group-${vid}" style="display:${isExpanded?'block':'none'}">
+        ${candidatosHTML}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleVacanteGroup(vid){
+  const el=document.getElementById('group-'+vid);
+  const arrow=document.getElementById('arrow-'+vid);
+  if(!el)return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  if(arrow)arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)';
+  if(open)expandedVacantes.delete(vid);
+  else expandedVacantes.add(vid);
+}
+
 function renderVacantesTable(){
-  document.getElementById('vacantesTable').innerHTML=allVacantes.map(v=>`
-    <tr>
-      <td><strong style="color:#0A3D4A;font-size:.84rem">${v.titulo}</strong>${v.descripcion?`<div style="font-size:.72rem;color:#7A8E98;margin-top:1px">${v.descripcion.substring(0,55)}${v.descripcion.length>55?'...':''}</div>`:''}</td>
-      <td style="color:#5A7A85;font-size:.82rem">${v.sector||'—'}</td>
-      <td style="color:#5A7A85;font-size:.8rem">${v.departamento||'—'}</td>
-      <td style="color:var(--verde-dark);font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${v.salario||'—'}</td>
-      <td><span class="pill p-fin">Activa</span></td>
-      <td style="display:flex;gap:6px;align-items:center">
-        <button onclick="editarVacante(${v.id})" style="background:none;border:1px solid rgba(0,212,161,.2);color:var(--verde);cursor:pointer;font-size:.74rem;padding:4px 10px;border-radius:6px;transition:all .2s" onmouseover="this.style.background='rgba(0,212,161,.08)'" onmouseout="this.style.background='none'">Editar</button>
-        <button onclick="desactivarVacante(${v.id})" style="background:none;border:1px solid rgba(255,100,100,.2);color:rgba(255,120,120,.6);cursor:pointer;font-size:.74rem;padding:4px 10px;border-radius:6px;transition:all .2s" onmouseover="this.style.background='rgba(255,80,80,.08)'" onmouseout="this.style.background='none'">Quitar</button>
-      </td>
-    </tr>`).join('');
+  const container=document.getElementById('vacantesContainer');
+  if(!container)return;
+  if(!allVacantes.length){container.innerHTML='<div style="text-align:center;color:#7A8E98;padding:32px">No hay vacantes activas. Crea una nueva arriba.</div>';return;}
+  container.innerHTML=allVacantes.map(v=>{
+    const nApps=allApps.filter(a=>String(a.vacante_id)===String(v.id)).length;
+    return `<div style="background:#fff;border:1.5px solid #D9EDF0;border-radius:14px;padding:16px 18px;margin-bottom:10px;box-shadow:0 2px 8px rgba(14,95,110,.05);transition:all .2s" onmouseover="this.style.borderColor='rgba(16,185,129,.3)'" onmouseout="this.style.borderColor='#D9EDF0'">
+      <div style="display:flex;align-items:flex-start;gap:12px">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">${v.icon||'💼'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.9rem;margin-bottom:2px">${v.titulo}</div>
+          <div style="font-size:.76rem;color:#7A8E98;margin-bottom:6px">${[v.departamento,v.sector,v.salario].filter(Boolean).join(' · ')}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span class="pill p-fin" style="font-size:.68rem">Activa</span>
+            <span style="font-size:.72rem;color:#7A8E98">${v.jornada||''}</span>
+            <span style="background:rgba(16,185,129,.1);color:var(--verde-dark);font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:100px">${nApps} postulante${nApps!==1?'s':''}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
+          <button onclick="editarVacante('${v.id}')" style="background:none;border:1px solid rgba(0,212,161,.25);color:var(--verde-dark);cursor:pointer;font-size:.74rem;padding:5px 12px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;transition:all .2s" onmouseover="this.style.background='rgba(0,212,161,.08)'" onmouseout="this.style.background='none'">Editar</button>
+          <button onclick="desactivarVacante('${v.id}')" style="background:none;border:1px solid rgba(239,68,68,.2);color:rgba(220,38,38,.7);cursor:pointer;font-size:.74rem;padding:5px 12px;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;transition:all .2s" onmouseover="this.style.background='rgba(239,68,68,.06)'" onmouseout="this.style.background='none'">Quitar</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── FILTERS ───────────────────────────────────
@@ -676,12 +836,100 @@ function editarVacante(id){
   f.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+let allEliminadas=[];
+
 async function desactivarVacante(id){
-  if(!confirm('¿Desactivar esta vacante?'))return;
-  await sb.from('vacantes').update({activa:false}).eq('id',id);
-  allVacantes=allVacantes.filter(v=>v.id!==id);
+  if(!confirm('¿Quitar esta vacante? Se moverá a Eliminadas y se borrará en 30 días.'))return;
+  const deletedAt=new Date().toISOString();
+  const{error}=await sb.from('vacantes').update({activa:false,deleted_at:deletedAt}).eq('id',id);
+  if(error){showToast('Error: '+error.message,'error');return;}
+  // Compare as strings to handle UUID type mismatch
+  const idStr=String(id);
+  const vac=allVacantes.find(v=>String(v.id)===idStr);
+  if(vac)allEliminadas.push({...vac,deleted_at:deletedAt});
+  allVacantes=allVacantes.filter(v=>String(v.id)!==idStr);
   renderVacantesTable();
-  showToast('Vacante desactivada');
+  showToast('Vacante movida a Eliminadas ✓');
+}
+
+async function restaurarVacante(id){
+  const{error}=await sb.from('vacantes').update({activa:true,deleted_at:null}).eq('id',id);
+  if(error){showToast('Error: '+error.message,'error');return;}
+  const idStr=String(id);
+  const vac=allEliminadas.find(v=>String(v.id)===idStr);
+  if(vac)allVacantes.unshift({...vac,activa:true,deleted_at:null});
+  allEliminadas=allEliminadas.filter(v=>String(v.id)!==idStr);
+  renderVacantesTable();
+  filtrarEliminadas();
+  showToast('Vacante restaurada ✓');
+}
+
+async function borrarDefinitivo(id){
+  if(!confirm('¿Borrar permanentemente? No se puede recuperar.'))return;
+  const{error}=await sb.from('vacantes').delete().eq('id',id);
+  if(error){showToast('Error: '+error.message,'error');return;}
+  allEliminadas=allEliminadas.filter(v=>String(v.id)!==String(id));
+  filtrarEliminadas();
+  showToast('Vacante borrada ✓');
+}
+
+async function loadVacantesFromDB(){
+  const{data,error}=await sb.from('vacantes').select('*').eq('activa',true).is('deleted_at',null).order('created_at',{ascending:false});
+  if(!error&&data){allVacantes=data;}
+  renderVacantesTable();
+}
+
+async function loadEliminadas(){
+  const{data,error}=await sb.from('vacantes').select('*')
+    .eq('activa',false).not('deleted_at','is',null)
+    .order('deleted_at',{ascending:false});
+  if(!error&&data){
+    const now=new Date();
+    // Auto-delete expired (>30 days)
+    for(const v of data.filter(v=>(now-new Date(v.deleted_at))/(86400000)>30)){
+      await sb.from('vacantes').delete().eq('id',v.id);
+    }
+    allEliminadas=data.filter(v=>(now-new Date(v.deleted_at))/(86400000)<=30);
+  }
+  filtrarEliminadas();
+}
+
+function filtrarEliminadas(){
+  const dpto=document.getElementById('eFiltroDpto')?.value||'';
+  const sector=document.getElementById('eFiltroSector')?.value||'';
+  const dias=parseInt(document.getElementById('eFiltroFecha')?.value)||0;
+  const now=new Date();
+  let filtered=allEliminadas.filter(v=>{
+    const matchD=!dpto||v.departamento===dpto;
+    const matchS=!sector||v.sector===sector;
+    let matchF=true;
+    if(dias&&v.deleted_at)matchF=(now-new Date(v.deleted_at))/(86400000)<=dias;
+    return matchD&&matchS&&matchF;
+  });
+  const cnt=document.getElementById('eliminadasCount');
+  if(cnt)cnt.textContent=filtered.length?`${filtered.length} vacante(s) eliminada(s)`:'Sin eliminadas con estos filtros.';
+  const tbody=document.getElementById('eliminadasTable');
+  if(!tbody)return;
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;color:#7A8E98">No hay vacantes eliminadas.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=filtered.map(v=>{
+    const deletedDate=v.deleted_at?new Date(v.deleted_at).toLocaleDateString('es-GT'):'—';
+    const daysLeft=v.deleted_at?Math.max(0,30-Math.floor((now-new Date(v.deleted_at))/(86400000))):30;
+    const urgente=daysLeft<=5;
+    return `<tr>
+      <td><strong style="color:#0A3D4A;font-size:.84rem">${v.titulo}</strong></td>
+      <td style="color:#5A7A85;font-size:.82rem">${v.sector||'—'}</td>
+      <td style="color:#5A7A85;font-size:.82rem">${v.departamento||'—'}</td>
+      <td style="color:#5A7A85;font-size:.8rem">${deletedDate}</td>
+      <td><span style="font-size:.78rem;font-weight:700;color:${urgente?'#dc2626':'#5A7A85'};background:${urgente?'rgba(239,68,68,.08)':'#F2F9FA'};padding:3px 8px;border-radius:6px">${daysLeft} días</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="restaurarVacante('${v.id}')" style="background:none;border:1px solid rgba(16,185,129,.3);color:var(--verde-dark);cursor:pointer;font-size:.74rem;padding:4px 10px;border-radius:6px;transition:all .2s" onmouseover="this.style.background='rgba(16,185,129,.08)'" onmouseout="this.style.background='none'">Restaurar</button>
+        <button onclick="borrarDefinitivo('${v.id}')" style="background:none;border:1px solid rgba(239,68,68,.2);color:rgba(220,38,38,.7);cursor:pointer;font-size:.74rem;padding:4px 10px;border-radius:6px;transition:all .2s" onmouseover="this.style.background='rgba(239,68,68,.06)'" onmouseout="this.style.background='none'">Borrar</button>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
 // ── MODAL CANDIDATO ───────────────────────────
@@ -824,7 +1072,12 @@ function showToast(msg,type='success'){
   setTimeout(()=>{t.style.opacity='0';},3000);
 }
 </script>
+
+
 <!-- ADMIN MOBILE NAV -->
+    
+  </div>
+</div>
 <div class="admin-mobile-nav" id="adminMobileNav" style="display:none">
   <div class="admin-mobile-nav-inner">
     <button class="amnav-btn active" onclick="showPanel('pResumen',this)">
@@ -839,9 +1092,16 @@ function showToast(msg,type='success'){
     <button class="amnav-btn" onclick="showPanel('pVacantes',this)">
       <div class="amnav-icon">💼</div><span class="amnav-label">Vacantes</span>
     </button>
+    <button class="amnav-btn" onclick="showPanel('pEliminadas',this)">
+      <div class="amnav-icon">🗑️</div><span class="amnav-label">Eliminadas</span>
+    </button>
     <button class="amnav-btn" onclick="doLogout()">
       <div class="amnav-icon">🚪</div><span class="amnav-label">Salir</span>
     </button>
+<!-- PANEL ELIMINADAS -->
+
+    
+    </div>
   </div>
 </div>
 </body>

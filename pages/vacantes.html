@@ -32,7 +32,19 @@
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-icon{font-size:2.5rem;margin-bottom:12px}
     .results-count{font-size:.84rem;color:var(--muted);margin-bottom:16px}
-    @media(max-width:768px){.filters-grid{grid-template-columns:1fr}.v-side{display:none}}
+    @media(max-width:768px){
+      .filters-grid{grid-template-columns:1fr;gap:10px}
+      .v-side{flex-direction:row;align-items:center;justify-content:space-between;width:100%;margin-top:10px}
+      .vacante-card{flex-direction:column;gap:12px}
+      .v-icon{width:44px;height:44px;font-size:1.3rem}
+      .v-title{font-size:.93rem}
+      .sector-chips{gap:5px}
+      .chip{padding:5px 13px;font-size:.73rem}
+    }
+    @media(max-width:480px){
+      .filters-grid{grid-template-columns:1fr}
+      .v-side{display:flex}
+    }
   </style>
 </head>
 <body>
@@ -162,14 +174,11 @@ let currentSector='';
 
 async function loadVacantes(){
   try{
-    const{data,error}=await sb.from('vacantes').select('*').eq('activa',true).order('created_at',{ascending:false});
-    if(error||!data||!data.length){
+    const{data,error}=await sb.from('vacantes').select('*').eq('activa',true).is('deleted_at',null).order('created_at',{ascending:false});
+    if(error){
       allVacantes=VACANTES_DEFAULT;
     } else {
-      // Combinar DB + defaults que no estén en DB
-      const dbTitles=data.map(v=>v.titulo.toLowerCase());
-      const extras=VACANTES_DEFAULT.filter(v=>!dbTitles.includes(v.titulo.toLowerCase()));
-      allVacantes=[...data,...extras];
+      allVacantes=data||[];
     }
   } catch{
     allVacantes=VACANTES_DEFAULT;
@@ -245,29 +254,50 @@ function renderVacantes(list){
   }
 
   container.innerHTML=list.map(v=>{
-    const icon=SECTOR_ICONS[v.sector]||'💼';
+    const icon=v.icon||SECTOR_ICONS[v.sector]||'💼';
     const fecha=diasAtras(v.created_at);
-    return `<div class="vacante-card">
-      <div class="v-icon">${icon}</div>
-      <div class="v-info">
-        <div class="v-title">${v.titulo}</div>
-        <div class="v-meta">📍 ${v.departamento||'Guatemala'} · ${v.sector||'General'}${v.exp_requerida?' · '+v.exp_requerida:''}</div>
-        <div class="v-tags">
-          <span class="vtag green">${v.jornada||'Tiempo completo'}</span>
-          <span class="vtag blue">${v.tipo||'Presencial'}</span>
-          ${v.descripcion?`<span class="vtag">${v.descripcion.substring(0,40)}${v.descripcion.length>40?'...':''}</span>`:''}
+    return `<div class="vacante-card" style="flex-direction:column;gap:0;padding:0;overflow:hidden">
+      <div style="display:flex;gap:16px;align-items:flex-start;padding:20px 22px">
+        <div class="v-icon" style="flex-shrink:0">${icon}</div>
+        <div class="v-info" style="flex:1;min-width:0">
+          <div class="v-title">${v.titulo}</div>
+          <div class="v-meta">📍 ${v.departamento||'Guatemala'} · ${v.sector||'General'}${v.exp_requerida?' · '+v.exp_requerida:''}</div>
+          <div class="v-tags" style="margin-bottom:0">
+            <span class="vtag green">${v.jornada||'Tiempo completo'}</span>
+            <span class="vtag blue">${v.tipo||'Presencial'}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;flex-shrink:0;min-width:120px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--azul);text-align:right;white-space:nowrap">${v.salario||'A convenir'}</div>
+            <div style="font-size:.72rem;color:var(--muted);text-align:right;margin-top:2px">${fecha}</div>
+          </div>
+          <a href="../pages/candidatos.html" class="btn btn-primary btn-sm" style="white-space:nowrap">Aplicar →</a>
         </div>
       </div>
-      <div class="v-side">
-        <div class="v-salario">${v.salario||'A convenir'}</div>
-        <div class="v-date">${fecha}</div>
-        <a href="candidatos.html" class="btn btn-primary btn-sm">Aplicar →</a>
+      ${v.descripcion?`
+      <div id="vdesc-${v.id}" style="display:none;padding:0 24px 18px;border-top:1px solid var(--gris-2)">
+        <p style="font-size:.86rem;color:var(--muted);line-height:1.8;white-space:pre-wrap;margin:14px 0 0">${v.descripcion}</p>
       </div>
+      <button id="vdescbtn-${v.id}" onclick="toggleDesc('${v.id}')" style="width:100%;padding:11px;background:var(--gris);border:none;border-top:1px solid var(--gris-2);font-family:'Syne',sans-serif;font-size:.76rem;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s" onmouseover="this.style.background=\'#e8f0f5\'" onmouseout="this.style.background=\'var(--gris)\'">
+        <span>Ver descripción del puesto</span><span>▼</span>
+      </button>`:''}
     </div>`;
   }).join('');
 }
 
 loadVacantes();
+
+function toggleDesc(id){
+  const el=document.getElementById('vdesc-'+id);
+  const btn=document.getElementById('vdescbtn-'+id);
+  if(!el||!btn)return;
+  const open=el.style.display==='block';
+  el.style.display=open?'none':'block';
+  const spans=btn.querySelectorAll('span');
+  if(spans[0])spans[0].textContent=open?'Ver descripción del puesto':'Ocultar descripción';
+  if(spans[1])spans[1].textContent=open?'▼':'▲';
+}
 </script>
 </body>
 </html>
