@@ -57,12 +57,16 @@
       <!-- FORMULARIO -->
       <div class="contact-form-box reveal">
         <h3>Escríbenos</h3>
-        <p>Completa el formulario y te contactamos a la brevedad.</p>
-
-        <div class="tipo-selector" style="margin-bottom:24px;">
-          <button class="tipo-btn active" id="btn-empresa" onclick="setTipo('empresa')">🏢 Soy empresa</button>
-          <button class="tipo-btn" id="btn-candidato" onclick="setTipo('candidato')">👤 Busco trabajo</button>
+        <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:1.2rem">👤</span>
+          <div>
+            <div style="font-size:.82rem;font-weight:700;color:var(--verde-dark)">¿Buscas empleo?</div>
+            <div style="font-size:.78rem;color:var(--muted)">Regístrate en nuestro <a href="candidatos.html" style="color:var(--verde);font-weight:700">portal de candidatos →</a></div>
+          </div>
         </div>
+        <p>¿Necesitas talento para tu empresa? Completa el formulario y te contactamos en menos de 24 horas.</p>
+
+
 
         <div class="form-row">
           <div class="form-group">
@@ -178,13 +182,12 @@
       const btn = document.getElementById('btn-' + t);
       if (btn) btn.classList.toggle('active', t === tipo);
     });
-    const fe = document.getElementById('field-empresa');
-    if (fe) fe.style.display = tipo === 'empresa' ? 'block' : 'none';
+
     const lbl = document.querySelector('#field-puesto label');
     const inp = document.getElementById('f-puesto');
     if (lbl && inp) {
-      lbl.textContent = tipo === 'empresa' ? 'Puesto que deseas cubrir' : 'Puesto que buscas';
-      inp.placeholder = tipo === 'empresa' ? 'Ej. Gerente de Ventas...' : 'Ej. Desarrollador, Contador...';
+      lbl.textContent = 'Puesto que deseas cubrir';
+      inp.placeholder = 'Ej. Gerente de Ventas...';
     }
   }
 
@@ -205,7 +208,7 @@
     }
 
     // Armar texto del mensaje
-    const tipo = tipoActual === 'empresa' ? 'Empresa' : 'Candidato';
+    const tipo = 'Empresa';
     let texto = `*Nuevo contacto - Factor Laboral Humano*\n\n`;
     texto += `Tipo: ${tipo}\n`;
     texto += `Nombre: ${nombre}\n`;

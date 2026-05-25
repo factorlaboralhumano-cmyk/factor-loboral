@@ -458,3 +458,12 @@ footer{padding-bottom:env(safe-area-inset-bottom,0px);background:#020810;padding
   .counter-item{padding:20px 16px}
   .btn-lg{padding:13px 20px;font-size:.9rem}
 }
+@media(max-width:600px){
+  /* Dual portal cards stack vertically */
+  .dual-portal-grid{grid-template-columns:1fr!important}
+  /* Counter text smaller */
+  .counter-n{font-size:2rem!important}
+  .counter-l{font-size:.74rem!important}
+  /* Prevent WhatsApp button overlap */
+  #chatWidgetWrap{bottom:72px!important;right:16px!important}
+}
