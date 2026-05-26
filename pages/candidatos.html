@@ -793,6 +793,24 @@ function showScreen(id){
   const s=document.getElementById(id);
   if(s){s.classList.add('active');}
 }
+async function refreshCVPanel(){
+  // Reload from Supabase to get latest cv_filename
+  if(!sb||!currentUser)return;
+  const{data}=await sb.from('candidatos').select('cv_filename,cv_url,ia_score,ia_resumen,ia_habilidades').eq('user_id',currentUser.id).single();
+  if(data){
+    if(data.cv_filename) userProfile.cv_filename=data.cv_filename;
+    if(data.cv_url) userProfile.cv_path=data.cv_url;
+    if(data.ia_score) userProfile.ia_score=data.ia_score;
+    // Update CV display
+    const cvName=document.getElementById('cvName');
+    const cvUploaded=document.getElementById('cvUploaded');
+    if(data.cv_filename&&cvName){
+      cvName.textContent=data.cv_filename;
+      if(cvUploaded)cvUploaded.style.display='flex';
+    }
+  }
+}
+
 function togglePerfilForm(){
   const wrap=document.getElementById('perfilFormWrap');
   const btn=document.getElementById('perfilEditBtn');
@@ -814,6 +832,7 @@ function showPanel(id){
   if(mnav)mnav.classList.add('active');
   if(id==='panelVacantes')renderVacantes('');
   if(id==='panelAplicaciones')renderAplicaciones();
+  if(id==='panelCV')refreshCVPanel();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 // Aliases for backwards compat
