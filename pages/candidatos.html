@@ -1172,14 +1172,22 @@ async function processCV(file){
 
   // Subir a Supabase Storage
   if(sb&&currentUser){
-    const path=`${currentUser.id}/${file.name}`;
+    // Sanitize filename: replace spaces and special chars
+    const ext=file.name.split('.').pop();
+    const safeName=file.name
+      .replace(/\.[^.]+$/,'')           // remove extension
+      .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g,'-') // replace special chars
+      .replace(/-+/g,'-')               // collapse dashes
+      .replace(/^-|-$/g,'')             // trim dashes
+      + '.' + ext;
+    const path=`${currentUser.id}/${safeName}`;
     showToast('Subiendo CV...');
     const{error}=await sb.storage.from('cvs').upload(path,file,{upsert:true});
     if(error){
       showToast('Error al subir: '+error.message,'error');
       console.error(error);
     } else {
-      userProfile.cv_filename=file.name;
+      userProfile.cv_filename=safeName;
       userProfile.cv_path=path;
       // Guardar ruta en tabla candidatos
       await sb.from('candidatos').update({
