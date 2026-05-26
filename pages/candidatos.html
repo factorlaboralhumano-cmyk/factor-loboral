@@ -494,7 +494,7 @@
               <input type="file" id="cvInput" accept=".pdf,application/pdf" onchange="cvSelected(this)">
               <div class="cv-upload-icon">📤</div>
               <div class="cv-upload-title">Arrastra tu CV aquí o haz clic</div>
-              <div class="cv-upload-sub">PDF, DOC o DOCX · Máx. 5MB</div>
+              <div class="cv-upload-sub">Solo PDF · Máx. 5MB</div>
             </div>
             <div class="cv-uploaded" id="cvUploaded" style="display:none">
               <div class="cv-uploaded-icon">📄</div>
@@ -1196,9 +1196,11 @@ async function processCV(file){
       userProfile.cv_path=path;
       // Guardar ruta en tabla candidatos
       await sb.from('candidatos').update({
-        cv_filename:file.name,
+        cv_filename:safeName,
         cv_url:path
       }).eq('user_id',currentUser.id);
+      // Update display
+      document.getElementById('cvName').textContent=safeName;
       updateProgress();
       showToast('CV subido correctamente ✓');
     }
