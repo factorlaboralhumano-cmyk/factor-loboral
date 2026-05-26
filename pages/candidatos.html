@@ -491,7 +491,7 @@
           <div class="form-card">
             <div class="form-card-title">Subir CV</div>
             <div class="cv-upload-area" id="cvUploadArea" ondragover="cvDrag(event,true)" ondragleave="cvDrag(event,false)" ondrop="cvDrop(event)">
-              <input type="file" id="cvInput" accept=".pdf,.doc,.docx" onchange="cvSelected(this)">
+              <input type="file" id="cvInput" accept=".pdf,application/pdf" onchange="cvSelected(this)">
               <div class="cv-upload-icon">📤</div>
               <div class="cv-upload-title">Arrastra tu CV aquí o haz clic</div>
               <div class="cv-upload-sub">PDF, DOC o DOCX · Máx. 5MB</div>
@@ -1163,6 +1163,11 @@ function cvDrag(e,on){e.preventDefault();document.getElementById('cvUploadArea')
 function cvDrop(e){e.preventDefault();cvDrag(e,false);const f=e.dataTransfer.files[0];if(f)processCV(f);}
 function cvSelected(input){if(input.files[0])processCV(input.files[0]);}
 async function processCV(file){
+  if(file.type!=='application/pdf'&&!file.name.toLowerCase().endsWith('.pdf')){
+    showToast('Solo se permiten archivos PDF','error');
+    document.getElementById('cvInput').value='';
+    return;
+  }
   if(file.size>5*1024*1024){showToast('El archivo es muy grande. Máx. 5MB','error');return;}
 
   // Mostrar nombre inmediatamente

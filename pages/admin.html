@@ -1046,17 +1046,13 @@ async function analyzeForAdmin(c,container){
 }
 
 async function verCV(userId,filename){
-  // Intentar URL pública primero (si bucket es público)
-  const{data:pub}=sb.storage.from('cvs').getPublicUrl(`${userId}/${filename}`);
-  if(pub?.publicUrl){
-    window.open(pub.publicUrl,'_blank');
-    return;
+  if(!userId||!filename){showToast('Sin CV disponible','error');return;}
+  const{data}=sb.storage.from('cvs').getPublicUrl(`${userId}/${filename}`);
+  if(data?.publicUrl){
+    window.open(data.publicUrl,'_blank');
+  } else {
+    showToast('No se pudo obtener el enlace','error');
   }
-  // Fallback: signed URL
-  showToast('Obteniendo enlace...');
-  const{data,error}=await sb.storage.from('cvs').createSignedUrl(`${userId}/${filename}`,600);
-  if(error){showToast('Error al abrir CV: '+error.message,'error');return;}
-  window.open(data.signedUrl,'_blank');
 }
 
 function closeModal(){document.getElementById('cmOv').classList.remove('open');}
