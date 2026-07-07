@@ -56,25 +56,25 @@
 
 // ── NAV SCROLL ──────────────────────────────── 
 (function initNavScroll() {
-  const nav = document.getElementById('mainNav');
-  if (!nav) return;
   window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
+    const nav = document.getElementById('mainNav');
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
-  // Mostrar link admin si URL tiene ?admin en la barra
-  if(window.location.search.includes('admin')||localStorage.getItem('flh_admin_access')){
-    localStorage.setItem('flh_admin_access','1');
-    const navLinks=nav.querySelector('.nav-links');
-    if(navLinks){
-      const adminLink=document.createElement('a');
-      adminLink.href='pages/admin.html';
-      adminLink.style.cssText='font-size:.78rem;color:rgba(0,200,151,.5);border:1px solid rgba(0,200,151,.2);padding:5px 10px;border-radius:8px;transition:all .2s';
-      adminLink.textContent='⚙ Admin';
-      adminLink.onmouseover=()=>adminLink.style.color='var(--verde)';
-      adminLink.onmouseout=()=>adminLink.style.color='rgba(0,200,151,.5)';
-      navLinks.insertBefore(adminLink,navLinks.querySelector('.nav-cta'));
+  // Mostrar link admin si URL tiene ?admin en la barra (diferido: el nav se inyecta después)
+  window.addEventListener('load', () => {
+    if(window.location.search.includes('admin')||localStorage.getItem('flh_admin_access')){
+      localStorage.setItem('flh_admin_access','1');
+      const navLinks=document.querySelector('#mainNav .nav-links');
+      if(navLinks && !navLinks.querySelector('.admin-link')){
+        const adminLink=document.createElement('a');
+        adminLink.href='pages/admin.html';
+        adminLink.className='admin-link';
+        adminLink.style.cssText='font-size:.78rem;color:#E04E12;border:1px solid rgba(255,107,53,.35);padding:5px 12px;border-radius:999px;transition:all .2s';
+        adminLink.textContent='⚙ Admin';
+        navLinks.insertBefore(adminLink,navLinks.querySelector('.nav-cta'));
+      }
     }
-  }
+  });
 })();
 
 /* ── MOBILE MENU ─────────────────────────────── */

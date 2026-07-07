@@ -286,6 +286,16 @@ function renderVacantes(list){
   }).join('');
 }
 
+// Prefiltros desde el buscador del inicio (?q=&dpto=)
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const q=params.get('q'), d=params.get('dpto');
+  if(q) document.getElementById('fBuscar').value=q;
+  if(d){
+    const sel=document.getElementById('fDpto');
+    if([...sel.options].some(o=>o.value===d)) sel.value=d;
+  }
+})();
 loadVacantes();
 
 function toggleDesc(id){

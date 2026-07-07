@@ -1,94 +1,73 @@
 /* ════════════════════════════════════════════════
-   FACTOR LABORAL HUMANO — components.js
+   FACTOR LABORAL HUMANO — components.js v4
+   Nav claro + footer con mapa del sitio
    ════════════════════════════════════════════════ */
 
 const LOGO_HTML = `<img src="../assets/logo.png" alt="Factor Laboral Humano">`;
 const LOGO_HOME = `<img src="assets/logo.png" alt="Factor Laboral Humano">`;
 
-function renderNav(activePage) {
-  const pages = [
-    { id:'inicio',     href:'../index.html',          label:'Inicio' },
-    { id:'servicios',  href:'servicios.html',          label:'Reclutamiento' },
-    { id:'tecnologia', href:'tecnologia.html',         label:'Tecnología' },
-    { id:'vacantes',   href:'vacantes.html',           label:'Vacantes' },
-    { id:'sectores',   href:'sectores.html',           label:'Sectores' },
-    { id:'nosotros',   href:'nosotros.html',           label:'Nosotros' },
-    { id:'contacto',   href:'contacto.html',           label:'Contacto' },
-  ];
+const NAV_PAGES_INNER = [
+  { id:'inicio',     href:'../index.html',   label:'Inicio' },
+  { id:'servicios',  href:'servicios.html',  label:'Reclutamiento' },
+  { id:'tecnologia', href:'tecnologia.html', label:'Tecnología' },
+  { id:'vacantes',   href:'vacantes.html',   label:'Vacantes' },
+  { id:'sectores',   href:'sectores.html',   label:'Sectores' },
+  { id:'nosotros',   href:'nosotros.html',   label:'Nosotros' },
+  { id:'contacto',   href:'contacto.html',   label:'Contacto' },
+];
+const NAV_PAGES_HOME = [
+  { id:'inicio',     href:'#home',                 label:'Inicio' },
+  { id:'servicios',  href:'pages/servicios.html',  label:'Reclutamiento' },
+  { id:'tecnologia', href:'pages/tecnologia.html', label:'Tecnología' },
+  { id:'vacantes',   href:'pages/vacantes.html',   label:'Vacantes' },
+  { id:'sectores',   href:'pages/sectores.html',   label:'Sectores' },
+  { id:'nosotros',   href:'pages/nosotros.html',   label:'Nosotros' },
+  { id:'contacto',   href:'pages/contacto.html',   label:'Contacto' },
+];
+const NAV_ICONS = {'Inicio':'🏠','Reclutamiento':'🤝','Tecnología':'💻','Vacantes':'💼','Sectores':'🏢','Nosotros':'👥','Contacto':'📞'};
+
+function buildNav(pages, activePage, logo, logoSrc, candidatosHref) {
   const links = pages.map(p=>`<a href="${p.href}" class="${p.id===activePage?'active':''}">${p.label}</a>`).join('');
-  const icons={'Inicio':'🏠','Reclutamiento':'🤝','Tecnología':'💻','Vacantes':'💼','Sectores':'🏢','Nosotros':'👥','Contacto':'📞'};
-  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()" class="${p.id===activePage?'active-link':''}"><span>${icons[p.label]||'•'}</span>${p.label}</a>`).join('');
+  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()" class="${p.id===activePage?'active-link':''}"><span>${NAV_ICONS[p.label]||'•'}</span>${p.label}</a>`).join('');
   return `
     <nav class="nav" id="mainNav">
-      <a href="../index.html" class="nav-logo">
-        ${LOGO_HTML}
+      <a href="${pages[0].href}" class="nav-logo">
+        ${logo}
         <div class="nav-logo-text">Factor Laboral <span>Humano</span><small>Reclutamiento · Guatemala</small></div>
       </a>
       <div class="nav-links">
         ${links}
-        <a href="candidatos.html" class="nav-btn-candidato">👤 Busco trabajo</a>
+        <a href="${candidatosHref}" class="nav-btn-candidato">👤 Busco trabajo</a>
         <a href="#" class="nav-cta" onclick="openModal('empresa');return false;">Publicar vacante</a>
       </div>
       <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
     </nav>
     <div class="nav-mobile" id="mobileMenu">
       <div class="nav-mobile-header">
-        <img src="../assets/logo.png" alt="FLH" style="height:32px">
-        <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
+        <img src="${logoSrc}" alt="FLH" style="height:34px">
+        <button class="nav-mobile-close" onclick="closeMobileMenu()" aria-label="Cerrar menú">✕</button>
       </div>
       <div class="nav-mobile-links">
         ${mobileLinks}
       </div>
       <div class="nav-mobile-actions">
-        <a href="candidatos.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.8);justify-content:center" onclick="closeMobileMenu()">👤 Busco trabajo</a>
-        <a href="#" class="btn btn-primary" style="justify-content:center" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante →</a>
+        <a href="${candidatosHref}" class="btn btn-outline-dark" onclick="closeMobileMenu()">👤 Busco trabajo</a>
+        <a href="#" class="btn btn-primary" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante →</a>
       </div>
     </div>`;
 }
 
+function renderNav(activePage) {
+  return buildNav(NAV_PAGES_INNER, activePage, LOGO_HTML, '../assets/logo.png', 'candidatos.html');
+}
+
 function renderNavHome(activePage) {
-  const pages = [
-    { id:'inicio',     href:'#home',                   label:'Inicio' },
-    { id:'servicios',  href:'pages/servicios.html',     label:'Reclutamiento' },
-    { id:'tecnologia', href:'pages/tecnologia.html',    label:'Tecnología' },
-    { id:'vacantes',   href:'pages/vacantes.html',      label:'Vacantes' },
-    { id:'sectores',   href:'pages/sectores.html',      label:'Sectores' },
-    { id:'nosotros',   href:'pages/nosotros.html',      label:'Nosotros' },
-    { id:'contacto',   href:'pages/contacto.html',      label:'Contacto' },
-  ];
-  const links = pages.map(p=>`<a href="${p.href}" class="${p.id===activePage?'active':''}">${p.label}</a>`).join('');
-  const icons={'Inicio':'🏠','Reclutamiento':'🤝','Tecnología':'💻','Vacantes':'💼','Sectores':'🏢','Nosotros':'👥','Contacto':'📞'};
-  const mobileLinks = pages.map(p=>`<a href="${p.href}" onclick="closeMobileMenu()" class="${p.id===activePage?'active-link':''}"><span>${icons[p.label]||'•'}</span>${p.label}</a>`).join('');
-  return `
-    <nav class="nav" id="mainNav">
-      <a href="#home" class="nav-logo">
-        ${LOGO_HOME}
-        <div class="nav-logo-text">Factor Laboral <span>Humano</span><small>Reclutamiento · Guatemala</small></div>
-      </a>
-      <div class="nav-links">
-        ${links}
-        <a href="pages/candidatos.html" class="nav-btn-candidato">👤 Busco trabajo</a>
-        <a href="#" class="nav-cta" onclick="openModal('empresa');return false;">Publicar vacante</a>
-      </div>
-      <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Menú"><span></span><span></span><span></span></button>
-    </nav>
-    <div class="nav-mobile" id="mobileMenu">
-      <div class="nav-mobile-header">
-        <img src="assets/logo.png" alt="FLH" style="height:32px">
-        <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
-      </div>
-      <div class="nav-mobile-links">
-        ${mobileLinks}
-      </div>
-      <div class="nav-mobile-actions">
-        <a href="pages/candidatos.html" class="btn btn-outline" style="border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.8);justify-content:center" onclick="closeMobileMenu()">👤 Busco trabajo</a>
-        <a href="#" class="btn btn-primary" style="justify-content:center" onclick="openModal('empresa');closeMobileMenu();return false;">Publicar vacante →</a>
-      </div>
-    </div>`;
+  return buildNav(NAV_PAGES_HOME, activePage, LOGO_HOME, 'assets/logo.png', 'pages/candidatos.html');
 }
 
 function renderFooter(isIndex) {
   const base = isIndex ? 'pages/' : '';
+  const home = isIndex ? 'index.html' : '../index.html';
   const logoSrc = isIndex ? 'assets/logo.png' : '../assets/logo.png';
   return `
     <footer>
@@ -100,21 +79,22 @@ function renderFooter(isIndex) {
           </div>
           <p class="footer-tagline">Conectando el talento guatemalteco con las empresas que impulsan el país. Presencia en toda la república.</p>
           <div class="footer-social">
-            <a href="https://www.linkedin.com/in/factor-laboral-humano-296441406" target="_blank" class="social-btn" title="LinkedIn">in</a>
-            <a href="https://www.facebook.com/share/g/14avjVS6KRY/" target="_blank" class="social-btn" title="Facebook">f</a>
-            <a href="https://www.tiktok.com/@reclutamiento.tal53" target="_blank" class="social-btn" title="TikTok">♪</a>
-            <a href="mailto:factorlaboralhumano@gmail.com" class="social-btn" title="Email">✉</a>
-            <a href="https://wa.me/50237190890" target="_blank" class="social-btn" title="WhatsApp">📱</a>
+            <a href="https://www.linkedin.com/in/factor-laboral-humano-296441406" target="_blank" class="social-btn" title="LinkedIn" aria-label="LinkedIn">in</a>
+            <a href="https://www.facebook.com/share/g/14avjVS6KRY/" target="_blank" class="social-btn" title="Facebook" aria-label="Facebook">f</a>
+            <a href="https://www.tiktok.com/@reclutamiento.tal53" target="_blank" class="social-btn" title="TikTok" aria-label="TikTok">♪</a>
+            <a href="mailto:factorlaboralhumano@gmail.com" class="social-btn" title="Email" aria-label="Email">✉</a>
+            <a href="https://wa.me/50237190890" target="_blank" class="social-btn" title="WhatsApp" aria-label="WhatsApp">📱</a>
           </div>
         </div>
         <div class="footer-col">
-          <h5>Servicios</h5>
-          <ul>
-            <li><a href="${base}servicios.html">Búsqueda ejecutiva</a></li>
-            <li><a href="${base}servicios.html">Reclutamiento masivo</a></li>
-            <li><a href="${base}servicios.html">Capacitación laboral</a></li>
-            <li><a href="${base}tecnologia.html">🌐 Soluciones tecnológicas</a></li>
-          </ul>
+          <h5>Mapa del sitio</h5>
+          <div class="footer-pills">
+            <a href="${home}" class="footer-pill">1. Inicio</a>
+            <a href="${base}servicios.html" class="footer-pill">2. Reclutamiento</a>
+            <a href="${base}tecnologia.html" class="footer-pill">3. Tecnología</a>
+            <a href="${base}vacantes.html" class="footer-pill">4. Vacantes</a>
+            <a href="${base}nosotros.html" class="footer-pill">5. Nosotros</a>
+          </div>
         </div>
         <div class="footer-col">
           <h5>Candidatos</h5>
@@ -131,12 +111,12 @@ function renderFooter(isIndex) {
             <li><a href="mailto:factorlaboralhumano@gmail.com">factorlaboralhumano@gmail.com</a></li>
             <li><a href="https://wa.me/50237190890" target="_blank">WhatsApp: 3719-0890</a></li>
             <li><a href="${base}contacto.html">Formulario</a></li>
-            <li><a href="${base}nosotros.html">Nosotros</a></li>
+            <li><a href="${base}sectores.html">Sectores</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2025 Factor Laboral Humano · Guatemala</span>
+        <span>© 2026 Factor Laboral Humano · Guatemala</span>
         <span><a href="#">Privacidad</a> · <a href="#">Términos</a></span>
       </div>
     </footer>`;
