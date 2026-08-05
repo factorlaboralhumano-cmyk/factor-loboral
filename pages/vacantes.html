@@ -26,16 +26,14 @@
     .vtag{font-size:.71rem;font-weight:600;padding:3px 10px;border-radius:100px;background:var(--gris);color:var(--muted)}
     .vtag.green{background:rgba(0,200,151,.1);color:var(--verde-dark)}
     .vtag.blue{background:rgba(26,74,122,.1);color:var(--azul-light)}
-    .v-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
-    .v-salario{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--azul);white-space:nowrap}
-    .v-date{font-size:.72rem;color:var(--muted)}
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-icon{font-size:2.5rem;margin-bottom:12px}
     .results-count{font-size:.84rem;color:var(--muted);margin-bottom:16px}
+    .vc-row{display:flex;gap:16px;align-items:flex-start;padding:20px 22px}
+    .vc-left{display:flex;gap:16px;align-items:flex-start;flex:1;min-width:0}
+    .vc-side{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;flex-shrink:0;min-width:120px}
     @media(max-width:768px){
       .filters-grid{grid-template-columns:1fr;gap:10px}
-      .v-side{flex-direction:row;align-items:center;justify-content:space-between;width:100%;margin-top:10px}
-      .vacante-card{flex-direction:column;gap:12px}
       .v-icon{width:44px;height:44px;font-size:1.3rem}
       .v-title{font-size:.93rem}
       .sector-chips{gap:5px}
@@ -43,7 +41,10 @@
     }
     @media(max-width:480px){
       .filters-grid{grid-template-columns:1fr}
-      .v-side{display:flex}
+    }
+    @media(max-width:600px){
+      .vc-row{flex-direction:column;gap:12px;padding:18px}
+      .vc-side{flex-direction:row;align-items:center;justify-content:space-between;width:100%;min-width:0}
     }
   </style>
 </head>
@@ -257,17 +258,19 @@ function renderVacantes(list){
     const icon=v.icon||SECTOR_ICONS[v.sector]||'💼';
     const fecha=diasAtras(v.created_at);
     return `<div class="vacante-card" style="flex-direction:column;gap:0;padding:0;overflow:hidden">
-      <div style="display:flex;gap:16px;align-items:flex-start;padding:20px 22px">
-        <div class="v-icon" style="flex-shrink:0">${icon}</div>
-        <div class="v-info" style="flex:1;min-width:0">
-          <div class="v-title">${v.titulo}</div>
-          <div class="v-meta">📍 ${v.departamento||'Guatemala'} · ${v.sector||'General'}${v.exp_requerida?' · '+v.exp_requerida:''}</div>
-          <div class="v-tags" style="margin-bottom:0">
-            <span class="vtag green">${v.jornada||'Tiempo completo'}</span>
-            <span class="vtag blue">${v.tipo||'Presencial'}</span>
+      <div class="vc-row">
+        <div class="vc-left">
+          <div class="v-icon" style="flex-shrink:0">${icon}</div>
+          <div class="v-info" style="flex:1;min-width:0">
+            <div class="v-title">${v.titulo}</div>
+            <div class="v-meta">📍 ${v.departamento||'Guatemala'} · ${v.sector||'General'}${v.exp_requerida?' · '+v.exp_requerida:''}</div>
+            <div class="v-tags" style="margin-bottom:0">
+              <span class="vtag green">${v.jornada||'Tiempo completo'}</span>
+              <span class="vtag blue">${v.tipo||'Presencial'}</span>
+            </div>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;flex-shrink:0;min-width:120px">
+        <div class="vc-side">
           <div>
             <div style="font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--azul);text-align:right;white-space:nowrap">${v.salario||'A convenir'}</div>
             <div style="font-size:.72rem;color:var(--muted);text-align:right;margin-top:2px">${fecha}</div>
