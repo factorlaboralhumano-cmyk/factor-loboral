@@ -666,7 +666,24 @@ async function loadAll(){
   if(mnav)mnav.style.display='block';
   renderRecentTable(allCandidatos.slice(0,5));
   renderVacantesTable();
+  renderResumenVacantes(allVacantes.slice(0,5));
   document.getElementById('candidatosCount').textContent=`(${allCandidatos.length})`;
+}
+
+function renderResumenVacantes(list){
+  const el=document.getElementById('resumenVacantes');
+  if(!el)return;
+  el.innerHTML=list.length?list.map(v=>{
+    const nApps=allApps.filter(a=>String(a.vacante_id)===String(v.id)).length;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0F5F7">
+      <div style="width:34px;height:34px;border-radius:9px;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">${v.icon||'💼'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.84rem">${v.titulo}</div>
+        <div style="font-size:.72rem;color:#7A8E98">${v.departamento||'—'} · ${nApps} postulante${nApps!==1?'s':''}</div>
+      </div>
+    </div>`;
+  }).join('')
+  :'<div style="text-align:center;color:#7A8E98;padding:20px">No hay vacantes activas.</div>';
 }
 
 async function loadPostulaciones(){
@@ -677,16 +694,20 @@ async function loadPostulaciones(){
 
 // ── RENDER TABLES ─────────────────────────────
 function renderRecentTable(list){
-  document.getElementById('recentTable').innerHTML=list.length?list.map(c=>`
-    <tr>
-      <td><strong style="color:#0A3D4A">${(c.nombre||'')+' '+(c.apellido||'')||c.email||'Sin nombre'}</strong><div style="font-size:.72rem;color:#7A8E98">${c.email||''}</div></td>
-      <td>${c.profesion||'—'}</td>
-      <td style="color:#5A7A85;font-size:.8rem">${c.departamento||'—'}</td>
-      <td>${c.cv_filename?`<span style="color:var(--verde-dark);font-size:.76rem">📄 Sí</span>`:'<span style="color:#AABBC2;font-size:.76rem">No</span>'}</td>
-      <td><span style="font-size:.74rem;font-weight:700;color:${c.ia_score?'var(--verde-dark)':'#AABBC2'}">${c.ia_score?'✓ Analizado':'—'}</span></td>
-      <td><button class="btn btn-sm" style="background:rgba(0,212,161,.1);color:var(--verde);border:1px solid rgba(0,212,161,.2)" onclick="openCandModal('${c.user_id}')">Ver →</button></td>
-    </tr>`).join('')
-  :'<tr><td colspan="6" style="text-align:center;color:var(--s-muted);padding:22px">Sin candidatos aún</td></tr>';
+  const el=document.getElementById('resumenPostulaciones');
+  if(!el)return;
+  el.innerHTML=list.length?list.map(c=>{
+    const nombre=((c.nombre||'')+' '+(c.apellido||'')).trim()||c.email||'Sin nombre';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0F5F7">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.84rem">${nombre}</div>
+        <div style="font-size:.72rem;color:#7A8E98">${[c.profesion,c.departamento].filter(Boolean).join(' · ')||c.email||'—'}</div>
+      </div>
+      ${c.cv_filename?`<span style="font-size:.7rem;color:var(--verde-dark);flex-shrink:0">📄 CV</span>`:''}
+      <button class="btn btn-sm" style="background:rgba(0,212,161,.1);color:var(--verde);border:1px solid rgba(0,212,161,.2);flex-shrink:0" onclick="openCandModal('${c.user_id}')">Ver →</button>
+    </div>`;
+  }).join('')
+  :'<div style="text-align:center;color:#7A8E98;padding:22px">Sin candidatos aún</div>';
 }
 
 function renderCandidatosTable(list){
