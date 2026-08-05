@@ -1110,7 +1110,11 @@ const waSelectedP=new Set();
 
 async function loadProspectos(){
   const{data,error}=await sb.from('prospectos').select('*').order('created_at',{ascending:false});
-  if(error){console.error('prospectos error:',error.message);return;}
+  if(error){
+    console.error('prospectos error:',error.message);
+    showToast('No se pudo cargar Prospectos: '+error.message,'error');
+    return;
+  }
   allProspectos=data||[];
   filterProspectos();
 }
