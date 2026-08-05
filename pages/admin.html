@@ -263,6 +263,7 @@
       <button class="sbi" onclick="showPanel('pCandidatos',this)"><span class="sbi-icon">👥</span> Candidatos</button>
       <button class="sbi" onclick="showPanel('pPostulaciones',this)"><span class="sbi-icon">📋</span> Postulaciones</button>
       <button class="sbi" onclick="showPanel('pVacantes',this)"><span class="sbi-icon">💼</span> Vacantes</button>
+      <button class="sbi" onclick="showPanel('pProspectos',this)"><span class="sbi-icon">🏢</span> Prospectos</button>
       <button class="sbi" onclick="showPanel('pEliminadas',this)"><span class="sbi-icon">🗑️</span> Eliminadas</button>
     </nav>
     <div style="padding:12px 8px;border-top:1px solid var(--s-border)">
@@ -428,6 +429,42 @@
       <div id="vacantesContainer"></div>
     </div>
 
+    <!-- PROSPECTOS -->
+    <div id="pProspectos" class="panel">
+      <div class="panel-hdr">
+        <div>
+          <div class="panel-title">Prospectos <span id="prospectosCount" style="font-size:.78rem;color:var(--s-muted);font-weight:400"></span></div>
+          <div class="panel-sub">Negocios a los que se les va a ofrecer el servicio de reclutamiento</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-sm wa-toggle" id="waToggleBtnP" style="background:rgba(37,211,102,.08);border:1.5px solid rgba(37,211,102,.3);color:#1a9e4f" onclick="toggleWaModeP()">💬 WhatsApp masivo</button>
+          <button class="btn btn-primary btn-sm" onclick="toggleProspectoForm()">+ Agregar prospecto</button>
+        </div>
+      </div>
+
+      <div class="vform" id="prospectoForm">
+        <div class="vform-grid">
+          <div><div class="vf-label">Nombre del negocio *</div><input class="vf-input" id="pNombreNegocio" placeholder="Ej. Ferretería El Progreso"></div>
+          <div><div class="vf-label">Teléfono *</div><input class="vf-input" id="pTelefono" placeholder="Ej. 3719-0890"></div>
+          <div><div class="vf-label">Contacto (opcional)</div><input class="vf-input" id="pContacto" placeholder="Nombre de quien atiende"></div>
+          <div><div class="vf-label">Notas (opcional)</div><input class="vf-input" id="pNotas" placeholder="Ej. Interesado en outsourcing"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="btn btn-primary" onclick="guardarProspecto()">Guardar →</button>
+          <button class="btn btn-dark" onclick="toggleProspectoForm()">Cancelar</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <input class="dsearch" type="text" id="searchProspecto" placeholder="🔍 Nombre del negocio o contacto..." oninput="filterProspectos()">
+        <select class="dsel" id="filterProspectoEstado" onchange="filterProspectos()">
+          <option value="">Todos</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="enviado">Ya contactados</option>
+        </select>
+      </div>
+      <div id="prospectosContainer"></div>
+    </div>
 
   <div id="pEliminadas" class="panel">
     <div style="margin-bottom:20px">
@@ -514,6 +551,51 @@
         <button class="btn btn-primary" style="flex:2;background:#25D366;border-color:#25D366" onclick="waQueueOpen()">📱 Abrir WhatsApp</button>
       </div>
       <button class="btn btn-sm" style="width:100%;margin-top:10px;background:rgba(0,212,161,.08);color:var(--verde);border:1.5px solid rgba(0,212,161,.2)" onclick="waQueueMarkSentAndNext()">Ya envié, siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<!-- BARRA SELECCIÓN WHATSAPP (PROSPECTOS) -->
+<div class="wa-bar" id="waBarP">
+  <div style="color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem"><span id="waCountP">0</span> seleccionados</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15)" onclick="waSelectAllFilteredP()">Seleccionar filtrados</button>
+    <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15)" onclick="waClearSelectionP()">Limpiar</button>
+    <button class="btn btn-sm" style="background:#25D366;border:1px solid #25D366;color:#fff" onclick="openWaComposerP()">Redactar mensaje →</button>
+  </div>
+</div>
+
+<!-- MODAL COMPOSITOR WHATSAPP (PROSPECTOS) -->
+<div class="cm-ov" id="waComposerOvP" onclick="if(event.target===this)closeWaComposerP()">
+  <div class="cm-box wa-box">
+    <button class="cm-close" onclick="closeWaComposerP()">✕</button>
+    <div class="cm-name">💬 Enviar WhatsApp a prospectos</div>
+    <div class="cm-sub" id="waComposerSubP">0 destinatarios</div>
+    <div class="cm-f" style="margin-bottom:10px">
+      <div class="lbl">Mensaje (usa {nombre} para personalizar)</div>
+      <textarea class="wa-msg-input" id="waMsgInputP">Hola {nombre} 👋, le escribimos de Factor Laboral Humano. Ofrecemos servicios de reclutamiento y selección de personal para negocios como el suyo, ¿tendría unos minutos para platicar?</textarea>
+    </div>
+    <div class="sec-div">Destinatarios</div>
+    <div id="waRecipientsListP" style="max-height:220px;overflow-y:auto"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;background:#25D366;border-color:#25D366" onclick="startWaQueueP()">Iniciar envío →</button>
+  </div>
+</div>
+
+<!-- MODAL COLA DE ENVÍO WHATSAPP (PROSPECTOS) -->
+<div class="cm-ov" id="waQueueOvP" onclick="if(event.target===this)closeWaQueueP()">
+  <div class="cm-box wa-box" style="max-width:420px">
+    <button class="cm-close" onclick="closeWaQueueP()">✕</button>
+    <div class="wa-queue-card">
+      <div class="wa-q-progress" id="waQProgressP">1 de 1</div>
+      <div class="wa-q-avatar" id="waQAvatarP">?</div>
+      <div class="cm-name" id="waQNameP">—</div>
+      <div class="cm-sub" id="waQPhoneP">—</div>
+      <div class="wa-q-msg" id="waQMsgP"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" style="flex:1;background:#F0F5F7;color:#5A7A85;border:1.5px solid #D9EDF0" onclick="waQueueSkipP()">Saltar</button>
+        <button class="btn btn-primary" style="flex:2;background:#25D366;border-color:#25D366" onclick="waQueueOpenP()">📱 Abrir WhatsApp</button>
+      </div>
+      <button class="btn btn-sm" style="width:100%;margin-top:10px;background:rgba(0,212,161,.08);color:var(--verde);border:1.5px solid rgba(0,212,161,.2)" onclick="waQueueMarkSentAndNextP()">Ya envié, siguiente →</button>
     </div>
   </div>
 </div>
@@ -641,6 +723,7 @@ function showPanel(id,btn){
   if(id==='pPostulaciones')loadPostulaciones();
   if(id==='pEliminadas')loadEliminadas();
   if(id==='pVacantes')loadVacantesFromDB();
+  if(id==='pProspectos')loadProspectos();
 }
 
 // ── LOAD DATA ─────────────────────────────────
@@ -1020,6 +1103,217 @@ function closeWaQueue(){
   document.getElementById('waQueueOv').classList.remove('open');
 }
 
+// ── PROSPECTOS (negocios a contactar) ─────────
+let allProspectos=[];
+let waModeP=false;
+const waSelectedP=new Set();
+
+async function loadProspectos(){
+  const{data,error}=await sb.from('prospectos').select('*').order('created_at',{ascending:false});
+  if(error){console.error('prospectos error:',error.message);return;}
+  allProspectos=data||[];
+  filterProspectos();
+}
+
+function toggleProspectoForm(){
+  const f=document.getElementById('prospectoForm');
+  f.style.display = f.style.display==='block' ? 'none' : 'block';
+}
+
+async function guardarProspecto(){
+  const nombre_negocio=document.getElementById('pNombreNegocio').value.trim();
+  const telefono=document.getElementById('pTelefono').value.trim();
+  const contacto=document.getElementById('pContacto').value.trim();
+  const notas=document.getElementById('pNotas').value.trim();
+  if(!nombre_negocio||!telefono){showToast('Nombre del negocio y teléfono son obligatorios','error');return;}
+  const{error}=await sb.from('prospectos').insert({nombre_negocio,telefono,contacto:contacto||null,notas:notas||null});
+  if(error){showToast('Error: '+error.message,'error');return;}
+  document.getElementById('pNombreNegocio').value='';
+  document.getElementById('pTelefono').value='';
+  document.getElementById('pContacto').value='';
+  document.getElementById('pNotas').value='';
+  toggleProspectoForm();
+  showToast('Prospecto agregado ✓');
+  loadProspectos();
+}
+
+async function eliminarProspecto(id){
+  if(!confirm('¿Eliminar este prospecto?'))return;
+  const{error}=await sb.from('prospectos').delete().eq('id',id);
+  if(error){showToast('Error: '+error.message,'error');return;}
+  showToast('Prospecto eliminado');
+  waSelectedP.delete(id);
+  loadProspectos();
+}
+
+function filterProspectos(){
+  const q=(document.getElementById('searchProspecto').value||'').toLowerCase();
+  const estado=document.getElementById('filterProspectoEstado').value;
+  const filtered=allProspectos.filter(p=>{
+    const matchQ=!q||[p.nombre_negocio,p.contacto,p.notas].join(' ').toLowerCase().includes(q);
+    const matchE=!estado||(estado==='enviado'?!!p.wa_last_sent:!p.wa_last_sent);
+    return matchQ&&matchE;
+  });
+  renderProspectosTable(filtered);
+  const cnt=document.getElementById('prospectosCount');
+  if(cnt)cnt.textContent=`(${filtered.length} de ${allProspectos.length})`;
+}
+
+function renderProspectosTable(list){
+  const container=document.getElementById('prospectosContainer');
+  if(!container)return;
+  if(!list.length){container.innerHTML='<div style="text-align:center;color:#7A8E98;padding:32px">No hay prospectos registrados aún.</div>';return;}
+  container.innerHTML=list.map(p=>{
+    const inicial=(p.nombre_negocio[0]||'?').toUpperCase();
+    const checkboxHtml=waModeP?`<div class="wa-check ${waSelectedP.has(p.id)?'checked':''} ${p.telefono?'':'disabled'}" onclick="toggleWaSelectP('${p.id}',event)">${waSelectedP.has(p.id)?'✓':''}</div>`:'';
+    return `<div style="background:#fff;border:1.5px solid #D9EDF0;border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(14,95,110,.04)">
+      ${checkboxHtml}
+      <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--verde),#0E5F6E);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:#fff;flex-shrink:0">${inicial}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;color:#0A3D4A;font-size:.88rem">${p.nombre_negocio}</div>
+        <div style="font-size:.74rem;color:#7A8E98;margin-top:1px">${[p.telefono,p.contacto].filter(Boolean).join(' · ')}</div>
+        ${p.notas?`<div style="font-size:.72rem;color:#AABBC2;margin-top:2px">${p.notas}</div>`:''}
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px">
+          ${p.wa_last_sent?`<span style="font-size:.69rem;font-weight:600;padding:2px 8px;border-radius:100px;background:rgba(37,211,102,.1);color:#1a9e4f">💬 ${waTimeAgo(p.wa_last_sent)}</span>`:`<span style="font-size:.69rem;font-weight:600;padding:2px 8px;border-radius:100px;background:#F0F5F7;color:#5A7A85">Pendiente</span>`}
+        </div>
+      </div>
+      <button class="btn btn-sm" style="background:none;border:1px solid rgba(239,68,68,.2);color:rgba(220,38,38,.7);flex-shrink:0" onclick="eliminarProspecto('${p.id}')">Eliminar</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleWaModeP(){
+  waModeP=!waModeP;
+  const btn=document.getElementById('waToggleBtnP');
+  if(btn)btn.classList.toggle('active',waModeP);
+  document.getElementById('waBarP').classList.toggle('show',waModeP);
+  if(!waModeP){waSelectedP.clear();updateWaCountP();}
+  filterProspectos();
+}
+
+function updateWaCountP(){
+  const el=document.getElementById('waCountP');
+  if(el)el.textContent=waSelectedP.size;
+}
+
+function toggleWaSelectP(id,ev){
+  ev.stopPropagation();
+  const p=allProspectos.find(x=>x.id===id);
+  if(!p?.telefono){showToast('Este prospecto no tiene teléfono registrado','error');return;}
+  if(waSelectedP.has(id))waSelectedP.delete(id);else waSelectedP.add(id);
+  updateWaCountP();
+  filterProspectos();
+}
+
+function waSelectAllFilteredP(){
+  const q=(document.getElementById('searchProspecto').value||'').toLowerCase();
+  const estado=document.getElementById('filterProspectoEstado').value;
+  const filtered=allProspectos.filter(p=>{
+    const matchQ=!q||[p.nombre_negocio,p.contacto,p.notas].join(' ').toLowerCase().includes(q);
+    const matchE=!estado||(estado==='enviado'?!!p.wa_last_sent:!p.wa_last_sent);
+    return matchQ&&matchE;
+  });
+  const sinTel=filtered.filter(p=>!p.telefono).length;
+  const yaContactados=filtered.filter(p=>p.telefono&&p.wa_last_sent).length;
+  filtered.forEach(p=>{ if(p.telefono&&!p.wa_last_sent) waSelectedP.add(p.id); });
+  updateWaCountP();
+  filterProspectos();
+  const notas=[];
+  if(sinTel)notas.push(`${sinTel} sin teléfono`);
+  if(yaContactados)notas.push(`${yaContactados} ya contactados antes`);
+  if(notas.length)showToast(`Omitidos — ${notas.join(', ')}. Puedes agregarlos a mano si quieres.`,'error');
+}
+
+function waClearSelectionP(){
+  waSelectedP.clear();
+  updateWaCountP();
+  filterProspectos();
+}
+
+function openWaComposerP(){
+  if(!waSelectedP.size){showToast('Selecciona al menos un prospecto','error');return;}
+  renderWaRecipientsP();
+  document.getElementById('waComposerOvP').classList.add('open');
+}
+
+function closeWaComposerP(){
+  document.getElementById('waComposerOvP').classList.remove('open');
+}
+
+function renderWaRecipientsP(){
+  const list=[...waSelectedP].map(id=>allProspectos.find(p=>p.id===id)).filter(Boolean);
+  document.getElementById('waComposerSubP').textContent=`${list.length} destinatario${list.length!==1?'s':''}`;
+  document.getElementById('waRecipientsListP').innerHTML=list.map(p=>{
+    const phone=normalizePhoneGT(p.telefono);
+    return `<div class="wa-recipient ${phone?'':'no-phone'}">
+      <span class="name">${p.nombre_negocio}</span>
+      <span class="phone">${phone?p.telefono:'Teléfono inválido'}</span>
+    </div>`;
+  }).join('');
+}
+
+let waQueueP=[], waQIndexP=0, waQTplP='';
+
+function startWaQueueP(){
+  const tpl=document.getElementById('waMsgInputP').value.trim();
+  if(!tpl){showToast('Escribe un mensaje','error');return;}
+  waQueueP=[...waSelectedP].map(id=>allProspectos.find(p=>p.id===id)).filter(p=>p&&normalizePhoneGT(p.telefono));
+  if(!waQueueP.length){showToast('Ningún destinatario seleccionado tiene teléfono válido','error');return;}
+  waQTplP=tpl;
+  waQIndexP=0;
+  closeWaComposerP();
+  document.getElementById('waQueueOvP').classList.add('open');
+  renderWaQueueCardP();
+}
+
+function renderWaQueueCardP(){
+  const p=waQueueP[waQIndexP];
+  if(!p){
+    closeWaQueueP();
+    showToast('Envío completado ✓');
+    return;
+  }
+  const inicial=(p.nombre_negocio[0]||'?').toUpperCase();
+  const phone=normalizePhoneGT(p.telefono);
+  const msgTpl=waQTplP.replace(/\{nombre\}/gi, p.nombre_negocio||'estimado cliente');
+  document.getElementById('waQProgressP').textContent=`${waQIndexP+1} de ${waQueueP.length}`;
+  document.getElementById('waQAvatarP').textContent=inicial;
+  document.getElementById('waQNameP').textContent=p.nombre_negocio;
+  document.getElementById('waQPhoneP').textContent='📱 '+p.telefono;
+  const msgEl=document.getElementById('waQMsgP');
+  msgEl.textContent=msgTpl;
+  msgEl.dataset.link=buildWaLink(phone,msgTpl);
+}
+
+function waQueueOpenP(){
+  const link=document.getElementById('waQMsgP').dataset.link;
+  if(link)window.open(link,'_blank');
+}
+
+async function waQueueMarkSentAndNextP(){
+  const p=waQueueP[waQIndexP];
+  if(p){
+    const now=new Date().toISOString();
+    p.wa_last_sent=now;
+    const cached=allProspectos.find(x=>x.id===p.id);
+    if(cached)cached.wa_last_sent=now;
+    const{error}=await sb.from('prospectos').update({wa_last_sent:now}).eq('id',p.id);
+    if(error)console.error('wa_last_sent update error:',error.message);
+  }
+  waQIndexP++;
+  renderWaQueueCardP();
+  filterProspectos();
+}
+
+function waQueueSkipP(){
+  waQIndexP++;
+  renderWaQueueCardP();
+}
+
+function closeWaQueueP(){
+  document.getElementById('waQueueOvP').classList.remove('open');
+}
+
 function filterApps(){
   const q=(document.getElementById('searchApp').value||'').toLowerCase();
   const estado=document.getElementById('filterAppEstado').value;
@@ -1349,6 +1643,9 @@ function showToast(msg,type='success'){
     </button>
     <button class="amnav-btn" onclick="showPanel('pVacantes',this)">
       <div class="amnav-icon">💼</div><span class="amnav-label">Vacantes</span>
+    </button>
+    <button class="amnav-btn" onclick="showPanel('pProspectos',this)">
+      <div class="amnav-icon">🏢</div><span class="amnav-label">Prospect.</span>
     </button>
     <button class="amnav-btn" onclick="showPanel('pEliminadas',this)">
       <div class="amnav-icon">🗑️</div><span class="amnav-label">Eliminadas</span>
